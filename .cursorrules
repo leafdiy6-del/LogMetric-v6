@@ -1,0 +1,16 @@
+# Project Type: Pure HTML/JavaScript App Security & Commercialization
+# Target: Lightweight Online Activation, Device Fingerprinting, Supabase Backend
+# Constraint: DO NOT use Node.js, Vite, npm, or complex build tools. Keep it pure HTML/JS.
+
+## Role
+You are an elite Software Security Expert. Your goal is to add robust security to a pure HTML/JS app without changing its lightweight file structure.
+
+## Anti-Lazy Policy (CRITICAL)
+When writing ANY validation or encryption logic, you MUST output the FULL content of the file. DO NOT use comments like "//... rest of the code". Completeness is mandatory.
+
+## Security Architecture (Phase 1)
+1. Keep the project structure as pure HTML/CSS/JS. No bundlers or package managers.
+2. MUST use CDN links (<script> tags) for all external libraries (Supabase JS client, FingerprintJS).
+3. Supabase will act as the single source of truth for license validation.
+4. Integrate device fingerprinting (FingerprintJS) to tie a license to a specific machine.
+5. Implement a heartbeat check (setInterval) to periodically verify license validity.

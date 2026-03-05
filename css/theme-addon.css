@@ -1,0 +1,620 @@
+/* ========================================================================
+   LogMetric Pro - Theme Addon (Non-intrusive Version)
+   ========================================================================
+   深色模式变量由 app.css :root 统一定义，本文件仅提供浅色主题覆盖。
+   ======================================================================== */
+
+/* ------------------------------------------------------------------------
+   [1] Light Mode - 2025/2026 Soft UI 风格，高对比度可读
+   ------------------------------------------------------------------------ */
+[data-theme="light"] {
+    --bg-primary: #FAFAF9;
+    --bg-secondary: #F5F4F1;
+    --bg-tertiary: #F0EFEB;
+    --surface-primary: #FFFFFF;
+    --surface-secondary: #F8F7F4;
+    --surface-elevated: #FFFFFF;
+    --bg-color: #FAFAF9;
+    --bg-dark: #F0EFEB;
+    --bg-light: #F8F7F4;
+    --card-bg: #FFFFFF;
+    --text-main: #1A1A1A;
+    --text-primary: #1A1A1A;
+    --text-secondary: #3D3A36;
+    --text-tertiary: #5C5852;
+    --text-muted: #7A7670;
+    --text-white: #1A1A1A;
+    --text-gray: #5C5852;
+    --text-light-gray: #7A7670;
+    --text-dark-gray: #8B8680;
+    --accent-color: #b8956b;
+    --accent-light: #c9a67c;
+    --accent-hover: #c9a67c;
+    --accent-dark: #a7845a;
+    --accent-glow: rgba(184, 149, 107, 0.15);
+    --gold-highlight: #d4a373;
+    --input-bg: #F5F4F1;
+    --border-color: #E5E3DF;
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    --border-light: #EBE9E5;
+    --border-dark: #D8D6D2;
+    --danger-color: #c75b5b;
+    --danger-dark: #b54a4a;
+    --active-mode: #5a8f6e;
+}
+
+/* ------------------------------------------------------------------------
+   [2] Theme Toggle Button
+   ------------------------------------------------------------------------ */
+.theme-toggle {
+    position: fixed;
+    top: 64px;
+    right: 12px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--surface-primary);
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    z-index: 99;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+    color: var(--text-main);
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+}
+
+/* 主题切换图标：深色模式显示太阳，白天模式显示月亮 */
+.theme-icon { width: 22px; height: 22px; }
+.theme-icon-sun { display: inline-block; }
+.theme-icon-moon { display: none; }
+[data-theme="light"] .theme-icon-sun { display: none; }
+[data-theme="light"] .theme-icon-moon { display: inline-block; }
+
+/* Lucide 图标通用样式 */
+.btn-icon, .menu-icon { width: 18px; height: 18px; flex-shrink: 0; }
+.menu-item-content { display: inline-flex; align-items: center; gap: 8px; }
+.menu-icon { width: 18px; height: 18px; }
+.modal-title-icon { width: 22px; height: 22px; margin-right: 6px; vertical-align: middle; }
+.btn-header .btn-icon, .hv-save .btn-icon, .hv-info-btn .btn-icon { margin-right: 4px; }
+/* hv-pdf, hv-excel, hv-close 仅图标，无需 margin-right */
+.btn-tool svg { width: 18px; height: 18px; }
+.btn-add-row svg { width: 24px; height: 24px; }
+.toggle-btn { display: inline-flex; align-items: center; gap: 4px; }
+.toggle-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+.btn-add-inline { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+
+/* 白天模式 - 添加并下一根按钮，暖色背景搭配浅色主题 */
+[data-theme="light"] .btn-add-inline {
+    background: linear-gradient(135deg, #c9a67c 0%, #b8956b 100%);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(184, 149, 107, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+[data-theme="light"] .btn-add-inline:hover {
+    box-shadow: 0 6px 16px rgba(184, 149, 107, 0.35);
+}
+
+/* Light mode specific adjustments */
+[data-theme="light"] .theme-toggle {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* ------------------------------------------------------------------------
+   [3] Light Mode Specific Overrides - 2025/2026 Soft UI
+   ------------------------------------------------------------------------ */
+
+/* 输入框/下拉框 - 浅色 Soft UI，避免深色块突兀 */
+[data-theme="light"] input,
+[data-theme="light"] select {
+    background: var(--surface-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    box-shadow: inset 1px 1px 2px rgba(0,0,0,0.04);
+}
+
+[data-theme="light"] input:focus,
+[data-theme="light"] select:focus {
+    border-color: var(--accent-color) !important;
+    background: var(--surface-primary) !important;
+    box-shadow: 0 0 0 3px var(--accent-glow), inset 1px 1px 2px rgba(0,0,0,0.04) !important;
+}
+
+[data-theme="light"] .field input {
+    border-color: var(--border-color);
+}
+
+[data-theme="light"] .field input:focus {
+    background: var(--surface-primary) !important;
+}
+
+[data-theme="light"] .input-note {
+    color: var(--text-secondary) !important;
+}
+
+/* 设置面板输入框（扣尺等） */
+[data-theme="light"] .setting-input {
+    background: var(--surface-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Toggle 按钮（如 夜间/白天、快速模式、专业键盘）- 白天主题 */
+[data-theme="light"] .toggle-btn {
+    background: var(--surface-secondary) !important;
+    color: var(--text-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.04), -2px -2px 4px rgba(255,255,255,0.8);
+}
+
+[data-theme="light"] .toggle-btn.active {
+    background: linear-gradient(135deg, #c9a67c 0%, #b8956b 100%) !important;
+    color: #fff !important;
+    border-color: transparent !important;
+    box-shadow: 0 2px 8px rgba(184, 149, 107, 0.35);
+}
+
+/* 开关滑块 - 未激活/已激活，白天主题 */
+[data-theme="light"] .slider {
+    background: #D4D1CC !important;
+    box-shadow: inset 1px 1px 2px rgba(0,0,0,0.08);
+}
+
+[data-theme="light"] input:checked + .slider {
+    background: linear-gradient(135deg, #c9a67c 0%, #b8956b 100%) !important;
+    box-shadow: 0 2px 6px rgba(184, 149, 107, 0.3);
+}
+
+/* 信息弹窗内开关（PDF中显示公司） */
+[data-theme="light"] .company-pdf-switch .slider {
+    background: #D4D1CC !important;
+}
+[data-theme="light"] .company-pdf-switch input:checked + .slider {
+    background: linear-gradient(135deg, #c9a67c 0%, #b8956b 100%) !important;
+}
+
+/* 隐藏功能按钮 */
+[data-theme="light"] .btn-hidden-features-small {
+    background: var(--surface-secondary) !important;
+    color: var(--text-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px;
+}
+
+[data-theme="light"] .btn-hidden-features-small:hover {
+    background: var(--accent-glow) !important;
+    color: var(--accent-color) !important;
+}
+
+/* 设置标签 - 提高可读性 */
+[data-theme="light"] .setting-label {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="light"] .setting-desc {
+    color: var(--text-secondary) !important;
+}
+
+/* 关闭/保存按钮（主操作）- 信息、设置、公司、卖方弹窗，暖色渐变搭配白天主题 */
+[data-theme="light"] #infoModal .btn-block,
+[data-theme="light"] #settingsModal .btn-block.settings-modal-close,
+[data-theme="light"] #companyDetailModal .modal-btn-row .btn-block:not(.btn-cancel-party),
+[data-theme="light"] #sellerDetailModal .modal-btn-row .btn-block:not(.btn-cancel-party) {
+    background: linear-gradient(135deg, #c9a67c 0%, #b8956b 100%) !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(184, 149, 107, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* 关闭/取消按钮（次级操作） */
+[data-theme="light"] .btn-block[style*="background:#333"],
+[data-theme="light"] .btn-block[style*="background:#222"],
+[data-theme="light"] .btn-block[style*="background:#444"],
+[data-theme="light"] .btn-cancel-party {
+    background: var(--surface-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+[data-theme="light"] .btn-block[style*="background:#333"]:hover,
+[data-theme="light"] .btn-block[style*="background:#222"]:hover,
+[data-theme="light"] .btn-block[style*="background:#444"]:hover,
+[data-theme="light"] .btn-cancel-party:hover {
+    background: var(--bg-tertiary) !important;
+}
+
+/* 价格设置区域 */
+[data-theme="light"] .price-grade-item {
+    background: var(--surface-secondary) !important;
+    border: 1px solid var(--border-subtle);
+}
+
+[data-theme="light"] .price-grade-item input {
+    color: var(--text-primary) !important;
+}
+
+/* 单选按钮标签 */
+[data-theme="light"] .party-type-row .radio-label {
+    color: var(--text-primary);
+}
+
+/* Info 行 label */
+[data-theme="light"] .info-row label {
+    color: var(--text-secondary) !important;
+}
+
+/* 只读输入框 */
+[data-theme="light"] .input-readonly {
+    background: var(--surface-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Make sure the license overlay works correctly */
+[data-theme="light"] .license-overlay {
+    background: linear-gradient(145deg, #ede9e1 0%, #faf8f3 100%);
+}
+
+[data-theme="light"] .license-overlay-inner {
+    background: #ffffff;
+    border: 2px solid var(--accent-color);
+}
+
+[data-theme="light"] .license-overlay-logo {
+    color: var(--accent-color);
+}
+
+[data-theme="light"] .license-input {
+    background: #faf8f3;
+    border: 2px solid var(--border-color);
+    color: var(--text-main);
+}
+
+[data-theme="light"] .license-activate-btn {
+    background: var(--accent-color);
+    color: #000;
+}
+
+/* Ensure proper contrast in light mode */
+[data-theme="light"] .btn-header {
+    color: var(--text-main);
+}
+
+[data-theme="light"] .btn-save-menu,
+[data-theme="light"] .btn-export {
+    color: var(--accent-color);
+    border-color: rgba(184, 149, 107, 0.4);
+}
+
+/* Fix dropdown in light mode */
+[data-theme="light"] .save-dropdown-menu {
+    background: var(--surface-primary);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .save-menu-item {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .save-menu-item:hover {
+    background: var(--accent-glow);
+}
+
+[data-theme="light"] .save-menu-item-accent {
+    color: var(--accent-color);
+}
+
+[data-theme="light"] .save-menu-item-accent:hover {
+    background: var(--accent-glow) !important;
+}
+
+/* Fix modal in light mode - Soft UI 微妙阴影 */
+[data-theme="light"] .modal-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .modal-title {
+    color: var(--accent-color);
+}
+
+[data-theme="light"] .modal-overlay {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+
+/* Fix history viewer in light mode */
+[data-theme="light"] .history-viewer {
+    background: var(--bg-color);
+}
+
+[data-theme="light"] .history-viewer-topbar {
+    background: var(--card-bg);
+    border-bottom-color: var(--border-color);
+}
+
+/* Fix pro keyboard in light mode */
+[data-theme="light"] .pro-kb {
+    background: var(--surface-primary);
+    border-top-color: var(--border-color);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* 输入区顶部 - 浅色背景 */
+[data-theme="light"] .pro-kb-top {
+    background: var(--surface-secondary);
+    border-bottom-color: var(--border-color);
+}
+
+/* 单个输入框容器 */
+[data-theme="light"] .kb-field {
+    background: var(--surface-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="light"] .kb-field-label {
+    color: var(--text-tertiary);
+}
+
+[data-theme="light"] .kb-field-value,
+[data-theme="light"] .kb-field input {
+    color: var(--text-primary);
+}
+
+
+[data-theme="light"] .kb-field.active {
+    border-color: var(--gold-highlight);
+    box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* 夜间模式输入框高亮 - 与白天一致，使用柔和橡木金而非亮金 */
+[data-theme="dark"] .kb-field.active {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* 等级显示区 */
+[data-theme="light"] .kb-side-display {
+    background: var(--surface-secondary);
+    border-color: var(--border-color);
+    color: var(--accent-color);
+}
+
+/* 夜间模式等级显示 - 与白天一致，使用橡木金而非亮金 */
+[data-theme="dark"] .kb-side-display {
+    color: var(--accent-color);
+}
+
+/* 体积按钮 */
+[data-theme="light"] .kb-vol {
+    background: var(--surface-secondary);
+    border-color: var(--border-color);
+    color: var(--accent-color);
+}
+
+[data-theme="light"] .kb-key {
+    background: var(--surface-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.06), -2px -2px 4px rgba(255,255,255,0.8);
+}
+
+[data-theme="light"] .kb-grade-key.active {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%) !important;
+    color: #fff !important;
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 4px 12px rgba(184, 149, 107, 0.35), inset 0 1px 0 rgba(255,255,255,0.25);
+}
+
+[data-theme="light"] .kb-key.gold,
+[data-theme="light"] .kb-ok {
+    background: var(--surface-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.06), -2px -2px 4px rgba(255,255,255,0.8);
+}
+
+[data-theme="light"] .kb-del,
+[data-theme="light"] .kb-side-btn {
+    background: var(--surface-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.06), -2px -2px 4px rgba(255,255,255,0.8);
+}
+
+[data-theme="light"] .kb-side-btn.active {
+    border-color: var(--gold-highlight);
+    color: var(--text-primary);
+    box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* Header / Footer 白天模式 */
+[data-theme="light"] .header {
+    background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,247,244,0.98) 100%);
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme="light"] .footer {
+    background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,247,244,0.98) 100%);
+    border-top-color: var(--border-color);
+}
+
+/* 卡片、列表白天模式 Soft UI */
+[data-theme="light"] .log-card {
+    background: var(--surface-primary);
+    border-color: var(--border-color);
+    box-shadow: 8px 8px 16px rgba(0,0,0,0.06), -8px -8px 16px rgba(255,255,255,0.9), inset 0 1px 0 rgba(255,255,255,0.5);
+}
+
+/* 主页面 - 等级按钮 (F/A+/A/B/C/D) 白天模式 - 浅色背景深色字 */
+[data-theme="light"] .btn-grade {
+    background: var(--surface-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-secondary) !important;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.06), -2px -2px 4px rgba(255,255,255,0.8);
+}
+
+[data-theme="light"] .btn-grade:hover {
+    border-color: var(--accent-color) !important;
+    color: var(--text-primary) !important;
+    background: rgba(184, 149, 107, 0.08) !important;
+}
+
+[data-theme="light"] .btn-grade.active {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%) !important;
+    color: #fff !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 12px rgba(184, 149, 107, 0.35), inset 0 1px 0 rgba(255,255,255,0.25);
+}
+
+/* 体积显示区域 (0.000) 白天模式 */
+[data-theme="light"] .live-vol-display {
+    background: var(--surface-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--accent-color) !important;
+    box-shadow: inset 1px 1px 2px rgba(0,0,0,0.04);
+}
+
+/* 选择等级标签、卡片内标签 */
+[data-theme="light"] .grade-label,
+[data-theme="light"] .field label {
+    color: var(--text-secondary) !important;
+}
+
+[data-theme="light"] .card-title {
+    color: var(--accent-color);
+}
+
+/* 顶部按钮 - 信息/设置 白天模式更自然 */
+[data-theme="light"] .btn-header.btn-info {
+    background: var(--surface-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.05), -2px -2px 4px rgba(255,255,255,0.9);
+}
+
+[data-theme="light"] .btn-header.btn-info:hover {
+    background: rgba(184, 149, 107, 0.1) !important;
+    border-color: var(--accent-color) !important;
+}
+
+/* 新柜按钮 白天模式 */
+[data-theme="light"] .btn-header.btn-reset {
+    background: rgba(199, 91, 91, 0.08) !important;
+    color: var(--danger-color) !important;
+    border: 1px solid rgba(199, 91, 91, 0.25) !important;
+}
+
+[data-theme="light"] .btn-header.btn-reset:hover {
+    background: rgba(199, 91, 91, 0.12) !important;
+}
+
+[data-theme="light"] .list-header {
+    background: rgba(184, 149, 107, 0.08);
+    border-bottom-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .log-row {
+    background: var(--surface-primary);
+}
+
+[data-theme="light"] .log-row:nth-child(even) {
+    background: rgba(184, 149, 107, 0.04);
+}
+
+[data-theme="light"] .log-row input,
+[data-theme="light"] .log-row select {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+[data-theme="light"] .row-index {
+    color: var(--text-tertiary);
+}
+
+[data-theme="light"] .stat-tag {
+    background: var(--surface-secondary);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .stat-tag:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+[data-theme="light"] .stat-tag.active-filter {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: #fff;
+}
+
+/* btn-tool 白天模式（保存到历史、查看历史等图标按钮） */
+[data-theme="light"] .btn-tool {
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.04), -2px -2px 4px rgba(255,255,255,0.8);
+}
+
+[data-theme="light"] .btn-tool:hover {
+    background: linear-gradient(135deg, rgba(201, 166, 124, 0.25) 0%, rgba(184, 149, 107, 0.2) 100%);
+    color: var(--accent-color);
+    border-color: rgba(184, 149, 107, 0.4);
+}
+
+/* btn-title-action 白天模式 - 使用较深色确保文字可见 */
+[data-theme="light"] .btn-title-action {
+    background: var(--surface-secondary);
+    color: var(--accent-dark);
+    border-color: var(--border-color);
+}
+
+/* Scrollbar for light mode */
+[data-theme="light"] ::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+    background: #c9c5bd;
+    border-radius: 9999px;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
+}
+
+/* 总体积警告 - 白天模式 */
+[data-theme="light"] body.volume-warning .stats-vol-cell,
+[data-theme="light"] body.volume-warning .stats-vol-cell strong { color: #c62828 !important; }
+[data-theme="light"] body.volume-warning .kb-side-display.kb-vol-display { color: #c62828 !important; }
+[data-theme="light"] body.volume-warning .live-vol-display { color: #c62828 !important; }
+[data-theme="light"] body.volume-warning .btn-add-inline {
+    background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%) !important;
+    color: #fff !important;
+}
+[data-theme="light"] body.volume-warning .kb-ok,
+[data-theme="light"] body.volume-warning .kb-ok-inline {
+    background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%) !important;
+    color: #fff !important;
+}
+[data-theme="light"] body.volume-warning .btn-grade.active {
+    background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%) !important;
+    color: #fff !important;
+}
+[data-theme="light"] body.volume-warning .kb-grade-key.active {
+    background: #d32f2f !important;
+    color: #fff !important;
+}
+[data-theme="light"] body.volume-warning .kb-field.active {
+    border-color: #c62828 !important;
+    box-shadow: 0 0 8px rgba(200, 40, 40, 0.25) !important;
+}
