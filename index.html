@@ -1,452 +1,656 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" href="icon.png" type="image/png">
     <link rel="manifest" href="manifest.json">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>LogMetric Pro</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/app.css">
-<link rel="stylesheet" href="css/theme-addon.css">
-<script>
-// Theme initialization
-(function(){
-    const savedTheme = localStorage.getItem('lmp_theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-})();
-</script>
-<script>
-(function(){
-try{
-var k=localStorage.getItem('lmp_license_key');
-var f=localStorage.getItem('lmp_device_fp');
-if(!k||!f)return;
-var v=localStorage.getItem('lmp_last_validation_time');
-var e=localStorage.getItem('lmp_expires_at');
-var now=Date.now();
-var ts=parseInt(v,10);
-if(isNaN(ts))return;
-if((now-ts)/86400000>=160)return;
-if(e){
-var expMs=new Date(e).getTime();
-if(!isNaN(expMs)&&now>=expMs+30*86400000)return;
-}
-document.documentElement.classList.add('license-valid');
-}catch(x){}
-})();
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<script src="js/config.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LogMetric Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/theme-addon.css">
+    <script>
+        // Theme initialization
+        (function () {
+            const savedTheme = localStorage.getItem('lmp_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+    <script>
+        (function () {
+            try {
+                var k = localStorage.getItem('lmp_license_key');
+                var f = localStorage.getItem('lmp_device_fp');
+                if (!k || !f) return;
+                var v = localStorage.getItem('lmp_last_validation_time');
+                var e = localStorage.getItem('lmp_expires_at');
+                var now = Date.now();
+                var ts = parseInt(v, 10);
+                if (isNaN(ts)) return;
+                if ((now - ts) / 86400000 >= 160) return;
+                if (e) {
+                    var expMs = new Date(e).getTime();
+                    if (!isNaN(expMs) && now >= expMs + 30 * 86400000) return;
+                }
+                document.documentElement.classList.add('license-valid');
+            } catch (x) { }
+        })();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="js/config.js"></script>
 </head>
+
 <body>
 
-<div id="licenseOverlay" class="license-overlay">
-    <div class="license-overlay-inner">
-        <div class="license-overlay-brand">
-            <span class="license-overlay-logo">LogMetric Pro</span>
-            <span class="license-overlay-sub">请输入激活码以继续使用</span>
+    <div id="licenseOverlay" class="license-overlay">
+        <div class="license-overlay-inner">
+            <div class="license-overlay-brand">
+                <span class="license-overlay-logo">LogMetric Pro</span>
+                <span class="license-overlay-sub">请输入激活码以继续使用</span>
+            </div>
+            <div class="license-overlay-form">
+                <input type="text" id="licenseKeyInput" class="license-input" placeholder="XXXX-XXXX-XXXX-XXXX"
+                    autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')handleLicenseActivate()">
+                <button type="button" id="licenseActivateBtn" class="license-activate-btn"
+                    onclick="handleLicenseActivate()">激活</button>
+            </div>
+            <div id="licenseErrorMsg" class="license-error-msg"></div>
+            <div id="licenseLoadingMsg" class="license-loading-msg" style="display:none;">验证中...</div>
         </div>
-        <div class="license-overlay-form">
-            <input type="text" id="licenseKeyInput" class="license-input" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')handleLicenseActivate()">
-            <button type="button" id="licenseActivateBtn" class="license-activate-btn" onclick="handleLicenseActivate()">激活</button>
-        </div>
-        <div id="licenseErrorMsg" class="license-error-msg"></div>
-        <div id="licenseLoadingMsg" class="license-loading-msg" style="display:none;">验证中...</div>
     </div>
-</div>
 
-<header class="header">
-    <div style="display: flex; gap: 10px; align-items: center;">
-        <span style="display:inline-flex;align-items:center;gap:2px;"><button class="btn-header btn-reset" onclick="resetLogOnly()" data-title-i18n="btn_new" aria-label="新柜"><i data-lucide="refresh-cw" class="btn-icon"></i><span data-i18n="btn_new">新柜</span></button><button type="button" class="btn-help" onclick="showHelp('btn_new');event.stopPropagation()" title="帮助" aria-label="帮助">?</button></span>
-        <span style="display:inline-flex;align-items:center;gap:2px;"><button class="btn-header btn-info" onclick="openInfoModal()" data-title-i18n="btn_info" aria-label="信息"><i data-lucide="clipboard-list" class="btn-icon"></i><span data-i18n="btn_info">信息</span></button><button type="button" class="btn-help" onclick="showHelp('btn_info');event.stopPropagation()" title="帮助" aria-label="帮助">?</button></span>
-        <span style="display:inline-flex;align-items:center;gap:2px;"><button class="btn-header btn-info" onclick="openSettingsModal()" data-title-i18n="btn_settings" aria-label="设置"><i data-lucide="settings" class="btn-icon"></i><span data-i18n="btn_settings">设置</span></button><button type="button" class="btn-help" onclick="showHelp('btn_settings');event.stopPropagation()" title="帮助" aria-label="帮助">?</button></span>
-    </div>
-    <div style="display: flex; position: relative; align-items: center;">
-        <span style="display:inline-flex;align-items:center;gap:2px;"><button class="btn-header btn-save-menu" onclick="toggleSaveMenu()" data-title-i18n="btn_save_menu" aria-label="保存/导出"><i data-lucide="save" class="btn-icon"></i><span data-i18n="btn_save_menu">保存/导出</span></button><button type="button" class="btn-help" onclick="showHelp('btn_save');event.stopPropagation()" title="帮助" aria-label="帮助">?</button></span>
-        <div id="saveMenu" class="save-dropdown-menu">
-            <button class="save-menu-item" onclick="saveToSnapshot()"><span class="menu-item-content"><i data-lucide="save" class="menu-icon"></i><span data-i18n="menu_save_snapshot">暂存至内部记录</span></span> <span class="btn-help" onclick="showHelp('menu_save_snapshot');event.stopPropagation()" role="button" aria-label="帮助">?</span></button>
-            <button class="save-menu-item" onclick="openSnapshotHistory()"><span class="menu-item-content"><i data-lucide="folder-open" class="menu-icon"></i><span data-i18n="menu_open_history">打开内部记录</span></span> <span class="btn-help" onclick="showHelp('menu_open_history');event.stopPropagation()" role="button" aria-label="帮助">?</span></button>
-            <button class="save-menu-item" onclick="triggerImportProjectFile(); closeSaveMenu();"><span class="menu-item-content"><i data-lucide="import" class="menu-icon"></i><span data-i18n="menu_import">导入项目文件</span></span> <span class="btn-help" onclick="showHelp('menu_import');event.stopPropagation()" role="button" aria-label="帮助">?</span></button>
-            <div class="save-menu-divider"></div>
-            <button class="save-menu-item save-menu-item-accent" onclick="exportPackageAll()"><span class="menu-item-content"><i data-lucide="package" class="menu-icon"></i><span data-i18n="menu_package_export">打包保存</span></span> <span class="btn-help" onclick="showHelp('menu_package_export');event.stopPropagation()" role="button" aria-label="帮助">?</span></button>
-            <button class="save-menu-item" onclick="generatePDF(); closeSaveMenu();"><span class="menu-item-content"><i data-lucide="file-text" class="menu-icon"></i><span data-i18n="btn_pdf">生成 PDF</span></span> <span class="btn-help" onclick="showHelp('btn_pdf');event.stopPropagation()" role="button" aria-label="帮助">?</span></button>
-            <button class="save-menu-item" onclick="exportData(); closeSaveMenu();"><span class="menu-item-content"><i data-lucide="table" class="menu-icon"></i><span data-i18n="btn_excel">导出 Excel</span></span> <span class="btn-help" onclick="showHelp('btn_excel');event.stopPropagation()" role="button" aria-label="帮助">?</span></button>
+    <header class="header">
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <span style="display:inline-flex;align-items:center;gap:2px;"><button class="btn-header btn-reset"
+                    onclick="resetLogOnly()" data-title-i18n="btn_new" aria-label="新柜"><i data-lucide="refresh-cw"
+                        class="btn-icon"></i><span data-i18n="btn_new">新柜</span></button><button type="button"
+                    class="btn-help" onclick="showHelp('btn_new');event.stopPropagation()" title="帮助"
+                    aria-label="帮助">?</button></span>
+            <span style="display:inline-flex;align-items:center;gap:2px;"><button class="btn-header btn-info"
+                    onclick="openInfoModal()" data-title-i18n="btn_info" aria-label="信息"><i data-lucide="clipboard-list"
+                        class="btn-icon"></i><span data-i18n="btn_info">信息</span></button><button type="button"
+                    class="btn-help" onclick="showHelp('btn_info');event.stopPropagation()" title="帮助"
+                    aria-label="帮助">?</button></span>
+            <span style="display:inline-flex;align-items:center;gap:2px;"><button class="btn-header btn-info"
+                    onclick="openSettingsModal()" data-title-i18n="btn_settings" aria-label="设置"><i
+                        data-lucide="settings" class="btn-icon"></i><span
+                        data-i18n="btn_settings">设置</span></button><button type="button" class="btn-help"
+                    onclick="showHelp('btn_settings');event.stopPropagation()" title="帮助"
+                    aria-label="帮助">?</button></span>
         </div>
-    </div>
-</header>
-
-<div id="logList"></div>
-<input id="projectFileInput" type="file" accept=".json,.zip,application/json,application/zip" style="display:none;" onchange="handleImportProjectFile(event)">
-
-<div id="historyViewer" class="history-viewer">
-    <div class="history-viewer-topbar">
-        <div class="history-viewer-toprow">
-            <div class="history-viewer-title" data-i18n="hv_title">内部记录编辑模式</div>
-        </div>
-        <div class="history-viewer-actions-row">
-            <button class="hv-save" onclick="saveHistoryViewerChanges()"><i data-lucide="save" class="btn-icon"></i><span data-i18n="hv_save">保存修改</span></button>
-            <button class="hv-pdf" onclick="generateHistoryViewerPDF()" title="生成 PDF" aria-label="生成 PDF"><i data-lucide="file-text" class="btn-icon"></i></button>
-            <button class="hv-excel" onclick="exportHistoryViewerExcel()" title="导出 Excel" aria-label="导出 Excel"><i data-lucide="table" class="btn-icon"></i></button>
-            <button class="hv-close" onclick="closeHistoryViewer()" title="关闭" aria-label="关闭"><i data-lucide="x" class="btn-icon"></i></button>
-        </div>
-        <div class="history-viewer-info-row">
-            <div id="historyViewerMeta" class="history-viewer-meta"></div>
-            <button type="button" class="hv-info-btn" id="hvInfoBtn" onclick="toggleHistoryViewerInfo()"><i data-lucide="info" class="btn-icon"></i><span data-i18n="btn_info">Info</span></button>
-        </div>
-    </div>
-    <div class="history-viewer-body">
-        <div id="historyViewerGlobal" class="history-viewer-global" style="display:none;"></div>
-        <div class="history-viewer-list-wrap">
-            <div id="historyViewerList" class="history-viewer-list"></div>
-            <div class="history-viewer-add-row">
-                <button type="button" class="btn-add-row" onclick="addHistoryViewerRow()" title="添加新行" aria-label="添加新行"><i data-lucide="plus"></i></button>
+        <div style="display: flex; position: relative; align-items: center;">
+            <span style="display:inline-flex;align-items:center;gap:2px;"><button class="btn-header btn-save-menu"
+                    onclick="toggleSaveMenu()" data-title-i18n="btn_save_menu" aria-label="保存/导出"><i data-lucide="save"
+                        class="btn-icon"></i><span data-i18n="btn_save_menu">保存/导出</span></button><button type="button"
+                    class="btn-help" onclick="showHelp('btn_save');event.stopPropagation()" title="帮助"
+                    aria-label="帮助">?</button></span>
+            <div id="saveMenu" class="save-dropdown-menu">
+                <button class="save-menu-item" onclick="saveToSnapshot()"><span class="menu-item-content"><i
+                            data-lucide="save" class="menu-icon"></i><span
+                            data-i18n="menu_save_snapshot">暂存至内部记录</span></span> <span class="btn-help"
+                        onclick="showHelp('menu_save_snapshot');event.stopPropagation()" role="button"
+                        aria-label="帮助">?</span></button>
+                <button class="save-menu-item" onclick="openSnapshotHistory()"><span class="menu-item-content"><i
+                            data-lucide="folder-open" class="menu-icon"></i><span
+                            data-i18n="menu_open_history">打开内部记录</span></span> <span class="btn-help"
+                        onclick="showHelp('menu_open_history');event.stopPropagation()" role="button"
+                        aria-label="帮助">?</span></button>
+                <button class="save-menu-item" onclick="triggerImportProjectFile(); closeSaveMenu();"><span
+                        class="menu-item-content"><i data-lucide="import" class="menu-icon"></i><span
+                            data-i18n="menu_import">导入项目文件</span></span> <span class="btn-help"
+                        onclick="showHelp('menu_import');event.stopPropagation()" role="button"
+                        aria-label="帮助">?</span></button>
+                <div class="save-menu-divider"></div>
+                <button class="save-menu-item save-menu-item-accent" onclick="exportPackageAll()"><span
+                        class="menu-item-content"><i data-lucide="package" class="menu-icon"></i><span
+                            data-i18n="menu_package_export">打包保存</span></span> <span class="btn-help"
+                        onclick="showHelp('menu_package_export');event.stopPropagation()" role="button"
+                        aria-label="帮助">?</span></button>
+                <button class="save-menu-item" onclick="generatePDF(); closeSaveMenu();"><span
+                        class="menu-item-content"><i data-lucide="file-text" class="menu-icon"></i><span
+                            data-i18n="btn_pdf">生成 PDF</span></span> <span class="btn-help"
+                        onclick="showHelp('btn_pdf');event.stopPropagation()" role="button"
+                        aria-label="帮助">?</span></button>
+                <button class="save-menu-item" onclick="exportData(); closeSaveMenu();"><span
+                        class="menu-item-content"><i data-lucide="table" class="menu-icon"></i><span
+                            data-i18n="btn_excel">导出 Excel</span></span> <span class="btn-help"
+                        onclick="showHelp('btn_excel');event.stopPropagation()" role="button"
+                        aria-label="帮助">?</span></button>
             </div>
         </div>
-        <div id="historyViewerStats" class="history-viewer-stats"></div>
-    </div>
-</div>
+    </header>
 
-<div id="proKeyboard" class="pro-kb">
-    <div id="proKbTop" class="pro-kb-top four"></div>
-    <div class="pro-kb-body">
-        <div class="kb-side">
-            <button class="kb-side-btn" id="kbSideHide" onclick="handleProSide('hide')" data-i18n="kb_hide">Hide</button>
-            <button class="kb-side-btn" id="kbSideGrd" onclick="handleProSide('grd')" data-i18n="kb_grd_btn">GRD/等级</button>
-            <button class="kb-side-btn" id="kbSideMinus" onclick="handleProSide('minus')">-</button>
-            <div class="kb-side-display kb-vol-display" id="kbVolumeDisplay" title=""></div>
-        </div>
-        <div class="kb-core" id="kbCore">
-            <div class="kb-num-grid">
-                <button class="kb-key" onclick="handleProKey('7')">7</button>
-                <button class="kb-key" onclick="handleProKey('8')">8</button>
-                <button class="kb-key" onclick="handleProKey('9')">9</button>
-                <button class="kb-key" onclick="handleProKey('4')">4</button>
-                <button class="kb-key" onclick="handleProKey('5')">5</button>
-                <button class="kb-key" onclick="handleProKey('6')">6</button>
-                <button class="kb-key" onclick="handleProKey('1')">1</button>
-                <button class="kb-key" onclick="handleProKey('2')">2</button>
-                <button class="kb-key" onclick="handleProKey('3')">3</button>
-                <button class="kb-key" onclick="handleProKey('0')">0</button>
-                <button class="kb-key" onclick="handleProKey('.')">.</button>
-                <button class="kb-key gold kb-ok-inline" onclick="addNewLog(true)">OK</button>
+    <div id="logList"></div>
+    <input id="projectFileInput" type="file" accept=".json,.zip,application/json,application/zip" style="display:none;"
+        onchange="handleImportProjectFile(event)">
+
+    <div id="historyViewer" class="history-viewer">
+        <div class="history-viewer-topbar">
+            <div class="history-viewer-toprow">
+                <div class="history-viewer-title" data-i18n="hv_title">内部记录编辑模式</div>
             </div>
-            <div class="kb-grade-grid" id="proKbGrade"></div>
-        </div>
-        <div class="kb-ops">
-            <button class="kb-del" onclick="handleProDelete()" data-i18n="kb_del">DEL</button>
-            <button class="kb-ok" onclick="handleProOk()" data-i18n="kb_next">NXT</button>
-        </div>
-    </div>
-</div>
-
-<div class="footer">
-    <div class="stats-detail" id="statsDetail"></div>
-    <div class="stats-main">
-        <span class="stats-group-cell"><span style="display:inline-flex;align-items:center;gap:2px;"><button type="button" class="btn-group-mode" id="btnGroupMode" onclick="toggleGroupMode()" title="">分组</button><button type="button" class="btn-help" onclick="showHelp('group_mode');event.stopPropagation()" title="帮助" aria-label="帮助">?</button></span></span>
-        <span class="stats-total-cell"><span data-i18n="total_count">总数</span>:<strong id="totalCount">0</strong></span>
-        <span class="stats-vol-cell"><span data-i18n="total_vol">材积</span>:<strong id="totalVol">0.000</strong> m³</span>
-    </div>
-</div>
-
-<div id="infoModal" class="modal-overlay">
-    <div class="modal-card">
-        <div class="modal-title modal-title-with-actions">
-            <span><span data-i18n="modal_info_title">项目信息</span> <button type="button" class="btn-help" onclick="showHelp('modal_info')" title="帮助" aria-label="帮助">?</button></span>
-            <span class="modal-title-actions">
-                <button type="button" class="btn-title-action" onclick="downloadFullBackup(); closeInfoModal();" title="备份资料到文件" aria-label="备份资料到文件"><i data-lucide="archive" class="btn-icon"></i><span data-i18n="btn_backup">备份资料</span></button>
-                <button type="button" class="btn-title-action" onclick="triggerImportFromInfo(); closeInfoModal();" title="导入项目文件" aria-label="导入项目文件"><i data-lucide="import" class="btn-icon"></i><span data-i18n="btn_import">导入</span></button>
-            </span>
-        </div>
-        
-        <div class="info-row info-row-inline">
-            <div class="info-field info-field-narrow">
-                <label data-i18n="container">集装箱号 <button type="button" class="btn-help" onclick="showHelp('container')" title="帮助" aria-label="帮助">?</button></label>
-                <div class="info-controls"><input type="text" id="g_container" oninput="updateGlobal()"></div>
+            <div class="history-viewer-actions-row">
+                <button class="hv-save" onclick="saveHistoryViewerChanges()"><i data-lucide="save"
+                        class="btn-icon"></i><span data-i18n="hv_save">保存修改</span></button>
+                <button class="hv-pdf" onclick="generateHistoryViewerPDF()" title="生成 PDF" aria-label="生成 PDF"><i
+                        data-lucide="file-text" class="btn-icon"></i></button>
+                <button class="hv-excel" onclick="exportHistoryViewerExcel()" title="导出 Excel" aria-label="导出 Excel"><i
+                        data-lucide="table" class="btn-icon"></i></button>
+                <button class="hv-close" onclick="closeHistoryViewer()" title="关闭" aria-label="关闭"><i data-lucide="x"
+                        class="btn-icon"></i></button>
             </div>
-            <div class="info-field info-field-wide">
-                <label data-i18n="note_global">整单备注 <button type="button" class="btn-help" onclick="showHelp('note_global')" title="帮助" aria-label="帮助">?</button></label>
-                <div class="info-controls"><input type="text" id="g_note" oninput="updateGlobal()"></div>
+            <div class="history-viewer-info-row">
+                <div id="historyViewerMeta" class="history-viewer-meta"></div>
+                <button type="button" class="hv-info-btn" id="hvInfoBtn" onclick="toggleHistoryViewerInfo()"><i
+                        data-lucide="info" class="btn-icon"></i><span data-i18n="btn_info">Info</span></button>
             </div>
         </div>
-        <div class="info-row">
-            <label data-i18n="description">描述 <button type="button" class="btn-help" onclick="showHelp('description')" title="帮助" aria-label="帮助">?</button></label>
-            <div class="info-controls"><input type="text" id="g_description" oninput="updateGlobal()"><button class="btn-tool" onclick="saveToHistory('description')" title="保存到历史" aria-label="保存到历史"><i data-lucide="save"></i></button><button class="btn-tool" onclick="showHistory('description')" title="查看历史" aria-label="查看历史"><i data-lucide="book-open"></i></button></div>
-        </div>
-        <div style="border-bottom: 1px solid #333; margin: 15px 0;"></div>
-        <div class="info-row info-row-company"><label data-i18n="my_company">公司名称 <button type="button" class="btn-help" onclick="showHelp('company')" title="帮助" aria-label="帮助">?</button></label><div class="info-controls info-controls-company"><input type="text" id="g_company" readonly class="input-readonly" placeholder="—" onclick="openCompanyDetailModal()"><div class="company-switch-wrap"><label class="switch company-pdf-switch" title="PDF/Excel显示公司"><input type="checkbox" id="showCompanyInPdf" checked onchange="toggleShowCompanyInPdf()"><span class="slider"></span></label><span class="company-pdf-label" data-i18n="company_show_in_pdf_excel">PDF中显示</span></div></div></div>
-        <div class="info-row"><label data-i18n="seller">卖方公司 <button type="button" class="btn-help" onclick="showHelp('seller')" title="帮助" aria-label="帮助">?</button></label><div class="info-controls info-controls-readonly"><input type="text" id="g_seller" readonly class="input-readonly" placeholder="—" onclick="openSellerDetailModal()"><button class="btn-tool" onclick="openSellerDetailModalAsNew()" data-title-i18n="btn_new_party" title="新建" aria-label="新建"><i data-lucide="plus-circle"></i></button><button class="btn-tool" onclick="showHistory('seller')" title="查看历史" aria-label="查看历史"><i data-lucide="book-open"></i></button></div></div>
-        <div class="info-row"><label data-i18n="location">地点 <button type="button" class="btn-help" onclick="showHelp('location')" title="帮助" aria-label="帮助">?</button></label><div class="info-controls"><input type="text" id="g_location" oninput="updateGlobal()"><button class="btn-tool" onclick="saveToHistory('location')" title="保存到历史" aria-label="保存到历史"><i data-lucide="save"></i></button><button class="btn-tool" onclick="showHistory('location')" title="查看历史" aria-label="查看历史"><i data-lucide="book-open"></i></button></div></div>
-        <div class="info-row"><label data-i18n="measurer">测量人 <button type="button" class="btn-help" onclick="showHelp('measurer')" title="帮助" aria-label="帮助">?</button></label><div class="info-controls"><input type="text" id="g_measurer" oninput="updateGlobal()"><button class="btn-tool" onclick="saveToHistory('measurer')" title="保存到历史" aria-label="保存到历史"><i data-lucide="save"></i></button><button class="btn-tool" onclick="showHistory('measurer')" title="查看历史" aria-label="查看历史"><i data-lucide="book-open"></i></button></div></div>
-
-        <button class="btn-block" style="background:var(--accent-color); color:#000;" onclick="closeInfoModal()" data-i18n="btn_close">关闭</button>
-    </div>
-</div>
-
-<div id="companyDetailModal" class="modal-overlay sub-modal" style="display:none;">
-    <div class="modal-card company-detail-card">
-        <div class="modal-title"><span data-i18n="my_company">公司名称</span> — <span data-i18n="btn_edit">编辑</span></div>
-        <div class="company-detail-grid">
-            <div class="info-row"><label data-i18n="company_name">名称</label><input type="text" id="cd_name"></div>
-            <div class="info-row"><label data-i18n="company_address">地址</label><input type="text" id="cd_address"></div>
-            <div class="info-row"><label data-i18n="company_city">城市</label><input type="text" id="cd_city"></div>
-            <div class="info-row"><label data-i18n="company_zip">邮编</label><input type="text" id="cd_zip"></div>
-            <div class="info-row"><label data-i18n="company_phone">电话</label><input type="text" id="cd_phone"></div>
-            <div class="info-row"><label data-i18n="company_email">邮箱</label><input type="text" id="cd_email"></div>
-            <div class="info-row info-row-full"><label data-i18n="company_website">网站</label><input type="text" id="cd_website"></div>
-            <div class="info-row info-row-full"><label data-i18n="company_taxId">税号 (VAT ID)</label><input type="text" id="cd_taxId"></div>
-            <div class="info-row info-row-full"><label data-i18n="company_bank">银行账号 (IBAN)</label><input type="text" id="cd_bank"></div>
-        </div>
-        <div class="modal-btn-row" style="display:flex; gap:10px; margin-top:12px;">
-            <button class="btn-block btn-cancel-party" style="flex:1; background:#444; color:#fff;" onclick="closeCompanyDetailModal(true);" data-i18n="btn_cancel">取消</button>
-            <button class="btn-block" style="flex:1; background:var(--accent-color); color:#000;" onclick="saveCompanyDetailModal(); closeCompanyDetailModal(true);" data-i18n="btn_save">保存</button>
-        </div>
-    </div>
-</div>
-
-<div id="sellerDetailModal" class="modal-overlay sub-modal" style="display:none;">
-    <div class="modal-card company-detail-card">
-        <div class="modal-title modal-title-with-actions">
-            <span data-i18n="party_title">买方/卖方 (Buyer/Seller)</span>
-            <button type="button" class="btn-title-action" onclick="clearSellerFormAndNew()" aria-label="新建买方或卖方"><i data-lucide="plus-circle" class="btn-icon"></i><span data-i18n="btn_new_party">新建</span></button>
-        </div>
-        <div class="party-type-row">
-            <label class="radio-label"><input type="radio" name="seller_type" value="buyer" id="sd_type_buyer"> <span data-i18n="party_buyer">买方 (Buyer)</span></label>
-            <label class="radio-label"><input type="radio" name="seller_type" value="seller" id="sd_type_seller"> <span data-i18n="party_seller">卖方 (Seller)</span></label>
-        </div>
-        <div class="company-detail-grid">
-            <div class="info-row"><label data-i18n="company_name">名称</label><input type="text" id="sd_name"></div>
-            <div class="info-row"><label data-i18n="company_address">地址</label><input type="text" id="sd_address"></div>
-            <div class="info-row"><label data-i18n="company_city">城市</label><input type="text" id="sd_city"></div>
-            <div class="info-row"><label data-i18n="company_zip">邮编</label><input type="text" id="sd_zip"></div>
-            <div class="info-row"><label data-i18n="company_phone">电话</label><input type="text" id="sd_phone"></div>
-            <div class="info-row"><label data-i18n="company_email">邮箱</label><input type="text" id="sd_email"></div>
-            <div class="info-row info-row-full"><label data-i18n="company_website">网站</label><input type="text" id="sd_website"></div>
-            <div class="info-row info-row-full"><label data-i18n="company_taxId">税号 (VAT ID)</label><input type="text" id="sd_taxId"></div>
-            <div class="info-row info-row-full"><label data-i18n="company_bank">银行账号 (IBAN)</label><input type="text" id="sd_bank"></div>
-        </div>
-        <div class="modal-btn-row" style="display:flex; gap:10px; margin-top:12px;">
-            <button class="btn-block btn-cancel-party" style="flex:1; background:#444; color:#fff;" onclick="closeSellerDetailModal(true);" data-i18n="btn_cancel">取消</button>
-            <button class="btn-block" style="flex:1; background:var(--accent-color); color:#000;" onclick="saveSellerDetailModal(); closeSellerDetailModal(true);" data-i18n="btn_save">保存</button>
-        </div>
-    </div>
-</div>
-
-<div id="settingsModal" class="modal-overlay">
-    <div class="modal-card">
-        <div class="modal-title"><i data-lucide="settings" class="modal-title-icon"></i><span data-i18n="settings_title">设置</span></div>
-        <div class="setting-group">
-            <div class="setting-row">
-                <span class="setting-label"><span data-i18n="theme_label">夜间/白天模式</span> <button type="button" class="btn-help" onclick="showHelp('theme')" title="帮助" aria-label="帮助">?</button></span>
-                <button id="themeToggleBtn" class="toggle-btn" onclick="toggleTheme(); updateThemeToggleLabel();" title="切换主题" aria-label="切换主题">
-                    <i data-lucide="moon" id="themeIconMoon" class="theme-btn-icon" style="width:18px;height:18px;display:none;"></i>
-                    <i data-lucide="sun" id="themeIconSun" class="theme-btn-icon" style="width:18px;height:18px;display:none;"></i>
-                    <span id="themeToggleLabel"></span>
-                </button>
-            </div>
-            <div class="setting-row">
-                <span class="setting-label" data-i18n="language">语言 / Language <button type="button" class="btn-help" onclick="showHelp('language')" title="帮助" aria-label="帮助">?</button></span>
-                <select id="langSelect" class="setting-select" onchange="changeLanguage(this.value)">
-                    <option value="zh">中文</option>
-                    <option value="en">English</option>
-                    <option value="sl">Slovenščina</option>
-                </select>
-            </div>
-            <div class="setting-row setting-row-quick-mode" id="quickModeRow">
-                <span class="setting-label" style="cursor:pointer;display:flex;align-items:center;gap:4px;" onclick="toggleQuickModeExpand()" title="点击展开/收起"><span data-i18n="quick_mode">快速模式</span> <button type="button" class="btn-help" onclick="showHelp('quick_mode');event.stopPropagation()" title="帮助" aria-label="帮助">?</button> <i data-lucide="chevron-down" id="quickModeExpandIcon" style="width:16px;height:16px;transition:transform 0.2s;"></i></span>
-                <button id="quickModeBtn" class="toggle-btn" onclick="toggleQuickMode();event.stopPropagation()"><i data-lucide="zap" style="width:20px;height:20px;"></i><span id="quickModeLabel"></span></button>
-            </div>
-            <div id="quickModeOptions" class="quick-mode-options" style="display:none;">
-                <div class="setting-row setting-row-indent">
-                    <span class="setting-label" data-i18n="qm_auto_decimal">自动添加小数点 (45→4.5)</span>
-                    <label class="switch"><input type="checkbox" id="quickModeAutoDecimal" onchange="saveQuickModeOptions()"><span class="slider"></span></label>
-                </div>
-                <div class="setting-row setting-row-indent">
-                    <span class="setting-label" data-i18n="qm_auto_jump">长度两位数自动跳转直径</span>
-                    <label class="switch"><input type="checkbox" id="quickModeAutoJump" onchange="saveQuickModeOptions()"><span class="slider"></span></label>
-                </div>
-                <div class="setting-row setting-row-indent">
-                    <span class="setting-label" data-i18n="qm_grade_save">选择等级即保存到列表</span>
-                    <label class="switch"><input type="checkbox" id="quickModeGradeAutoSave" onchange="saveQuickModeOptions()"><span class="slider"></span></label>
-                </div>
-                <div class="setting-row setting-row-indent">
-                    <span class="setting-label" data-i18n="qm_auto_code">码号自动续号</span>
-                    <label class="switch"><input type="checkbox" id="quickModeAutoCode" onchange="saveQuickModeOptions()"><span class="slider"></span></label>
+        <div class="history-viewer-body">
+            <div id="historyViewerGlobal" class="history-viewer-global" style="display:none;"></div>
+            <div class="history-viewer-list-wrap">
+                <div id="historyViewerList" class="history-viewer-list"></div>
+                <div class="history-viewer-add-row">
+                    <button type="button" class="btn-add-row" onclick="addHistoryViewerRow()" title="添加新行"
+                        aria-label="添加新行"><i data-lucide="plus"></i></button>
                 </div>
             </div>
-            <div class="setting-row">
-                <span class="setting-label"><span data-i18n="show_grade">显示等级</span> <button type="button" class="btn-help" onclick="showHelp('show_grade')" title="帮助" aria-label="帮助">?</button></span>
-                <label class="switch"><input type="checkbox" id="checkShowGrade" checked onchange="toggleGradeDisplay()"><span class="slider"></span></label>
+            <div id="historyViewerStats" class="history-viewer-stats"></div>
+        </div>
+    </div>
+
+    <div id="proKeyboard" class="pro-kb">
+        <div id="proKbTop" class="pro-kb-top four"></div>
+        <div class="pro-kb-body">
+            <div class="kb-side">
+                <button class="kb-side-btn" id="kbSideHide" onclick="handleProSide('hide')"
+                    data-i18n="kb_hide">Hide</button>
+                <button class="kb-side-btn" id="kbSideGrd" onclick="handleProSide('grd')"
+                    data-i18n="kb_grd_btn">GRD/等级</button>
+                <button class="kb-side-btn" id="kbSideMinus" onclick="handleProSide('minus')">-</button>
+                <div class="kb-side-display kb-vol-display" id="kbVolumeDisplay" title=""></div>
             </div>
-            <div class="setting-row">
-                <span class="setting-label"><span data-i18n="calc_dia">双径模式 (计算平均值)</span> <button type="button" class="btn-help" onclick="showHelp('calc_dia')" title="帮助" aria-label="帮助">?</button></span>
-                <label class="switch"><input type="checkbox" id="checkCalcDia" onchange="toggleCalcDia()"><span class="slider"></span></label>
+            <div class="kb-core" id="kbCore">
+                <div class="kb-num-grid">
+                    <button class="kb-key" onclick="handleProKey('7')">7</button>
+                    <button class="kb-key" onclick="handleProKey('8')">8</button>
+                    <button class="kb-key" onclick="handleProKey('9')">9</button>
+                    <button class="kb-key" onclick="handleProKey('4')">4</button>
+                    <button class="kb-key" onclick="handleProKey('5')">5</button>
+                    <button class="kb-key" onclick="handleProKey('6')">6</button>
+                    <button class="kb-key" onclick="handleProKey('1')">1</button>
+                    <button class="kb-key" onclick="handleProKey('2')">2</button>
+                    <button class="kb-key" onclick="handleProKey('3')">3</button>
+                    <button class="kb-key" onclick="handleProKey('0')">0</button>
+                    <button class="kb-key" onclick="handleProKey('.')">.</button>
+                    <button class="kb-key gold kb-ok-inline" onclick="addNewLog(true)">OK</button>
+                </div>
+                <div class="kb-grade-grid" id="proKbGrade"></div>
             </div>
-            <div class="setting-row" id="roundModeRow" style="display:none;">
-                <span class="setting-label"><span data-i18n="round_mode">进位模式 (.5的处理)</span> <button type="button" class="btn-help" onclick="showHelp('round_mode')" title="帮助" aria-label="帮助">?</button></span>
-                <select id="roundSelect" class="setting-select" onchange="saveSettings()">
-                    <option value="up" data-i18n="round_up">上进位 (40.5→41)</option>
-                    <option value="down" data-i18n="round_down">下舍去 (40.5→40)</option>
-                    <option value="mix" data-i18n="round_mix">混合 (轮流)</option>
-                </select>
+            <div class="kb-ops">
+                <button class="kb-del" onclick="handleProDelete()" data-i18n="kb_del">DEL</button>
+                <button class="kb-ok" onclick="handleProOk()" data-i18n="kb_next">NXT</button>
             </div>
         </div>
-        <div class="setting-group">
-            <div class="setting-desc" data-i18n="pro_kb_title">专业虚拟键盘 <button type="button" class="btn-help" onclick="showHelp('pro_keyboard')" title="帮助" aria-label="帮助">?</button></div>
-            <div class="setting-row">
-                <span class="setting-label" data-i18n="enable_pro_kb">启用专业虚拟键盘</span>
-                <button id="proKeyboardBtn" class="toggle-btn" onclick="toggleProKeyboard()">OFF</button>
+    </div>
+
+    <div class="footer">
+        <div class="stats-detail" id="statsDetail"></div>
+        <div class="stats-main">
+            <span class="stats-group-cell"><span style="display:inline-flex;align-items:center;gap:2px;"><button
+                        type="button" class="btn-group-mode" id="btnGroupMode" onclick="toggleGroupMode()"
+                        title="">分组</button><button type="button" class="btn-help"
+                        onclick="showHelp('group_mode');event.stopPropagation()" title="帮助"
+                        aria-label="帮助">?</button></span></span>
+            <span class="stats-total-cell"><span data-i18n="total_count">总数</span>:<strong
+                    id="totalCount">0</strong></span>
+            <span class="stats-vol-cell"><span data-i18n="total_vol">材积</span>:<strong id="totalVol">0.000</strong>
+                m³</span>
+        </div>
+    </div>
+
+    <div id="infoModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-title modal-title-with-actions">
+                <span><span data-i18n="modal_info_title">项目信息</span> <button type="button" class="btn-help"
+                        onclick="showHelp('modal_info')" title="帮助" aria-label="帮助">?</button></span>
+                <span class="modal-title-actions">
+                    <button type="button" class="btn-title-action" onclick="downloadFullBackup(); closeInfoModal();"
+                        title="备份资料到文件" aria-label="备份资料到文件"><i data-lucide="archive" class="btn-icon"></i><span
+                            data-i18n="btn_backup">备份资料</span></button>
+                    <button type="button" class="btn-title-action" onclick="triggerImportFromInfo(); closeInfoModal();"
+                        title="导入项目文件" aria-label="导入项目文件"><i data-lucide="import" class="btn-icon"></i><span
+                            data-i18n="btn_import">导入</span></button>
+                </span>
             </div>
-            <div id="proKbOptionsBox" class="pro-kb-options-box">
-                <div class="setting-row" id="keySoundRow" style="display:none;">
-                    <span class="setting-label"><span data-i18n="key_sound">按键音效</span></span>
-                    <label class="switch"><input type="checkbox" id="checkKeySound" checked onchange="toggleKeySound()"><span class="slider"></span></label>
+
+            <div class="info-row info-row-inline">
+                <div class="info-field info-field-narrow">
+                    <label data-i18n="container">集装箱号 <button type="button" class="btn-help"
+                            onclick="showHelp('container')" title="帮助" aria-label="帮助">?</button></label>
+                    <div class="info-controls"><input type="text" id="g_container" oninput="updateGlobal()"></div>
+                </div>
+                <div class="info-field info-field-wide">
+                    <label data-i18n="note_global">整单备注 <button type="button" class="btn-help"
+                            onclick="showHelp('note_global')" title="帮助" aria-label="帮助">?</button></label>
+                    <div class="info-controls"><input type="text" id="g_note" oninput="updateGlobal()"></div>
                 </div>
             </div>
+            <div class="info-row">
+                <label data-i18n="description">描述 <button type="button" class="btn-help"
+                        onclick="showHelp('description')" title="帮助" aria-label="帮助">?</button></label>
+                <div class="info-controls"><input type="text" id="g_description" oninput="updateGlobal()"><button
+                        class="btn-tool" onclick="saveToHistory('description')" title="保存到历史" aria-label="保存到历史"><i
+                            data-lucide="save"></i></button><button class="btn-tool"
+                        onclick="showHistory('description')" title="查看历史" aria-label="查看历史"><i
+                            data-lucide="book-open"></i></button></div>
+            </div>
+            <div style="border-bottom: 1px solid #333; margin: 15px 0;"></div>
+            <div class="info-row info-row-company"><label data-i18n="my_company">公司名称 <button type="button"
+                        class="btn-help" onclick="showHelp('company')" title="帮助" aria-label="帮助">?</button></label>
+                <div class="info-controls info-controls-company"><input type="text" id="g_company" readonly
+                        class="input-readonly" placeholder="—" onclick="openCompanyDetailModal()">
+                    <div class="company-switch-wrap"><label class="switch company-pdf-switch"
+                            title="PDF/Excel显示公司"><input type="checkbox" id="showCompanyInPdf" checked
+                                onchange="toggleShowCompanyInPdf()"><span class="slider"></span></label><span
+                            class="company-pdf-label" data-i18n="company_show_in_pdf_excel">PDF中显示</span></div>
+                </div>
+            </div>
+            <div class="info-row"><label data-i18n="seller">卖方公司 <button type="button" class="btn-help"
+                        onclick="showHelp('seller')" title="帮助" aria-label="帮助">?</button></label>
+                <div class="info-controls info-controls-readonly"><input type="text" id="g_seller" readonly
+                        class="input-readonly" placeholder="—" onclick="openSellerDetailModal()"><button
+                        class="btn-tool" onclick="openSellerDetailModalAsNew()" data-title-i18n="btn_new_party"
+                        title="新建" aria-label="新建"><i data-lucide="plus-circle"></i></button><button class="btn-tool"
+                        onclick="showHistory('seller')" title="查看历史" aria-label="查看历史"><i
+                            data-lucide="book-open"></i></button></div>
+            </div>
+            <div class="info-row"><label data-i18n="location">地点 <button type="button" class="btn-help"
+                        onclick="showHelp('location')" title="帮助" aria-label="帮助">?</button></label>
+                <div class="info-controls"><input type="text" id="g_location" oninput="updateGlobal()"><button
+                        class="btn-tool" onclick="saveToHistory('location')" title="保存到历史" aria-label="保存到历史"><i
+                            data-lucide="save"></i></button><button class="btn-tool" onclick="showHistory('location')"
+                        title="查看历史" aria-label="查看历史"><i data-lucide="book-open"></i></button></div>
+            </div>
+            <div class="info-row"><label data-i18n="measurer">测量人 <button type="button" class="btn-help"
+                        onclick="showHelp('measurer')" title="帮助" aria-label="帮助">?</button></label>
+                <div class="info-controls"><input type="text" id="g_measurer" oninput="updateGlobal()"><button
+                        class="btn-tool" onclick="saveToHistory('measurer')" title="保存到历史" aria-label="保存到历史"><i
+                            data-lucide="save"></i></button><button class="btn-tool" onclick="showHistory('measurer')"
+                        title="查看历史" aria-label="查看历史"><i data-lucide="book-open"></i></button></div>
+            </div>
+
+            <button class="btn-block" style="background:var(--accent-color); color:#000;" onclick="closeInfoModal()"
+                data-i18n="btn_close">关闭</button>
         </div>
-        <div class="setting-group">
-            <div class="setting-desc" data-i18n="volume_warning_desc">总体积警告 (超过设定值提示) <button type="button" class="btn-help" onclick="showHelp('volume_warning')" title="帮助" aria-label="帮助">?</button></div>
-            <div class="setting-row">
-                <span class="setting-label" data-i18n="volume_warning_enable">启用总体积警告</span>
-                <label class="switch"><input type="checkbox" id="volumeWarningEnabled" onchange="saveSettings()"><span class="slider"></span></label>
+    </div>
+
+    <div id="companyDetailModal" class="modal-overlay sub-modal" style="display:none;">
+        <div class="modal-card company-detail-card">
+            <div class="modal-title"><span data-i18n="my_company">公司名称</span> — <span data-i18n="btn_edit">编辑</span>
             </div>
-            <div class="setting-row">
-                <span class="setting-label" data-i18n="volume_warning_threshold">阈值 (m³)</span>
-                <input type="number" id="volumeWarningThreshold" class="setting-input" value="21" min="0.001" step="0.1" onchange="saveSettings()">
+            <div class="company-detail-grid">
+                <div class="info-row"><label data-i18n="company_name">名称</label><input type="text" id="cd_name"></div>
+                <div class="info-row"><label data-i18n="company_address">地址</label><input type="text" id="cd_address">
+                </div>
+                <div class="info-row"><label data-i18n="company_city">城市</label><input type="text" id="cd_city"></div>
+                <div class="info-row"><label data-i18n="company_zip">邮编</label><input type="text" id="cd_zip"></div>
+                <div class="info-row"><label data-i18n="company_phone">电话</label><input type="text" id="cd_phone"></div>
+                <div class="info-row"><label data-i18n="company_email">邮箱</label><input type="text" id="cd_email"></div>
+                <div class="info-row info-row-full"><label data-i18n="company_website">网站</label><input type="text"
+                        id="cd_website"></div>
+                <div class="info-row info-row-full"><label data-i18n="company_taxId">税号 (VAT ID)</label><input
+                        type="text" id="cd_taxId"></div>
+                <div class="info-row info-row-full"><label data-i18n="company_bank">银行账号 (IBAN)</label><input
+                        type="text" id="cd_bank"></div>
+            </div>
+            <div class="modal-btn-row" style="display:flex; gap:10px; margin-top:12px;">
+                <button class="btn-block btn-cancel-party" style="flex:1; background:#444; color:#fff;"
+                    onclick="closeCompanyDetailModal(true);" data-i18n="btn_cancel">取消</button>
+                <button class="btn-block" style="flex:1; background:var(--accent-color); color:#000;"
+                    onclick="saveCompanyDetailModal(); closeCompanyDetailModal(true);" data-i18n="btn_save">保存</button>
             </div>
         </div>
-        <div class="setting-group">
-            <div class="setting-desc" data-i18n="deduction_desc">自动扣尺 (保存时自动扣除) <button type="button" class="btn-help" onclick="showHelp('deduction')" title="帮助" aria-label="帮助">?</button></div>
-            <div class="setting-row">
-                <span class="setting-label"><span data-i18n="len_deduct">长度扣尺</span> (cm) <button type="button" class="btn-help" onclick="showHelp('len_deduct')" title="帮助" aria-label="帮助">?</button></span>
-                <input type="number" id="setDeductLen" class="setting-input" value="0" onchange="saveSettings()">
+    </div>
+
+    <div id="sellerDetailModal" class="modal-overlay sub-modal" style="display:none;">
+        <div class="modal-card company-detail-card">
+            <div class="modal-title modal-title-with-actions">
+                <span data-i18n="party_title">买方/卖方 (Buyer/Seller)</span>
+                <button type="button" class="btn-title-action" onclick="clearSellerFormAndNew()" aria-label="新建买方或卖方"><i
+                        data-lucide="plus-circle" class="btn-icon"></i><span
+                        data-i18n="btn_new_party">新建</span></button>
             </div>
-            <div class="setting-row">
-                <span class="setting-label"><span data-i18n="dia_deduct">直径扣尺</span> (cm) <button type="button" class="btn-help" onclick="showHelp('dia_deduct')" title="帮助" aria-label="帮助">?</button></span>
-                <input type="number" id="setDeductDia" class="setting-input" value="0" onchange="saveSettings()">
+            <div class="party-type-row">
+                <label class="radio-label"><input type="radio" name="seller_type" value="buyer" id="sd_type_buyer">
+                    <span data-i18n="party_buyer">买方 (Buyer)</span></label>
+                <label class="radio-label"><input type="radio" name="seller_type" value="seller" id="sd_type_seller">
+                    <span data-i18n="party_seller">卖方 (Seller)</span></label>
+            </div>
+            <div class="company-detail-grid">
+                <div class="info-row"><label data-i18n="company_name">名称</label><input type="text" id="sd_name"></div>
+                <div class="info-row"><label data-i18n="company_address">地址</label><input type="text" id="sd_address">
+                </div>
+                <div class="info-row"><label data-i18n="company_city">城市</label><input type="text" id="sd_city"></div>
+                <div class="info-row"><label data-i18n="company_zip">邮编</label><input type="text" id="sd_zip"></div>
+                <div class="info-row"><label data-i18n="company_phone">电话</label><input type="text" id="sd_phone"></div>
+                <div class="info-row"><label data-i18n="company_email">邮箱</label><input type="text" id="sd_email"></div>
+                <div class="info-row info-row-full"><label data-i18n="company_website">网站</label><input type="text"
+                        id="sd_website"></div>
+                <div class="info-row info-row-full"><label data-i18n="company_taxId">税号 (VAT ID)</label><input
+                        type="text" id="sd_taxId"></div>
+                <div class="info-row info-row-full"><label data-i18n="company_bank">银行账号 (IBAN)</label><input
+                        type="text" id="sd_bank"></div>
+            </div>
+            <div class="modal-btn-row" style="display:flex; gap:10px; margin-top:12px;">
+                <button class="btn-block btn-cancel-party" style="flex:1; background:#444; color:#fff;"
+                    onclick="closeSellerDetailModal(true);" data-i18n="btn_cancel">取消</button>
+                <button class="btn-block" style="flex:1; background:var(--accent-color); color:#000;"
+                    onclick="saveSellerDetailModal(); closeSellerDetailModal(true);" data-i18n="btn_save">保存</button>
             </div>
         </div>
-        <div class="setting-group">
-            <div class="setting-desc" data-i18n="price_title">价格设置 (每立方米) <button type="button" class="btn-help" onclick="showHelp('price')" title="帮助" aria-label="帮助">?</button></div>
-            <div class="setting-row">
-                <span class="setting-label" data-i18n="price_enable">启用价格计算 <button type="button" class="btn-help" onclick="showHelp('price_enable')" title="帮助" aria-label="帮助">?</button></span>
-                <label class="switch"><input type="checkbox" id="priceEnabled" onchange="togglePriceEnabled()"><span class="slider"></span></label>
-            </div>
-            <div id="priceSettingsBox" class="price-settings-box">
+    </div>
+
+    <div id="settingsModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-title"><i data-lucide="settings" class="modal-title-icon"></i><span
+                    data-i18n="settings_title">设置</span></div>
+            <div class="setting-group">
                 <div class="setting-row">
-                    <span class="setting-label" data-i18n="price_currency">币种</span>
-                    <select id="priceCurrency" class="setting-select" onchange="updateCurrencySymbols(); saveSettings()">
-                        <option value="EUR">EUR €</option>
-                        <option value="USD">USD $</option>
-                        <option value="CNY">CNY ¥</option>
+                    <span class="setting-label"><span data-i18n="theme_label">夜间/白天模式</span> <button type="button"
+                            class="btn-help" onclick="showHelp('theme')" title="帮助" aria-label="帮助">?</button></span>
+                    <button id="themeToggleBtn" class="toggle-btn" onclick="toggleTheme(); updateThemeToggleLabel();"
+                        title="切换主题" aria-label="切换主题">
+                        <i data-lucide="moon" id="themeIconMoon" class="theme-btn-icon"
+                            style="width:18px;height:18px;display:none;"></i>
+                        <i data-lucide="sun" id="themeIconSun" class="theme-btn-icon"
+                            style="width:18px;height:18px;display:none;"></i>
+                        <span id="themeToggleLabel"></span>
+                    </button>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label" data-i18n="language">语言 / Language <button type="button"
+                            class="btn-help" onclick="showHelp('language')" title="帮助" aria-label="帮助">?</button></span>
+                    <select id="langSelect" class="setting-select" onchange="changeLanguage(this.value)">
+                        <option value="zh">中文</option>
+                        <option value="en">English</option>
+                        <option value="sl">Slovenščina</option>
                     </select>
                 </div>
-                <div class="setting-row">
-                    <span class="setting-label" data-i18n="price_mode">定价方式</span>
-                    <select id="priceMode" class="setting-select setting-select-wide" onchange="updatePriceModeUI(); saveSettings()">
-                        <option value="fixed" data-i18n="price_mode_fixed">统一价</option>
-                        <option value="grade" data-i18n="price_mode_grade">按等级</option>
-                    </select>
+                <div class="setting-row setting-row-quick-mode" id="quickModeRow">
+                    <span class="setting-label" style="cursor:pointer;display:flex;align-items:center;gap:4px;"
+                        onclick="toggleQuickModeExpand()" title="点击展开/收起"><span data-i18n="quick_mode">快速模式</span>
+                        <button type="button" class="btn-help" onclick="showHelp('quick_mode');event.stopPropagation()"
+                            title="帮助" aria-label="帮助">?</button> <i data-lucide="chevron-down" id="quickModeExpandIcon"
+                            style="width:16px;height:16px;transition:transform 0.2s;"></i></span>
+                    <button id="quickModeBtn" class="toggle-btn" onclick="toggleQuickMode();event.stopPropagation()"><i
+                            data-lucide="zap" style="width:20px;height:20px;"></i><span
+                            id="quickModeLabel"></span></button>
                 </div>
-                <div class="setting-row" id="priceFixedRow">
-                    <span class="setting-label" data-i18n="price_fixed">一口价 (每立方米)</span>
-                    <div class="price-input-wrap">
-                        <input type="number" inputmode="decimal" step="0.01" id="priceFixed" class="setting-input" value="0" onchange="saveSettings()">
-                        <span id="currencySymbolFixed" class="currency-symbol-fixed">€</span>
+                <div id="quickModeOptions" class="quick-mode-options" style="display:none;">
+                    <div class="setting-row setting-row-indent">
+                        <span class="setting-label" data-i18n="qm_auto_decimal">自动添加小数点 (45→4.5)</span>
+                        <label class="switch"><input type="checkbox" id="quickModeAutoDecimal"
+                                onchange="saveQuickModeOptions()"><span class="slider"></span></label>
+                    </div>
+                    <div class="setting-row setting-row-indent">
+                        <span class="setting-label" data-i18n="qm_auto_jump">长度两位数自动跳转直径</span>
+                        <label class="switch"><input type="checkbox" id="quickModeAutoJump"
+                                onchange="saveQuickModeOptions()"><span class="slider"></span></label>
+                    </div>
+                    <div class="setting-row setting-row-indent">
+                        <span class="setting-label" data-i18n="qm_grade_save">选择等级即保存到列表</span>
+                        <label class="switch"><input type="checkbox" id="quickModeGradeAutoSave"
+                                onchange="saveQuickModeOptions()"><span class="slider"></span></label>
+                    </div>
+                    <div class="setting-row setting-row-indent">
+                        <span class="setting-label" data-i18n="qm_auto_code">码号自动续号</span>
+                        <label class="switch"><input type="checkbox" id="quickModeAutoCode"
+                                onchange="saveQuickModeOptions()"><span class="slider"></span></label>
                     </div>
                 </div>
-                <div id="priceGradeBox" style="display:none;">
+                <div class="setting-row">
+                    <span class="setting-label"><span data-i18n="show_grade">显示等级</span> <button type="button"
+                            class="btn-help" onclick="showHelp('show_grade')" title="帮助"
+                            aria-label="帮助">?</button></span>
+                    <label class="switch"><input type="checkbox" id="checkShowGrade" checked
+                            onchange="toggleGradeDisplay()"><span class="slider"></span></label>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label"><span data-i18n="calc_dia">双径模式 (计算平均值)</span> <button type="button"
+                            class="btn-help" onclick="showHelp('calc_dia')" title="帮助" aria-label="帮助">?</button></span>
+                    <label class="switch"><input type="checkbox" id="checkCalcDia" onchange="toggleCalcDia()"><span
+                            class="slider"></span></label>
+                </div>
+                <div class="setting-row" id="roundModeRow" style="display:none;">
+                    <span class="setting-label"><span data-i18n="round_mode">进位模式 (.5的处理)</span> <button type="button"
+                            class="btn-help" onclick="showHelp('round_mode')" title="帮助"
+                            aria-label="帮助">?</button></span>
+                    <select id="roundSelect" class="setting-select" onchange="saveSettings()">
+                        <option value="up" data-i18n="round_up">上进位 (40.5→41)</option>
+                        <option value="down" data-i18n="round_down">下舍去 (40.5→40)</option>
+                        <option value="mix" data-i18n="round_mix">混合 (轮流)</option>
+                    </select>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label" data-i18n="formula_enable">启用自定义体积计算公式 <button type="button"
+                            class="btn-help" onclick="showHelp('formula_enable')" title="帮助"
+                            aria-label="帮助">?</button></span>
+                    <label class="switch"><input type="checkbox" id="formulaEnabled"
+                            onchange="toggleFormulaEnabled()"><span class="slider"></span></label>
+                </div>
+                <div id="formulaSelectBox" class="formula-settings-box" style="display:none;">
                     <div class="setting-row setting-row-flex-start">
-                        <span class="setting-label" data-i18n="price_by_grade">按等级</span>
-                        <div class="price-grade-grid">
-                            <div class="price-grade-item">
-                                <span class="price-grade-label">F</span>
-                                <input type="number" inputmode="decimal" step="0.01" id="price_grade_F" class="setting-input" onchange="saveSettings()">
-                                <span class="currencySymbolGrade">€</span>
-                            </div>
-                            <div class="price-grade-item">
-                                <span class="price-grade-label">A+</span>
-                                <input type="number" inputmode="decimal" step="0.01" id="price_grade_Aplus" class="setting-input" onchange="saveSettings()">
-                                <span class="currencySymbolGrade">€</span>
-                            </div>
-                            <div class="price-grade-item">
-                                <span class="price-grade-label">A</span>
-                                <input type="number" inputmode="decimal" step="0.01" id="price_grade_A" class="setting-input" onchange="saveSettings()">
-                                <span class="currencySymbolGrade">€</span>
-                            </div>
-                            <div class="price-grade-item">
-                                <span class="price-grade-label">B</span>
-                                <input type="number" inputmode="decimal" step="0.01" id="price_grade_B" class="setting-input" onchange="saveSettings()">
-                                <span class="currencySymbolGrade">€</span>
-                            </div>
-                            <div class="price-grade-item">
-                                <span class="price-grade-label">C</span>
-                                <input type="number" inputmode="decimal" step="0.01" id="price_grade_C" class="setting-input" onchange="saveSettings()">
-                                <span class="currencySymbolGrade">€</span>
-                            </div>
-                            <div class="price-grade-item">
-                                <span class="price-grade-label">D</span>
-                                <input type="number" inputmode="decimal" step="0.01" id="price_grade_D" class="setting-input" onchange="saveSettings()">
-                                <span class="currencySymbolGrade">€</span>
+                        <span class="setting-label"><span data-i18n="formula_mode">选择计算公式</span></span>
+                        <select id="formulaSelect" class="setting-select"
+                            onchange="saveSettings(); recalculateAllVolumes();">
+                            <option value="huber" data-i18n="formula_huber">Standard (Huber)</option>
+                            <option value="csn4800079" data-i18n="formula_csn">Czech ČSN 48 0007/9 (Huber Variant)
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="setting-group">
+                <div class="setting-desc" data-i18n="pro_kb_title">专业虚拟键盘 <button type="button" class="btn-help"
+                        onclick="showHelp('pro_keyboard')" title="帮助" aria-label="帮助">?</button></div>
+                <div class="setting-row">
+                    <span class="setting-label" data-i18n="enable_pro_kb">启用专业虚拟键盘</span>
+                    <button id="proKeyboardBtn" class="toggle-btn" onclick="toggleProKeyboard()">OFF</button>
+                </div>
+                <div id="proKbOptionsBox" class="pro-kb-options-box">
+                    <div class="setting-row" id="keySoundRow" style="display:none;">
+                        <span class="setting-label"><span data-i18n="key_sound">按键音效</span></span>
+                        <label class="switch"><input type="checkbox" id="checkKeySound" checked
+                                onchange="toggleKeySound()"><span class="slider"></span></label>
+                    </div>
+                </div>
+            </div>
+            <div class="setting-group">
+                <div class="setting-desc" data-i18n="volume_warning_desc">总体积警告 (超过设定值提示) <button type="button"
+                        class="btn-help" onclick="showHelp('volume_warning')" title="帮助" aria-label="帮助">?</button>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label" data-i18n="volume_warning_enable">启用总体积警告</span>
+                    <label class="switch"><input type="checkbox" id="volumeWarningEnabled"
+                            onchange="saveSettings()"><span class="slider"></span></label>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label" data-i18n="volume_warning_threshold">阈值 (m³)</span>
+                    <input type="number" id="volumeWarningThreshold" class="setting-input" value="21" min="0.001"
+                        step="0.1" onchange="saveSettings()">
+                </div>
+            </div>
+            <div class="setting-group">
+                <div class="setting-desc" data-i18n="deduction_desc">自动扣尺 (保存时自动扣除) <button type="button"
+                        class="btn-help" onclick="showHelp('deduction')" title="帮助" aria-label="帮助">?</button></div>
+                <div class="setting-row">
+                    <span class="setting-label"><span data-i18n="len_deduct">长度扣尺</span> (cm) <button type="button"
+                            class="btn-help" onclick="showHelp('len_deduct')" title="帮助"
+                            aria-label="帮助">?</button></span>
+                    <input type="number" id="setDeductLen" class="setting-input" value="0" onchange="saveSettings()">
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label"><span data-i18n="dia_deduct">直径扣尺</span> (cm) <button type="button"
+                            class="btn-help" onclick="showHelp('dia_deduct')" title="帮助"
+                            aria-label="帮助">?</button></span>
+                    <input type="number" id="setDeductDia" class="setting-input" value="0" onchange="saveSettings()">
+                </div>
+            </div>
+            <div class="setting-group">
+                <div class="setting-desc" data-i18n="price_title">价格设置 (每立方米) <button type="button" class="btn-help"
+                        onclick="showHelp('price')" title="帮助" aria-label="帮助">?</button></div>
+                <div class="setting-row">
+                    <span class="setting-label" data-i18n="price_enable">启用价格计算 <button type="button" class="btn-help"
+                            onclick="showHelp('price_enable')" title="帮助" aria-label="帮助">?</button></span>
+                    <label class="switch"><input type="checkbox" id="priceEnabled" onchange="togglePriceEnabled()"><span
+                            class="slider"></span></label>
+                </div>
+                <div id="priceSettingsBox" class="price-settings-box">
+                    <div class="setting-row">
+                        <span class="setting-label" data-i18n="price_currency">币种</span>
+                        <select id="priceCurrency" class="setting-select"
+                            onchange="updateCurrencySymbols(); saveSettings()">
+                            <option value="EUR">EUR €</option>
+                            <option value="USD">USD $</option>
+                            <option value="CNY">CNY ¥</option>
+                        </select>
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-label" data-i18n="price_mode">定价方式</span>
+                        <select id="priceMode" class="setting-select setting-select-wide"
+                            onchange="updatePriceModeUI(); saveSettings()">
+                            <option value="fixed" data-i18n="price_mode_fixed">统一价</option>
+                            <option value="grade" data-i18n="price_mode_grade">按等级</option>
+                        </select>
+                    </div>
+                    <div class="setting-row" id="priceFixedRow">
+                        <span class="setting-label" data-i18n="price_fixed">一口价 (每立方米)</span>
+                        <div class="price-input-wrap">
+                            <input type="number" inputmode="decimal" step="0.01" id="priceFixed" class="setting-input"
+                                value="0" onchange="saveSettings()">
+                            <span id="currencySymbolFixed" class="currency-symbol-fixed">€</span>
+                        </div>
+                    </div>
+                    <div id="priceGradeBox" style="display:none;">
+                        <div class="setting-row setting-row-flex-start">
+                            <span class="setting-label" data-i18n="price_by_grade">按等级</span>
+                            <div class="price-grade-grid">
+                                <div class="price-grade-item">
+                                    <span class="price-grade-label">F</span>
+                                    <input type="number" inputmode="decimal" step="0.01" id="price_grade_F"
+                                        class="setting-input" onchange="saveSettings()">
+                                    <span class="currencySymbolGrade">€</span>
+                                </div>
+                                <div class="price-grade-item">
+                                    <span class="price-grade-label">A+</span>
+                                    <input type="number" inputmode="decimal" step="0.01" id="price_grade_Aplus"
+                                        class="setting-input" onchange="saveSettings()">
+                                    <span class="currencySymbolGrade">€</span>
+                                </div>
+                                <div class="price-grade-item">
+                                    <span class="price-grade-label">A</span>
+                                    <input type="number" inputmode="decimal" step="0.01" id="price_grade_A"
+                                        class="setting-input" onchange="saveSettings()">
+                                    <span class="currencySymbolGrade">€</span>
+                                </div>
+                                <div class="price-grade-item">
+                                    <span class="price-grade-label">B</span>
+                                    <input type="number" inputmode="decimal" step="0.01" id="price_grade_B"
+                                        class="setting-input" onchange="saveSettings()">
+                                    <span class="currencySymbolGrade">€</span>
+                                </div>
+                                <div class="price-grade-item">
+                                    <span class="price-grade-label">C</span>
+                                    <input type="number" inputmode="decimal" step="0.01" id="price_grade_C"
+                                        class="setting-input" onchange="saveSettings()">
+                                    <span class="currencySymbolGrade">€</span>
+                                </div>
+                                <div class="price-grade-item">
+                                    <span class="price-grade-label">D</span>
+                                    <input type="number" inputmode="decimal" step="0.01" id="price_grade_D"
+                                        class="setting-input" onchange="saveSettings()">
+                                    <span class="currencySymbolGrade">€</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="setting-row">
-                    <span class="setting-label" data-i18n="price_tax">税率</span>
-                    <div class="price-input-wrap">
-                        <input type="number" inputmode="decimal" step="0.01" id="priceTax" class="setting-input" value="0" onchange="saveSettings()">
-                        <span class="currency-symbol-fixed">%</span>
+                    <div class="setting-row">
+                        <span class="setting-label" data-i18n="price_tax">税率</span>
+                        <div class="price-input-wrap">
+                            <input type="number" inputmode="decimal" step="0.01" id="priceTax" class="setting-input"
+                                value="0" onchange="saveSettings()">
+                            <span class="currency-symbol-fixed">%</span>
+                        </div>
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-label" data-i18n="price_show_pdf">PDF显示价格</span>
+                        <label class="switch"><input type="checkbox" id="priceShowPdf" onchange="saveSettings()"><span
+                                class="slider"></span></label>
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-label" data-i18n="price_show_excel">Excel显示价格</span>
+                        <label class="switch"><input type="checkbox" id="priceShowCsv" onchange="saveSettings()"><span
+                                class="slider"></span></label>
                     </div>
                 </div>
+            </div>
+            <div class="setting-group">
                 <div class="setting-row">
-                    <span class="setting-label" data-i18n="price_show_pdf">PDF显示价格</span>
-                    <label class="switch"><input type="checkbox" id="priceShowPdf" onchange="saveSettings()"><span class="slider"></span></label>
+                    <span class="setting-label" data-i18n="export_show_marks">PDF/Excel显示方向标记</span>
+                    <label class="switch"><input type="checkbox" id="exportShowMarks" onchange="saveSettings()"><span
+                            class="slider"></span></label>
                 </div>
                 <div class="setting-row">
-                    <span class="setting-label" data-i18n="price_show_excel">Excel显示价格</span>
-                    <label class="switch"><input type="checkbox" id="priceShowCsv" onchange="saveSettings()"><span class="slider"></span></label>
+                    <span class="setting-label" data-i18n="export_show_group">PDF/Excel显示分组</span>
+                    <label class="switch"><input type="checkbox" id="exportShowGroup" onchange="saveSettings()"><span
+                            class="slider"></span></label>
                 </div>
             </div>
-        </div>
-        <div class="setting-group">
-            <div class="setting-row">
-                <span class="setting-label" data-i18n="export_show_marks">PDF/Excel显示方向标记</span>
-                <label class="switch"><input type="checkbox" id="exportShowMarks" onchange="saveSettings()"><span class="slider"></span></label>
-            </div>
-            <div class="setting-row">
-                <span class="setting-label" data-i18n="export_show_group">PDF/Excel显示分组</span>
-                <label class="switch"><input type="checkbox" id="exportShowGroup" onchange="saveSettings()"><span class="slider"></span></label>
-            </div>
-        </div>
-        <div class="setting-group">
-            <div class="setting-row setting-row-beginner">
-                <span class="setting-label"><span data-i18n="beginner_mode_label">新手模式</span> <button type="button" class="btn-help" onclick="showHelp('beginner_mode')" title="帮助" aria-label="帮助">?</button></span>
-                <div class="setting-right-group">
-                    <label class="switch"><input type="checkbox" id="checkBeginnerMode" onchange="toggleBeginnerMode()"><span class="slider"></span></label>
-                    <button type="button" class="btn-hidden-features-small" onclick="showHiddenFeatures()" data-i18n="hidden_features_btn">隐藏功能与操作说明</button>
+            <div class="setting-group">
+                <div class="setting-row setting-row-beginner">
+                    <span class="setting-label"><span data-i18n="beginner_mode_label">新手模式</span> <button type="button"
+                            class="btn-help" onclick="showHelp('beginner_mode')" title="帮助"
+                            aria-label="帮助">?</button></span>
+                    <div class="setting-right-group">
+                        <label class="switch"><input type="checkbox" id="checkBeginnerMode"
+                                onchange="toggleBeginnerMode()"><span class="slider"></span></label>
+                        <button type="button" class="btn-hidden-features-small" onclick="showHiddenFeatures()"
+                            data-i18n="hidden_features_btn">隐藏功能与操作说明</button>
+                    </div>
                 </div>
             </div>
+            <button class="btn-block settings-modal-close"
+                onclick="document.getElementById('settingsModal').style.display='none'"
+                data-i18n="btn_close">关闭</button>
         </div>
-        <button class="btn-block settings-modal-close" onclick="document.getElementById('settingsModal').style.display='none'" data-i18n="btn_close">关闭</button>
     </div>
-</div>
 
-<div id="historyPop" class="modal-overlay" onclick="this.style.display='none'"><div class="modal-card" onclick="event.stopPropagation()"><div class="modal-title"><i data-lucide="history" class="modal-title-icon"></i><span data-i18n="modal_history">历史记录</span></div><div id="historyList" style="max-height:300px; overflow-y:auto;"></div><button class="btn-block" style="background:#333; color:#fff;" onclick="document.getElementById('historyPop').style.display='none'"><i data-lucide="x" class="btn-icon"></i><span data-i18n="btn_close">关闭</span></button></div></div>
+    <div id="historyPop" class="modal-overlay" onclick="this.style.display='none'">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-title"><i data-lucide="history" class="modal-title-icon"></i><span
+                    data-i18n="modal_history">历史记录</span></div>
+            <div id="historyList" style="max-height:300px; overflow-y:auto;"></div><button class="btn-block"
+                style="background:#333; color:#fff;"
+                onclick="document.getElementById('historyPop').style.display='none'"><i data-lucide="x"
+                    class="btn-icon"></i><span data-i18n="btn_close">关闭</span></button>
+        </div>
+    </div>
 
-<script src="js/core.js"></script>
-<script src="js/i18n.js"></script>
-<script src="js/license.js"></script>
-<script src="js/sounds.js"></script>
-<script src="js/app.js"></script>
+    <script src="js/core.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/license.js"></script>
+    <script src="js/sounds.js"></script>
+    <script src="js/app.js"></script>
 </body>
+
 </html>

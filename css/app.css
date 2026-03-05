@@ -56,6 +56,9 @@
     --pro-kb-height: 360px;
     --pro-kb-collapsed-height: 70px;
     --footer-height: 100px;
+
+    /* 设置区块间距（子选项块与父开关的间隔） */
+    --spacing-setting-nested: 10px;
 }
 
 /* ========================================================================
@@ -1290,12 +1293,13 @@ body.mark-mode .mark-cell .mark-overlay { pointer-events: auto; }
     color: var(--accent-color); 
 }
 
-.price-settings-box { 
-    margin-top: 10px; 
+.price-settings-box,
+.formula-settings-box {
+    margin-top: var(--spacing-setting-nested);
 }
 
-.pro-kb-options-box { 
-    margin-top: 10px; 
+.pro-kb-options-box {
+    margin-top: var(--spacing-setting-nested);
 }
 
 .setting-select { width: 100px; height: 30px; font-size: 12px; }
