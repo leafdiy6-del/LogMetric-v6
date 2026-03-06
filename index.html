@@ -453,11 +453,17 @@
                         <span class="setting-label"><span data-i18n="formula_mode">选择计算公式</span></span>
                         <select id="formulaSelect" class="setting-select"
                             onchange="saveSettings(); recalculateAllVolumes();">
-                            <option value="huber" data-i18n="formula_huber">Standard (Huber)</option>
-                            <option value="csn4800079" data-i18n="formula_csn">Czech ČSN 48 0007/9 (Huber Variant)
-                            </option>
+                            <option value="csn480009" data-i18n="formula_csn">Czech ČSN 48 0009 (oak bark)</option>
+                            <option value="huber" data-i18n="formula_huber">Huber (EN 1309-2)</option>
                         </select>
                     </div>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label" data-i18n="volume_decimals">体积显示小数位数</span>
+                    <select id="volumeDecimalsSelect" class="setting-select" onchange="saveSettings(); renderAll(); updateStats();">
+                        <option value="2" data-i18n="volume_decimals_2">2位 (如 1.28)</option>
+                        <option value="3" data-i18n="volume_decimals_3">3位 (如 1.277)</option>
+                    </select>
                 </div>
             </div>
             <div class="setting-group">

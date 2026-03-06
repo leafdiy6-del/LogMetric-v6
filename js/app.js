@@ -129,7 +129,8 @@ let appSettings = {
     showCompanyInPdf: true,
     keySound: true,
     volumeWarningEnabled: false,
-    volumeWarningThreshold: 21
+    volumeWarningThreshold: 21,
+    volumeDecimals: 3
 };
 
 /* ----------------------------------------------------------------------------
@@ -409,7 +410,13 @@ window.onload = () => {
     const formulaEnabledCb = document.getElementById('formulaEnabled');
     if (formulaEnabledCb) formulaEnabledCb.checked = !!appSettings.formulaEnabled;
     const formulaSelect = document.getElementById('formulaSelect');
-    if (formulaSelect) formulaSelect.value = appSettings.formula || 'huber';
+    if (formulaSelect) {
+        let f = appSettings.formula || 'huber';
+        if (f === 'csn4800079') f = 'csn480009';  // 迁移：0007/9 → 0009
+        formulaSelect.value = f;
+    }
+    const volumeDecimalsSelect = document.getElementById('volumeDecimalsSelect');
+    if (volumeDecimalsSelect) volumeDecimalsSelect.value = String(appSettings.volumeDecimals === 2 ? 2 : 3);
     toggleFormulaEnabledUI();
     document.getElementById('priceCurrency').value = appSettings.priceCurrency || 'EUR';
     document.getElementById('priceMode').value = appSettings.priceMode || 'fixed';
@@ -1404,6 +1411,8 @@ function saveSettings() {
     if (formulaEnabledCb) appSettings.formulaEnabled = formulaEnabledCb.checked;
     const formulaSelect = document.getElementById('formulaSelect');
     if (formulaSelect) appSettings.formula = formulaSelect.value;
+    const volumeDecimalsSelect = document.getElementById('volumeDecimalsSelect');
+    if (volumeDecimalsSelect) appSettings.volumeDecimals = parseInt(volumeDecimalsSelect.value, 10) || 3;
     appSettings.useVirtualKeyboard = appSettings.proKeyboard;
     const priceEnabled = document.getElementById('priceEnabled').checked;
     appSettings.priceEnabled = priceEnabled;
@@ -1617,8 +1626,7 @@ function formatVolumeForDisplay(volume) {
     if (volume == null || isNaN(volume)) return '0';
     const v = Number(volume);
     if (v === 0) return '0';
-    const isCzech = appSettings.formulaEnabled && appSettings.formula === 'csn4800079';
-    const decimals = isCzech ? 3 : 3;
+    const decimals = (appSettings.volumeDecimals === 2 || appSettings.volumeDecimals === 3) ? appSettings.volumeDecimals : 3;
     return parseFloat(v.toFixed(decimals)).toString();
 }
 
@@ -2549,7 +2557,10 @@ window.toggleFormulaEnabled = function () {
 
 // 计算体积（通用函数）- 保持高精度，舍入仅在 UI 渲染时进行
 function calculateVolume(length, diameter) {
-    if (appSettings.formulaEnabled && appSettings.formula === 'csn4800079') {
+    if (appSettings.formulaEnabled && appSettings.formula === 'huber') {
+        return calculateHuberVolume(length, diameter);
+    }
+    if (appSettings.formulaEnabled && (appSettings.formula === 'csn480009' || appSettings.formula === 'csn4800079')) {
         return calculateCzechVolume(length, diameter);
     }
 
@@ -2564,81 +2575,48 @@ function calculateVolume(length, diameter) {
 }
 
 /**
- * 捷克 ČSN 48 0007/9 (Huber Variant) 体积算法
- * 与图片实测数据严格对齐，规则如下：
- *
- * A. 输入清理:
- *    - 逗号替换为小数点: String(x).replace(/,/g, '.')
- *    - parseFloat 解析，无效则早退 0
- *
- * B. 长度扣除 (Nadměrek / Length Deduction) 四段式:
- *    - length >= 11:  lNet = l - 0.3
- *    - 10 <= length < 11: lNet = l - 0（无扣，与表格 10.1x32->0.67 对齐）
- *    - 8 <= length < 10: lNet = l - 0.1
- *    - length < 8:   lNet = l - 0.2
- *    - 底线保护: lNet = Math.max(0, lNet)，防止超短木材产生负数体积（ Critical Fix ）
- *
- * C. 树皮阶梯扣除 (Bark Deduction):
- *    - 直径向下取整: dFloored = Math.floor(d)
- *    - d <= 44: deduction = 3cm
- *    - 45 <= d <= 50: deduction = 4cm
- *    - d > 50: deduction = 5cm
- *    - dNet = Math.max(0, dFloored - deduction)
- *
- * D. 面积与精度:
- *    - area = 3位小数 floor 截断，与表格 8.3x39->0.83 对齐
- *    - volume = area * lNet
- *    - 返回高精度数值，舍入仅在 formatVolumeForDisplay 中进行；可安全传递给状态管理器
- *
- * 样本验证推导 (11.6, 41) 原始值:
- *   lNet = 11.6 - 0.3 = 11.3  (length >= 11)
- *   d = floor(41) = 41, d <= 44 => deduction = 3, dNet = 38
- *   area = floor(π*38²/40000 * 1000)/1000 = 0.113
- *   volume = 0.113 * 11.3 = 1.2769 -> 显示 1.277（formatVolumeForDisplay 三位）
- *
- * 样本2 (7.3, 43): lNet=7.1, area floor 3位=0.125, vol=0.8875 -> 0.89
- * 样本3 (10.1, 32): lNet=10.1(10-11无扣), area floor=0.066, vol=0.6666 -> 0.67
- * 样本4 (8.3, 39): lNet=8.2, area floor=0.101, vol=0.8282 -> 0.83
- * 超短样本 (0.1, 30): lNet = 0.1 - 0.2 = -0.1 -> Math.max(0,-0.1)=0，vol=0，防止负数漏洞
+ * 欧洲标准 Huber 公式 (EN 1309-2)
+ * V = (π/4) × (d/100)² × L
+ * d = 中央直径（去皮，cm），L = 原木长度（m），V = 体积（m³）
+ */
+function calculateHuberVolume(length, diameterMidpoint) {
+    const l = parseFloat(String(length).replace(/,/g, '.'));
+    const d = parseFloat(String(diameterMidpoint).replace(/,/g, '.'));
+    if (isNaN(l) || isNaN(d) || l <= 0 || d <= 0) return 0;
+    const volume = (Math.PI / 4) * Math.pow(d / 100, 2) * l;
+    return Math.round(volume * 1000) / 1000;
+}
+
+/**
+ * 捷克 ČSN 48 0009 体积算法（STN/ČSN 橡木 Dub 官方高精度系数）
+ * - 树皮公式 2k = p0 + p1 × D^p2
+ * - 面积直接计算，不用 floor 截断
+ * - 体积四舍五入到 2 位小数
  */
 function calculateCzechVolume(length, diameterOverBark) {
-    // A. 输入清理：逗号替换为小数点
     const l = parseFloat(String(length).replace(/,/g, '.'));
     const d = parseFloat(String(diameterOverBark).replace(/,/g, '.'));
-
     if (isNaN(l) || isNaN(d) || l <= 0 || d <= 0) return 0;
 
-    // B. 四段式长度扣除
-    let lNet;
-    if (l >= 11) {
-        lNet = l - 0.3;
-    } else if (l >= 10) {
-        lNet = l;  // 10-11m 无扣
-    } else if (l >= 8) {
-        lNet = l - 0.1;
-    } else {
-        lNet = l - 0.2;
-    }
-    // Critical Fix: 底线保护，防止超短木材产生负数体积
-    lNet = Math.max(0, lNet);
+    // 1. ČSN 48 0009 官方高精度系数 (针对橡木 Dub)
+    const p0 = 1.2474;
+    const p1 = 0.042323;
+    const p2 = 1.0623;
 
-    // C. 树皮阶梯扣除：直径向下取整
-    const dFloored = Math.floor(d);
-    let deduction;
-    if (dFloored <= 44) {
-        deduction = 3;
-    } else if (dFloored <= 50) {
-        deduction = 4;
-    } else {
-        deduction = 5;
-    }
-    const dNet = Math.max(0, dFloored - deduction);
+    // 2. 计算树皮厚度 (2k)
+    const barkDeduction = p0 + p1 * Math.pow(d, p2);
 
-    // D. 横截面积：3 位小数 floor 截断，与表格 8.3x39->0.83 对齐
-    const area = Math.floor((Math.PI * Math.pow(dNet, 2) / 40000) * 1000) / 1000;
+    // 3. 计算去皮直径
+    const dNet = Math.max(0, d - barkDeduction);
 
-    // 体积计算，返回高精度数值，舍入由 formatVolumeForDisplay 处理，可正确传递至状态管理器
-    return area * lNet;
+    // 4. 计算截面积 (直接计算，严禁使用 Math.floor)
+    const area = (Math.PI / 4) * Math.pow(dNet / 100, 2);
+
+    // 5. 计算体积 (直接用原始长度 l，不要减去 0.1 或 0.3)
+    const volume = area * l;
+
+    // 6. 最终体积四舍五入到 2 位小数
+    return Math.round(volume * 100) / 100;
 }
 
 // 切换公式时重新计算全部
