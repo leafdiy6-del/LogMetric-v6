@@ -646,13 +646,17 @@ body.history-viewer-open {
 .history-viewer-stats {
     display: flex;
     justify-content: space-around;
-    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    align-items: center;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
     font-weight: 700;
-    align-items: baseline;
     background: var(--bg-secondary);
     border-top: 1px solid var(--border-subtle);
     flex-shrink: 0;
+    gap: 8px;
 }
+.history-viewer-stats .stats-group-cell { flex: 0 0 auto; }
+.history-viewer-stats .stats-total-cell,
+.history-viewer-stats .stats-vol-cell { flex: 1; text-align: center; }
 .history-viewer-stats span {
     font-size: 13px;
     color: var(--text-secondary);
@@ -936,6 +940,7 @@ body:not(.pro-kb-enabled) .list-header {
 .log-row { position: relative; border-left: 3px solid transparent; }
 .log-row .group-select-overlay { position: absolute; inset: 0; cursor: pointer; pointer-events: none; z-index: 5; }
 body.group-mode .log-row .group-select-overlay { pointer-events: auto; }
+body.hv-group-mode #historyViewerList .log-row .group-select-overlay { pointer-events: auto; }
 .log-row .btn-del-mini, .log-row .btn-ungroup { position: relative; z-index: 10; }
 .btn-ungroup { background: transparent; border: none; color: #888; font-size: 14px; cursor: pointer; padding: 2px 6px; width: 100%; }
 .btn-ungroup:hover { color: var(--accent-color); }

@@ -92,6 +92,8 @@ let logs = [];
 let isMarkMode = false;
 let isGroupMode = false;
 let groupSelectIds = [];
+let hvGroupMode = false;
+let hvGroupSelectIds = [];
 let globalInfo = { container: '', note: '', description: '', measurer: '', location: '', company: defaultCompany(), seller: defaultSeller() };
 let histories = { container: [], seller: [], measurer: [], location: [], company: [] };
 /* ----------------------------------------------------------------------------
@@ -877,7 +879,7 @@ function createHistoryViewerRow(log, idx) {
     const vol = (log.volume != null && !isNaN(log.volume)) ? formatVolumeForDisplay(log.volume) : '0';
 
     const div = document.createElement('div');
-    div.className = 'log-row';
+    div.className = 'log-row' + (log.groupId ? ' grouped' : '');
     div.id = 'hv-row-' + log.id;
     div.setAttribute('data-grade', log.grade || '?');
     div.setAttribute('data-len', len_m || 0);
@@ -890,8 +892,9 @@ function createHistoryViewerRow(log, idx) {
             <input type="text" data-field="diameter" class="${diaDangerClass}" inputmode="decimal" value="${escapeAttr(displayDia)}" oninput="updateHistoryViewerItem(${log.id},'diameter',this.value);toggleDiaDangerClass(this)" onblur="autoFixHistoryViewerInput(this)">
             <div class="col-vol" id="hv-v-row-${log.id}">${vol}</div>
             <input type="text" data-field="note" style="font-size:12px;color:#aaa;text-align:left;" value="${escapeAttr(log.note || '')}" oninput="updateHistoryViewerItem(${log.id},'note',this.value)">
-            <div class="group-actions-cell"></div>
+            <div class="group-actions-cell">${log.groupId ? `<button type="button" class="btn-ungroup" onclick="hvUngroupLog(${log.id});event.stopPropagation()" title="${currentLang === 'zh' ? '解除分组' : (currentLang === 'en' ? 'Ungroup' : 'Razdruži')}">⎋</button>` : ''}</div>
             <button type="button" class="btn-del-mini" onclick="delHistoryViewerRow(${log.id})">×</button>
+            <div class="group-select-overlay" onclick="handleHvGroupRowClick(event,${log.id})"></div>
         `;
     return div;
 }
@@ -943,11 +946,16 @@ function updateHistoryViewerItem(id, field, value) {
 function updateHistoryViewerStats() {
     const list = historyViewerState.logs || [];
     const validLogs = list.filter(l => parseFloat(l.volume) > 0);
+    const rowCount = validLogs.length;
     const totalV = validLogs.reduce((s, l) => s + (parseFloat(l.volume) || 0), 0);
     const statsEl = document.getElementById('historyViewerStats');
     if (statsEl) {
         const t = I18N[currentLang];
-        statsEl.innerHTML = `<span>${t.total_count}: <strong id="hvTotalCount">${validLogs.length}</strong></span><span>${t.total_vol}: <strong id="hvTotalVol">${formatVolumeForDisplay(totalV)}</strong> m³</span>`;
+        const groupLabel = t.row_action_insert_above ? (currentLang === 'zh' ? '分组' : (currentLang === 'en' ? 'Group' : 'Skupina')) : '分组';
+        statsEl.innerHTML = `
+            <span class="stats-group-cell"><button type="button" class="btn-group-mode${hvGroupMode ? ' active' : ''}" id="btnHvGroupMode" onclick="toggleHvGroupMode()">${groupLabel}</button></span>
+            <span class="stats-total-cell">${t.total_count}:<strong id="hvTotalCount">${rowCount}</strong></span>
+            <span class="stats-vol-cell">${t.total_vol}:<strong id="hvTotalVol">${formatVolumeForDisplay(totalV)}</strong> m³</span>`;
     }
 }
 function toggleHistoryViewerOrder() {
@@ -2494,6 +2502,70 @@ function ungroupLog(id) {
     save();
     renderAll();
 }
+
+/* ---- 内部记录编辑模式 分组功能 (HV Group Mode) ---- */
+function toggleHvGroupMode() {
+    hvGroupMode = !hvGroupMode;
+    hvGroupSelectIds = [];
+    document.body.classList.toggle('hv-group-mode', hvGroupMode);
+    const btn = document.getElementById('btnHvGroupMode');
+    if (btn) btn.classList.toggle('active', hvGroupMode);
+    document.querySelectorAll('#historyViewerList .log-row.group-selected').forEach(r => r.classList.remove('group-selected'));
+}
+
+function handleHvGroupRowClick(e, id) {
+    if (!hvGroupMode) return;
+    e.preventDefault(); e.stopPropagation();
+    const row = document.getElementById('hv-row-' + id);
+    if (!row || row.classList.contains('grouped')) return;
+    if (hvGroupSelectIds.includes(id)) {
+        hvGroupSelectIds = hvGroupSelectIds.filter(x => x !== id);
+        row.classList.remove('group-selected');
+        return;
+    }
+    hvGroupSelectIds.push(id);
+    row.classList.add('group-selected');
+    if (hvGroupSelectIds.length >= 2) {
+        const id1 = hvGroupSelectIds[0], id2 = hvGroupSelectIds[1];
+        const hvLogs = historyViewerState.logs || [];
+        const idx1 = hvLogs.findIndex(l => l.id === id1);
+        const idx2 = hvLogs.findIndex(l => l.id === id2);
+        const adjacent = idx1 >= 0 && idx2 >= 0 && Math.abs(idx1 - idx2) === 1;
+        const prevOrder = !adjacent && idx1 >= 0 && idx2 >= 0 ? JSON.parse(JSON.stringify(hvLogs)) : null;
+        if (!adjacent && idx1 >= 0 && idx2 >= 0) {
+            const log2 = hvLogs[idx2];
+            hvLogs.splice(idx2, 1);
+            const newIdx1 = hvLogs.findIndex(l => l.id === id1);
+            hvLogs.splice(newIdx1 + 1, 0, log2);
+            renderHistoryViewer();
+            document.getElementById('hv-row-' + id1)?.classList.add('group-selected');
+            document.getElementById('hv-row-' + id2)?.classList.add('group-selected');
+        }
+        const msg = currentLang === 'zh' ? '是否将这两根合并为一组？' : (currentLang === 'en' ? 'Merge these two rows into one group?' : 'Združiti ti dve vrstici v eno skupino?');
+        if (confirm(msg)) {
+            const gid = 'group_' + Date.now();
+            hvLogs.forEach(l => { if (l.id === id1 || l.id === id2) l.groupId = gid; });
+            toggleHvGroupMode();
+            renderHistoryViewer();
+        } else {
+            if (prevOrder) { historyViewerState.logs = prevOrder; }
+            hvGroupSelectIds = [];
+            document.querySelectorAll('#historyViewerList .log-row.group-selected').forEach(r => r.classList.remove('group-selected'));
+            renderHistoryViewer();
+        }
+    }
+}
+
+function hvUngroupLog(id) {
+    const hvLogs = historyViewerState.logs || [];
+    const log = hvLogs.find(l => l.id === id); if (!log || !log.groupId) return;
+    const msg = currentLang === 'zh' ? '取消此分组？' : (currentLang === 'en' ? 'Remove this group?' : 'Odstraniti skupino?');
+    if (!confirm(msg)) return;
+    const gid = log.groupId;
+    hvLogs.forEach(l => { if (l.groupId === gid) delete l.groupId; });
+    renderHistoryViewer();
+}
+
 function handleMarkCellClick(e, id, field) {
     if (!isMarkMode) return;
     e.preventDefault(); e.stopPropagation();
