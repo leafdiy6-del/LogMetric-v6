@@ -1179,20 +1179,46 @@ body.mark-mode .mark-cell .mark-overlay { pointer-events: auto; }
     animation: slideUp 0.3s ease;
 }
 
-.modal-title { 
-    font-size: 20px; 
-    font-weight: 700; 
+.modal-title {
+    font-size: 20px;
+    font-weight: 700;
     background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-light) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: 20px; 
-    padding-bottom: 12px; 
+    margin-bottom: 20px;
+    padding-bottom: 12px;
     border-bottom: 1px solid var(--border-subtle);
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* 始终吸附在弹窗顶部 */
+    position: sticky;
+    top: -24px; /* 抵消 modal-card padding */
+    margin-top: -24px;
+    padding-top: 24px;
+    margin-left: -24px;
+    margin-right: -24px;
+    padding-left: 24px;
+    padding-right: 24px;
+    background-color: var(--surface-primary);
+    z-index: 2;
 }
+/* 标题右侧关闭按钮 */
+.modal-title-close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 8px;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--text-secondary);
+    -webkit-text-fill-color: var(--text-secondary);
+    flex-shrink: 0;
+    transition: background 0.15s;
+}
+.modal-title-close:active { background: var(--bg-secondary); }
 
 .info-row { 
     margin-bottom: 15px; 

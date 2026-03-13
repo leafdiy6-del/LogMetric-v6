@@ -230,6 +230,7 @@
                     <button type="button" class="btn-title-action" onclick="triggerImportFromInfo(); closeInfoModal();"
                         title="导入项目文件" aria-label="导入项目文件"><i data-lucide="import" class="btn-icon"></i><span
                             data-i18n="btn_import">导入</span></button>
+                    <button type="button" class="modal-title-close" onclick="closeInfoModal()" aria-label="关闭">✕</button>
                 </span>
             </div>
 
@@ -362,8 +363,7 @@
 
     <div id="settingsModal" class="modal-overlay">
         <div class="modal-card">
-            <div class="modal-title"><i data-lucide="settings" class="modal-title-icon"></i><span
-                    data-i18n="settings_title">设置</span></div>
+            <div class="modal-title"><span><i data-lucide="settings" class="modal-title-icon"></i><span data-i18n="settings_title">设置</span></span><button type="button" class="modal-title-close" onclick="document.getElementById('settingsModal').style.display='none'" aria-label="关闭">✕</button></div>
             <div class="setting-group">
                 <div class="setting-row">
                     <span class="setting-label"><span data-i18n="theme_label">夜间/白天模式</span> <button type="button"
