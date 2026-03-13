@@ -3781,6 +3781,10 @@ function delHistory(t, i) {
 
 /* ============================================================================
    行操作底部菜单 (Row Action Bottom Sheet)
+   新增功能 (2026-03):
+     - 双击序号 → 底部操作菜单
+     - 在上方插入新行 / 在下方插入新行
+     - 自动修改码号（扫描下方连续段，支持只改连续段或全部修改）
    ============================================================================ */
 
 function openRowActionSheet(logId) {
@@ -3832,6 +3836,7 @@ function rowActionInsertBelow() {
     renderAll();
 }
 
+// 触发自动修改码号：扫描后打开第二层菜单
 function rowActionRenumber() {
     if (currentActionLogId == null) return;
     const scan = scanForRenumber(currentActionLogId);
@@ -3840,6 +3845,7 @@ function rowActionRenumber() {
     openRenumberSheet(scan);
 }
 
+// 扫描当前行以下的码号连续情况（按下方行自身内部顺序判断，非依赖当前行码号）
 function scanForRenumber(logId) {
     const i = logs.findIndex(l => l.id === logId);
     if (i < 1) return null;
