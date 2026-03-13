@@ -931,9 +931,9 @@ body:not(.pro-kb-enabled) .list-header {
 .btn-group-mode { background: rgba(212,163,115,0.15); color: var(--accent-color); border: 1px solid rgba(212,163,115,0.3); border-radius: 12px; padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
 .btn-group-mode:hover, body.group-mode .btn-group-mode { background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%); color: #000; border-color: transparent; }
 .btn-group-mode.active { background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%); color: #000; }
-.log-row.grouped { color: var(--accent-color); }
+.log-row.grouped { color: var(--accent-color); border-left: 3px solid var(--accent-color); }
 .log-row.grouped input, .log-row.grouped select, .log-row.grouped .row-index, .log-row.grouped .col-vol { color: var(--accent-color) !important; }
-.log-row { position: relative; }
+.log-row { position: relative; border-left: 3px solid transparent; }
 .log-row .group-select-overlay { position: absolute; inset: 0; cursor: pointer; pointer-events: none; z-index: 5; }
 body.group-mode .log-row .group-select-overlay { pointer-events: auto; }
 .log-row .btn-del-mini, .log-row .btn-ungroup { position: relative; z-index: 10; }
@@ -986,11 +986,15 @@ body.pro-kb-enabled .log-row.latest:not(.grouped) .col-vol {
 }
 .log-row.highlighted input, .log-row.highlighted select, .log-row.highlighted .row-index, .log-row.highlighted .col-vol { color: var(--accent-color) !important; }
 
-.log-row.group-selected { 
-    outline: none; 
-    color: var(--accent-color); 
+.log-row.group-selected {
+    outline: none;
+    color: var(--accent-color);
+    background: rgba(212, 163, 115, 0.13);
+    border-left: 3px solid var(--accent-color);
 }
 .log-row.group-selected input, .log-row.group-selected select, .log-row.group-selected .row-index, .log-row.group-selected .col-vol { color: var(--accent-color) !important; }
+/* 分组模式下所有行加左侧占位边，避免选中时内容跳动 */
+body.group-mode .log-row:not(.group-selected) { border-left: 3px solid transparent; }
 
 .log-row input, .log-row select { 
     height: 34px; 
