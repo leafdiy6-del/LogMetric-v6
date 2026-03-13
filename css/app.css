@@ -646,18 +646,16 @@ body.history-viewer-open {
 .history-viewer-stats {
     display: flex;
     justify-content: space-around;
-    padding: 14px 16px;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
     font-weight: 700;
     align-items: baseline;
-    background: linear-gradient(145deg, #252a28, #1e2321);
-    border-radius: 16px;
-    margin-top: 10px;
-    border: 1px solid rgba(212, 163, 115, 0.12);
-    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-subtle);
+    flex-shrink: 0;
 }
 .history-viewer-stats span {
     font-size: 13px;
-    color: #aaa;
+    color: var(--text-secondary);
 }
 .history-viewer-stats span strong {
     font-size: 18px;
