@@ -166,6 +166,11 @@ let proState = {
 let proKeyDebounceTimer = null;
 let proKeyPending = null;
 
+/* ----------------------------------------------------------------------------
+   [2.6] 行操作菜单状态 (Row Action Sheet State)
+   ---------------------------------------------------------------------------- */
+let currentActionLogId = null;
+
 /* ============================================================================
    [3] INITIALIZATION (初始化)
    ============================================================================ */
@@ -2390,7 +2395,7 @@ function createRow(log, idx) {
 
     const markGrade = !!log.markGrade; const markLen = !!log.markLen; const markDia = !!log.markDia;
     div.innerHTML = `
-            <div class="row-index" ondblclick="toggleMarkMode()" title="${currentLang === 'zh' ? '双击进入/退出标记模式' : (currentLang === 'en' ? 'Double-click to enter/exit mark mode' : 'Dvojni klik za označevanje')}">${idx}</div>
+            <div class="row-index" ondblclick="openRowActionSheet(${log.id})" title="${currentLang === 'zh' ? '双击操作菜单' : (currentLang === 'en' ? 'Double-tap for row actions' : 'Dvojni klik za dejanja')}" style="cursor:pointer;">${idx}</div>
             <input type="text" data-field="code" value="${log.code}" oninput="updateItem(${log.id},'code',this.value)">
             <div class="mark-cell ${markGrade ? 'marked' : ''}" data-id="${log.id}" data-field="grade" oncontextmenu="handleGradeLabelEditByGrade('${(log.grade || '').replace(/'/g, "\\'")}', event); return false" ondblclick="handleGradeLabelEditByGrade('${(log.grade || '').replace(/'/g, "\\'")}', event)" title="${currentLang === 'zh' ? '双击可修改等级按钮文字' : (currentLang === 'en' ? 'Double-click to change grade button label' : 'Dvojni klik za spremembo')}">
                 <span class="mark-symbol">↑</span>
@@ -3772,4 +3777,156 @@ function delHistory(t, i) {
     const msg = currentLang === 'zh' ? '确定删除此条历史记录？' : (currentLang === 'en' ? 'Delete this history item?' : 'Izbriši ta zapis?');
     if (!confirm(msg)) return;
     histories[t].splice(i, 1); localStorage.setItem(HIST_KEY, JSON.stringify(histories)); if (historyPopContext === 'historyViewer') showHistoryForHistoryViewer(t); else showHistory(t);
+}
+
+/* ============================================================================
+   行操作底部菜单 (Row Action Bottom Sheet)
+   ============================================================================ */
+
+function openRowActionSheet(logId) {
+    currentActionLogId = logId;
+    const t = I18N[currentLang];
+    const idx = logs.findIndex(l => l.id === logId);
+    const displayNum = idx >= 0 ? (logs.length - idx) : '';
+    const titleEl = document.getElementById('rowActionTitle');
+    const labelAbove = document.getElementById('rowActionLabelAbove');
+    const labelBelow = document.getElementById('rowActionLabelBelow');
+    const labelRenumber = document.getElementById('rowActionLabelRenumber');
+    const labelCancel = document.getElementById('rowActionLabelCancel');
+    if (titleEl) titleEl.textContent = displayNum ? `No. ${displayNum}` : '';
+    if (labelAbove) labelAbove.textContent = t.row_action_insert_above || '在上方插入新行';
+    if (labelBelow) labelBelow.textContent = t.row_action_insert_below || '在下方插入新行';
+    if (labelRenumber) labelRenumber.textContent = t.row_action_renumber || '自动修改码号';
+    if (labelCancel) labelCancel.textContent = t.row_action_cancel || '取消';
+    const overlay = document.getElementById('rowActionSheet');
+    if (overlay) overlay.classList.add('show');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    if (appSettings.keySound && typeof playKeySound === 'function') playKeySound('nxt');
+}
+
+function closeRowActionSheet() {
+    const overlay = document.getElementById('rowActionSheet');
+    if (overlay) overlay.classList.remove('show');
+    currentActionLogId = null;
+}
+
+function rowActionInsertAbove() {
+    if (currentActionLogId == null) return;
+    const i = logs.findIndex(l => l.id === currentActionLogId);
+    closeRowActionSheet();
+    if (i < 1) return; // i=0 是编辑卡，不在此插入
+    const newLog = { id: Date.now(), code: '', grade: '', length: '', diameter: '', volume: 0, note: '', markGrade: false, markLen: false, markDia: false };
+    logs.splice(i, 0, newLog);
+    save();
+    renderAll();
+}
+
+function rowActionInsertBelow() {
+    if (currentActionLogId == null) return;
+    const i = logs.findIndex(l => l.id === currentActionLogId);
+    closeRowActionSheet();
+    if (i < 1) return;
+    const newLog = { id: Date.now(), code: '', grade: '', length: '', diameter: '', volume: 0, note: '', markGrade: false, markLen: false, markDia: false };
+    logs.splice(i + 1, 0, newLog);
+    save();
+    renderAll();
+}
+
+function rowActionRenumber() {
+    if (currentActionLogId == null) return;
+    const scan = scanForRenumber(currentActionLogId);
+    closeRowActionSheet();
+    if (!scan || scan.totalBelow === 0) return;
+    openRenumberSheet(scan);
+}
+
+function scanForRenumber(logId) {
+    const i = logs.findIndex(l => l.id === logId);
+    if (i < 1) return null;
+    const currentCode = (logs[i].code || '').trim();
+    const currentNum = parseInt(currentCode, 10);
+    if (isNaN(currentNum)) return null;
+
+    const padLen = (currentCode.startsWith('0') && currentCode.length > 1) ? currentCode.length : 0;
+
+    const belowIndices = [];
+    for (let j = i + 1; j < logs.length; j++) belowIndices.push(j);
+    if (belowIndices.length === 0) return null;
+
+    // Count consecutive segment among rows BELOW by their internal sequence
+    let consecutiveCount = 0;
+    const firstCode = (logs[belowIndices[0]].code || '').trim();
+    const firstNum = parseInt(firstCode, 10);
+    if (!isNaN(firstNum)) {
+        consecutiveCount = 1;
+        let expectedNext = firstNum + 1;
+        for (let k = 1; k < belowIndices.length; k++) {
+            const c = (logs[belowIndices[k]].code || '').trim();
+            const n = parseInt(c, 10);
+            if (!isNaN(n) && n === expectedNext) { consecutiveCount++; expectedNext++; }
+            else break;
+        }
+    }
+
+    return { logIdx: i, currentNum, padLen, belowIndices, consecutiveCount, totalBelow: belowIndices.length };
+}
+
+function openRenumberSheet(scan) {
+    const t = I18N[currentLang];
+    const { consecutiveCount, totalBelow } = scan;
+    const hasBreak = consecutiveCount < totalBelow;
+    window._renumberScan = scan;
+
+    const titleEl = document.getElementById('renumberSheetTitle');
+    if (titleEl) titleEl.textContent = t.renumber_sheet_title || '码号自动修改';
+
+    const noticeEl = document.getElementById('renumberNotice');
+    if (noticeEl) {
+        const template = hasBreak
+            ? (t.renumber_notice_break || '第 {n} 行起码号中断')
+            : (t.renumber_notice_consecutive || '下方 {n} 行码号全部连续，确认修改');
+        noticeEl.textContent = template.replace('{n}', hasBreak ? (consecutiveCount + 1) : totalBelow);
+        noticeEl.style.display = 'block';
+    }
+
+    const btnCon = document.getElementById('renumberBtnConsecutive');
+    const labelCon = document.getElementById('renumberLabelConsecutive');
+    if (btnCon && labelCon) {
+        if (hasBreak && consecutiveCount > 0) {
+            btnCon.style.display = 'flex';
+            labelCon.textContent = `${t.renumber_btn_consecutive || '只修改连续段'}（${consecutiveCount} 行）`;
+        } else {
+            btnCon.style.display = 'none';
+        }
+    }
+
+    const labelAll = document.getElementById('renumberLabelAll');
+    if (labelAll) labelAll.textContent = `${t.renumber_btn_all || '全部修改'}（${totalBelow} 行）`;
+
+    const labelCancel = document.getElementById('renumberLabelCancel');
+    if (labelCancel) labelCancel.textContent = t.row_action_cancel || '取消';
+
+    const overlay = document.getElementById('renumberSheet');
+    if (overlay) overlay.classList.add('show');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function closeRenumberSheet() {
+    const overlay = document.getElementById('renumberSheet');
+    if (overlay) overlay.classList.remove('show');
+    window._renumberScan = null;
+}
+
+function doRenumber(mode) {
+    const scan = window._renumberScan;
+    closeRenumberSheet();
+    if (!scan) return;
+    const { currentNum, padLen, belowIndices, consecutiveCount } = scan;
+    const targets = mode === 'consecutive' ? belowIndices.slice(0, consecutiveCount) : belowIndices;
+    targets.forEach((j, offset) => {
+        const newNum = currentNum + offset + 1;
+        logs[j].code = padLen > 0 ? newNum.toString().padStart(padLen, '0') : newNum.toString();
+    });
+    save();
+    renderAll();
 }

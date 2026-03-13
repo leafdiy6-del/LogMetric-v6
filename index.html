@@ -653,6 +653,46 @@
         </div>
     </div>
 
+    <!-- 行操作底部菜单 (Row Action Bottom Sheet) -->
+    <div id="rowActionSheet" class="row-action-overlay" onclick="closeRowActionSheet()">
+        <div class="row-action-sheet" onclick="event.stopPropagation()">
+            <div class="row-action-handle"></div>
+            <div class="row-action-title" id="rowActionTitle"></div>
+            <button class="row-action-item" onclick="rowActionInsertAbove()">
+                <i data-lucide="arrow-up"></i><span id="rowActionLabelAbove"></span>
+            </button>
+            <button class="row-action-item" onclick="rowActionInsertBelow()">
+                <i data-lucide="arrow-down"></i><span id="rowActionLabelBelow"></span>
+            </button>
+            <button class="row-action-item" onclick="rowActionRenumber()">
+                <i data-lucide="list-ordered"></i><span id="rowActionLabelRenumber"></span>
+            </button>
+            <div class="row-action-divider"></div>
+            <button class="row-action-item row-action-cancel" onclick="closeRowActionSheet()">
+                <span id="rowActionLabelCancel"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 码号自动修改底部菜单 (Renumber Bottom Sheet) -->
+    <div id="renumberSheet" class="row-action-overlay" onclick="closeRenumberSheet()">
+        <div class="row-action-sheet" onclick="event.stopPropagation()">
+            <div class="row-action-handle"></div>
+            <div class="row-action-title" id="renumberSheetTitle"></div>
+            <div class="renumber-notice" id="renumberNotice"></div>
+            <button class="row-action-item" id="renumberBtnConsecutive" onclick="doRenumber('consecutive')" style="display:none;">
+                <i data-lucide="list-ordered"></i><span id="renumberLabelConsecutive"></span>
+            </button>
+            <button class="row-action-item" onclick="doRenumber('all')">
+                <i data-lucide="refresh-cw"></i><span id="renumberLabelAll"></span>
+            </button>
+            <div class="row-action-divider"></div>
+            <button class="row-action-item row-action-cancel" onclick="closeRenumberSheet()">
+                <span id="renumberLabelCancel"></span>
+            </button>
+        </div>
+    </div>
+
     <script src="js/core.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/license.js"></script>

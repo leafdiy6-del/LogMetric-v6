@@ -1848,6 +1848,105 @@ body.volume-warning .kb-field.active {
 .header .btn-header { padding: 8px 12px; }
 
 /* ========================================================================
+   行操作底部菜单 (Row Action Bottom Sheet)
+   ======================================================================== */
+.row-action-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 3000;
+    align-items: flex-end;
+}
+.row-action-overlay.show {
+    display: flex;
+    animation: fadeIn 0.2s ease;
+}
+.row-action-sheet {
+    width: 100%;
+    background: linear-gradient(145deg, var(--bg-tertiary), var(--surface-primary));
+    border: 1px solid var(--border-accent);
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    border-bottom: none;
+    padding: 12px 0 calc(16px + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+    animation: slideFromBottom 0.25s ease;
+}
+@keyframes slideFromBottom {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+.row-action-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--border-light);
+    border-radius: 2px;
+    margin: 0 auto 14px;
+}
+.row-action-title {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 0 20px 12px;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 4px;
+}
+.row-action-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 15px 24px;
+    background: transparent;
+    color: var(--text-primary);
+    border: none;
+    font-size: 15px;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: background 0.15s;
+    text-align: left;
+}
+.row-action-item:active {
+    background: var(--bg-secondary);
+}
+.row-action-item svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    stroke: var(--accent-color);
+}
+.row-action-item.row-action-cancel {
+    color: var(--text-secondary);
+    font-weight: 600;
+    justify-content: center;
+    margin-top: 4px;
+}
+.row-action-item.row-action-cancel svg {
+    display: none;
+}
+.row-action-item.row-action-danger {
+    color: var(--danger-color);
+}
+.row-action-item.row-action-danger svg {
+    stroke: var(--danger-color);
+}
+.row-action-divider {
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 4px 0;
+}
+.renumber-notice {
+    font-size: 12px;
+    color: var(--accent-color);
+    text-align: center;
+    padding: 2px 20px 10px;
+    display: none;
+}
+
+/* ========================================================================
    小屏幕适配 (Small Screen)
    ======================================================================== */
 @media (max-width: 400px) {
