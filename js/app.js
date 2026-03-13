@@ -170,6 +170,7 @@ let proKeyPending = null;
    [2.6] 行操作菜单状态 (Row Action Sheet State)
    ---------------------------------------------------------------------------- */
 let currentActionLogId = null;
+let currentActionContext = 'main'; // 'main' | 'hv'（区分主列表和内部记录编辑模式）
 
 /* ============================================================================
    [3] INITIALIZATION (初始化)
@@ -882,7 +883,7 @@ function createHistoryViewerRow(log, idx) {
     div.setAttribute('data-len', len_m || 0);
     div.setAttribute('data-dia', d_cm || 0);
     div.innerHTML = `
-            <div class="row-index">${idx}</div>
+            <div class="row-index" ondblclick="openRowActionSheet(${log.id},'hv')" title="${currentLang === 'zh' ? '双击操作菜单' : (currentLang === 'en' ? 'Double-tap for row actions' : 'Dvojni klik za dejanja')}" style="cursor:pointer;">${idx}</div>
             <input type="text" data-field="code" value="${escapeAttr(log.code || '')}" oninput="updateHistoryViewerItem(${log.id},'code',this.value)">
             <div class="hv-grade-cell" oncontextmenu="handleGradeLabelEditByGrade('${(log.grade || '').replace(/'/g, "\\'")}', event); return false" ondblclick="handleGradeLabelEditByGrade('${(log.grade || '').replace(/'/g, "\\'")}', event)" title="${currentLang === 'zh' ? '双击可修改等级按钮文字' : (currentLang === 'en' ? 'Double-click to change grade button label' : 'Dvojni klik za spremembo')}"><select onchange="updateHistoryViewerItem(${log.id},'grade',this.value)">${gradeOptions}</select></div>
             <input type="text" data-field="length" class="${warnClass}" inputmode="decimal" value="${escapeAttr(displayLen)}" oninput="updateHistoryViewerItem(${log.id},'length',this.value)" onblur="autoFixHistoryViewerInput(this)">
@@ -3787,11 +3788,13 @@ function delHistory(t, i) {
      - 自动修改码号（扫描下方连续段，支持只改连续段或全部修改）
    ============================================================================ */
 
-function openRowActionSheet(logId) {
+function openRowActionSheet(logId, context) {
     currentActionLogId = logId;
+    currentActionContext = context || 'main';
     const t = I18N[currentLang];
-    const idx = logs.findIndex(l => l.id === logId);
-    const displayNum = idx >= 0 ? (logs.length - idx) : '';
+    const targetLogs = currentActionContext === 'hv' ? (historyViewerState.logs || []) : logs;
+    const idx = targetLogs.findIndex(l => l.id === logId);
+    const displayNum = idx >= 0 ? (targetLogs.length - idx) : '';
     const titleEl = document.getElementById('rowActionTitle');
     const labelAbove = document.getElementById('rowActionLabelAbove');
     const labelBelow = document.getElementById('rowActionLabelBelow');
@@ -3816,65 +3819,68 @@ function closeRowActionSheet() {
 
 function rowActionInsertAbove() {
     if (currentActionLogId == null) return;
-    const i = logs.findIndex(l => l.id === currentActionLogId);
+    const isHV = currentActionContext === 'hv';
+    const targetLogs = isHV ? (historyViewerState.logs || []) : logs;
+    const i = targetLogs.findIndex(l => l.id === currentActionLogId);
     closeRowActionSheet();
     if (i < 1) return; // i=0 是编辑卡，不在此插入
     const newLog = { id: Date.now(), code: '', grade: '', length: '', diameter: '', volume: 0, note: '', markGrade: false, markLen: false, markDia: false };
-    logs.splice(i, 0, newLog);
-    save();
-    renderAll();
+    targetLogs.splice(i, 0, newLog);
+    if (isHV) { renderHistoryViewer(); } else { save(); renderAll(); }
 }
 
 function rowActionInsertBelow() {
     if (currentActionLogId == null) return;
-    const i = logs.findIndex(l => l.id === currentActionLogId);
+    const isHV = currentActionContext === 'hv';
+    const targetLogs = isHV ? (historyViewerState.logs || []) : logs;
+    const i = targetLogs.findIndex(l => l.id === currentActionLogId);
     closeRowActionSheet();
     if (i < 1) return;
     const newLog = { id: Date.now(), code: '', grade: '', length: '', diameter: '', volume: 0, note: '', markGrade: false, markLen: false, markDia: false };
-    logs.splice(i + 1, 0, newLog);
-    save();
-    renderAll();
+    targetLogs.splice(i + 1, 0, newLog);
+    if (isHV) { renderHistoryViewer(); } else { save(); renderAll(); }
 }
 
 // 触发自动修改码号：扫描后打开第二层菜单
 function rowActionRenumber() {
     if (currentActionLogId == null) return;
-    const scan = scanForRenumber(currentActionLogId);
+    const scan = scanForRenumber(currentActionLogId, currentActionContext);
     closeRowActionSheet();
     if (!scan || scan.totalBelow === 0) return;
     openRenumberSheet(scan);
 }
 
 // 扫描当前行以下的码号连续情况（按下方行自身内部顺序判断，非依赖当前行码号）
-function scanForRenumber(logId) {
-    const i = logs.findIndex(l => l.id === logId);
+function scanForRenumber(logId, context) {
+    const targetLogs = (context === 'hv') ? (historyViewerState.logs || []) : logs;
+    const i = targetLogs.findIndex(l => l.id === logId);
     if (i < 1) return null;
-    const currentCode = (logs[i].code || '').trim();
+    const currentCode = (targetLogs[i].code || '').trim();
     const currentNum = parseInt(currentCode, 10);
     if (isNaN(currentNum)) return null;
 
     const padLen = (currentCode.startsWith('0') && currentCode.length > 1) ? currentCode.length : 0;
 
     const belowIndices = [];
-    for (let j = i + 1; j < logs.length; j++) belowIndices.push(j);
+    for (let j = i + 1; j < targetLogs.length; j++) belowIndices.push(j);
     if (belowIndices.length === 0) return null;
 
     // Count consecutive segment among rows BELOW by their internal sequence
     let consecutiveCount = 0;
-    const firstCode = (logs[belowIndices[0]].code || '').trim();
+    const firstCode = (targetLogs[belowIndices[0]].code || '').trim();
     const firstNum = parseInt(firstCode, 10);
     if (!isNaN(firstNum)) {
         consecutiveCount = 1;
         let expectedNext = firstNum + 1;
         for (let k = 1; k < belowIndices.length; k++) {
-            const c = (logs[belowIndices[k]].code || '').trim();
+            const c = (targetLogs[belowIndices[k]].code || '').trim();
             const n = parseInt(c, 10);
             if (!isNaN(n) && n === expectedNext) { consecutiveCount++; expectedNext++; }
             else break;
         }
     }
 
-    return { logIdx: i, currentNum, padLen, belowIndices, consecutiveCount, totalBelow: belowIndices.length };
+    return { context: context || 'main', logIdx: i, currentNum, padLen, belowIndices, consecutiveCount, totalBelow: belowIndices.length };
 }
 
 function openRenumberSheet(scan) {
@@ -3927,12 +3933,13 @@ function doRenumber(mode) {
     const scan = window._renumberScan;
     closeRenumberSheet();
     if (!scan) return;
-    const { currentNum, padLen, belowIndices, consecutiveCount } = scan;
+    const { context, currentNum, padLen, belowIndices, consecutiveCount } = scan;
+    const isHV = context === 'hv';
+    const targetLogs = isHV ? (historyViewerState.logs || []) : logs;
     const targets = mode === 'consecutive' ? belowIndices.slice(0, consecutiveCount) : belowIndices;
     targets.forEach((j, offset) => {
         const newNum = currentNum + offset + 1;
-        logs[j].code = padLen > 0 ? newNum.toString().padStart(padLen, '0') : newNum.toString();
+        targetLogs[j].code = padLen > 0 ? newNum.toString().padStart(padLen, '0') : newNum.toString();
     });
-    save();
-    renderAll();
+    if (isHV) { renderHistoryViewer(); } else { save(); renderAll(); }
 }
