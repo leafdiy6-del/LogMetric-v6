@@ -1857,7 +1857,7 @@ body.volume-warning .kb-field.active {
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-    z-index: 3000;
+    z-index: 6000;
     align-items: flex-end;
 }
 .row-action-overlay.show {
