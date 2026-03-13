@@ -118,6 +118,16 @@
     box-shadow: inset 1px 1px 2px rgba(0,0,0,0.04);
 }
 
+/* 白天模式下保留危险色（覆盖各容器内的通用 input 颜色规则） */
+[data-theme="light"] input.danger-text,
+[data-theme="light"] input.dia-danger-text,
+[data-theme="light"] .log-row input.danger-text,
+[data-theme="light"] .log-row input.dia-danger-text,
+[data-theme="light"] .log-card input.danger-text,
+[data-theme="light"] .log-card input.dia-danger-text {
+    color: var(--danger-color) !important;
+}
+
 [data-theme="light"] input:focus,
 [data-theme="light"] select:focus {
     border-color: var(--accent-color) !important;

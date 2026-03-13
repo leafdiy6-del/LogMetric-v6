@@ -872,8 +872,12 @@ function createHistoryViewerRow(log, idx) {
 
     const len_m = parseFloat(cleanInput((log.length || '').toString()));
     const d_cm = parseFloat(cleanInput((log.diameter || '').toString()));
-    const warnClass = (len_m > 15) ? 'danger-text' : '';
-    const diaDangerClass = (d_cm >= 200 && d_cm < 1000) ? 'dia-danger-text' : '';
+    const lenStr = (log.length || '').toString().trim();
+    const diaStr = (log.diameter || '').toString().trim();
+    const lenMissingDecimal = /^\d+$/.test(lenStr) && lenStr.length >= 2 && lenStr.startsWith('2');
+    const diaMissingDecimal = /^\d+$/.test(diaStr) && (diaStr.length === 1 || (diaStr.length === 3 && !diaStr.startsWith('1')));
+    const warnClass = ((len_m > 15 && !lenStr.startsWith('1')) || lenMissingDecimal) ? 'danger-text' : '';
+    const diaDangerClass = ((d_cm >= 200 && d_cm < 1000) || diaMissingDecimal) ? 'dia-danger-text' : '';
     const displayLen = log.length ? (parseFloat(log.length) || log.length) : '';
     const displayDia = log.diameter ? (parseFloat(log.diameter) || log.diameter) : '';
     const vol = (log.volume != null && !isNaN(log.volume)) ? formatVolumeForDisplay(log.volume) : '0';
@@ -888,7 +892,7 @@ function createHistoryViewerRow(log, idx) {
             <div class="row-index" ondblclick="openRowActionSheet(${log.id},'hv')" title="${currentLang === 'zh' ? '双击操作菜单' : (currentLang === 'en' ? 'Double-tap for row actions' : 'Dvojni klik za dejanja')}" style="cursor:pointer;">${idx}</div>
             <input type="text" data-field="code" value="${escapeAttr(log.code || '')}" oninput="updateHistoryViewerItem(${log.id},'code',this.value)">
             <div class="hv-grade-cell" oncontextmenu="handleGradeLabelEditByGrade('${(log.grade || '').replace(/'/g, "\\'")}', event); return false" ondblclick="handleGradeLabelEditByGrade('${(log.grade || '').replace(/'/g, "\\'")}', event)" title="${currentLang === 'zh' ? '双击可修改等级按钮文字' : (currentLang === 'en' ? 'Double-click to change grade button label' : 'Dvojni klik za spremembo')}"><select onchange="updateHistoryViewerItem(${log.id},'grade',this.value)">${gradeOptions}</select></div>
-            <input type="text" data-field="length" class="${warnClass}" inputmode="decimal" value="${escapeAttr(displayLen)}" oninput="updateHistoryViewerItem(${log.id},'length',this.value)" onblur="autoFixHistoryViewerInput(this)">
+            <input type="text" data-field="length" class="${warnClass}" inputmode="decimal" value="${escapeAttr(displayLen)}" oninput="handleHvQuickLength(this,${log.id})" onblur="autoFixHistoryViewerInput(this)">
             <input type="text" data-field="diameter" class="${diaDangerClass}" inputmode="decimal" value="${escapeAttr(displayDia)}" oninput="updateHistoryViewerItem(${log.id},'diameter',this.value);toggleDiaDangerClass(this)" onblur="autoFixHistoryViewerInput(this)">
             <div class="col-vol" id="hv-v-row-${log.id}">${vol}</div>
             <input type="text" data-field="note" style="font-size:12px;color:#aaa;text-align:left;" value="${escapeAttr(log.note || '')}" oninput="updateHistoryViewerItem(${log.id},'note',this.value)">
@@ -935,9 +939,10 @@ function updateHistoryViewerItem(id, field, value) {
         if (row) {
             const lenInput = row.querySelector('input[data-field="length"]');
             if (lenInput) {
-                const len_m = parseFloat(cleanInput((item.length || '').toString()));
-                if (len_m > 15) lenInput.classList.add('danger-text');
-                else lenInput.classList.remove('danger-text');
+                const lenStr2 = (item.length || '').toString().trim();
+                const len_m2 = parseFloat(cleanInput(lenStr2));
+                const lenWarn = (len_m2 > 15 && !lenStr2.startsWith('1')) || (/^\d+$/.test(lenStr2) && lenStr2.length >= 2 && lenStr2.startsWith('2'));
+                lenInput.classList.toggle('danger-text', lenWarn);
             }
         }
         updateHistoryViewerStats();
@@ -2069,13 +2074,18 @@ function handleQuickLength(input) {
     let val = input.value;
     if (!val) return;
 
-    // 情况1：纯数字（如 35、125）自动补小数点并跳转
+    // 情况1：纯数字自动补小数点并跳转
     if (appSettings.quickModeAutoDecimal && /^\d+$/.test(val)) {
-        if (val.startsWith('1')) return;
-        let num = parseInt(val);
         let newVal = null;
-        if (num >= 20 && num <= 99) newVal = (num / 10).toString();
-        else if (num >= 101 && num <= 159) newVal = (num / 10).toString();
+        if (!val.startsWith('1')) {
+            // 非1开头：2位数（20-99）→ 自动加小数点，如 35→3.5
+            let num = parseInt(val);
+            if (val.length === 2 && num >= 20 && num <= 99) newVal = (num / 10).toString();
+        } else {
+            // 1开头：3位数 → 第2位后插入小数点，如 123→12.3
+            if (val.length === 3) newVal = val[0] + val[1] + '.' + val[2];
+            // 1-2位时继续等待，不触发
+        }
 
         if (newVal) {
             input.value = newVal;
@@ -2090,6 +2100,35 @@ function handleQuickLength(input) {
     if (appSettings.quickModeAutoJump && /^\d+\.\d+$/.test(val)) {
         jumpLengthToDia();
     }
+}
+
+// 历史记录列表编辑模式的长度快速输入（负责全部更新逻辑，仅此一次调用 updateHistoryViewerItem）
+function handleHvQuickLength(input, logId) {
+    let val = input.value;
+    if (!val) return;
+
+    let finalVal = val;
+
+    if (appSettings.quickModeAutoDecimal && /^\d+$/.test(val)) {
+        let newVal = null;
+        if (!val.startsWith('1')) {
+            let num = parseInt(val);
+            if (val.length === 2 && num >= 20 && num <= 99) newVal = (num / 10).toString();
+        } else {
+            if (val.length === 3) newVal = val[0] + val[1] + '.' + val[2];
+        }
+        if (newVal) {
+            input.value = newVal;
+            finalVal = newVal;
+            const row = input.closest('.log-row');
+            if (row) {
+                const diaInput = row.querySelector('input[data-field="diameter"]');
+                if (diaInput) diaInput.focus();
+            }
+        }
+    }
+
+    updateHistoryViewerItem(logId, 'length', finalVal);
 }
 
 function jumpLengthToDia() {
@@ -2350,7 +2389,7 @@ function createCard(log, idx) {
             `;
     } else {
         diaInputHtml = `
-                <input type="text" inputmode="decimal" value="${log.diameter}" data-id="${log.id}" data-field="diameter" oninput="updateItem(${log.id},'diameter',this.value); handleQuickDiameterSingle(this)" onblur="autoFixInput(this)">
+                <input type="text" inputmode="decimal" value="${log.diameter}" data-id="${log.id}" data-field="diameter" oninput="updateItem(${log.id},'diameter',this.value); handleQuickDiameterSingle(this); toggleDiaDangerClass(this)" onblur="autoFixInput(this)">
             `;
     }
 
@@ -2396,8 +2435,9 @@ function createRow(log, idx) {
     const d_cm = parseFloat(cleanInput(log.diameter.toString()));
     div.setAttribute('data-len', len_m || 0);
     div.setAttribute('data-dia', d_cm || 0);
-    const warnClass = (len_m > 15) ? 'danger-text' : '';
-    const diaDangerClass = (d_cm >= 200 && d_cm < 1000) ? 'dia-danger-text' : '';
+    const warnClass = (len_m > 15 && !log.length.toString().trim().startsWith('1')) ? 'danger-text' : '';
+    const diaStr2 = log.diameter.toString().trim();
+    const diaDangerClass = ((d_cm >= 200 && d_cm < 1000) || (/^\d+$/.test(diaStr2) && (diaStr2.length === 1 || (diaStr2.length === 3 && !diaStr2.startsWith('1'))))) ? 'dia-danger-text' : '';
 
     const displayLen = log.length ? parseFloat(log.length) : '';
     const displayDia = log.diameter ? parseFloat(log.diameter) : '';
@@ -2431,9 +2471,11 @@ function createRow(log, idx) {
 }
 
 function toggleDiaDangerClass(input) {
-    const v = parseFloat(cleanInput((input.value || '').toString()));
-    const isDanger = !isNaN(v) && v >= 200 && v < 1000;
-    input.classList.toggle('dia-danger-text', isDanger);
+    const val = (input.value || '').toString().trim();
+    const v = parseFloat(cleanInput(val));
+    const isPureDanger = !isNaN(v) && v >= 200 && v < 1000;
+    const isMissingDecimal = /^\d+$/.test(val) && (val.length === 1 || (val.length === 3 && !val.startsWith('1')));
+    input.classList.toggle('dia-danger-text', isPureDanger || isMissingDecimal);
 }
 function toggleMarkMode() { isMarkMode = !isMarkMode; document.body.classList.toggle('mark-mode', isMarkMode); }
 function updateGroupBtnUI() {

@@ -647,15 +647,15 @@ body.history-viewer-open {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+    padding: 10px calc(20px + env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) calc(20px + env(safe-area-inset-left, 0px));
     font-weight: 700;
     background: var(--bg-secondary);
     border-top: 1px solid var(--border-subtle);
     flex-shrink: 0;
-    gap: 8px;
+    gap: 0;
 }
-.history-viewer-stats .stats-group-cell { flex: 0 0 auto; }
-.history-viewer-stats .stats-total-cell,
+.history-viewer-stats .stats-group-cell { flex: 1; text-align: left; padding-left: 0.5em; }
+.history-viewer-stats .stats-total-cell { flex: 1; text-align: center; transform: translateX(-26px); }
 .history-viewer-stats .stats-vol-cell { flex: 1; text-align: center; }
 .history-viewer-stats span {
     font-size: 13px;
