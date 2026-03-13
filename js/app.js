@@ -2487,6 +2487,8 @@ function handleGroupRowClick(e, id) {
 }
 function ungroupLog(id) {
     const log = logs.find(l => l.id === id); if (!log || !log.groupId) return;
+    const msg = currentLang === 'zh' ? '取消此分组？' : (currentLang === 'en' ? 'Remove this group?' : 'Odstraniti skupino?');
+    if (!confirm(msg)) return;
     const gid = log.groupId;
     logs.forEach(l => { if (l.groupId === gid) delete l.groupId; });
     save();
