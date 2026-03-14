@@ -386,11 +386,37 @@
                         <option value="sl">Slovenščina</option>
                     </select>
                 </div>
+                <div class="setting-row">
+                    <span class="setting-label"><span data-i18n="show_grade">显示等级</span> <button type="button"
+                            class="btn-help" onclick="showHelp('show_grade')" title="帮助"
+                            aria-label="帮助">?</button></span>
+                    <label class="switch"><input type="checkbox" id="checkShowGrade" checked
+                            onchange="toggleGradeDisplay()"><span class="slider"></span></label>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label"><span data-i18n="calc_dia">双径模式 (计算平均值)</span> <button type="button"
+                            class="btn-help" onclick="showHelp('calc_dia')" title="帮助" aria-label="帮助">?</button></span>
+                    <label class="switch"><input type="checkbox" id="checkCalcDia" onchange="toggleCalcDia()"><span
+                            class="slider"></span></label>
+                </div>
+                <div class="setting-row" id="roundModeRow" style="display:none;">
+                    <span class="setting-label"><span data-i18n="round_mode">进位模式 (.5的处理)</span> <button type="button"
+                            class="btn-help" onclick="showHelp('round_mode')" title="帮助"
+                            aria-label="帮助">?</button></span>
+                    <select id="roundSelect" class="setting-select" onchange="saveSettings()">
+                        <option value="up" data-i18n="round_up">上进位 (40.5→41)</option>
+                        <option value="down" data-i18n="round_down">下舍去 (40.5→40)</option>
+                        <option value="mix" data-i18n="round_mix">混合 (轮流)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="setting-group">
+                <div class="setting-desc" data-i18n="quick_mode">快速模式 <button type="button" class="btn-help"
+                        onclick="showHelp('quick_mode')" title="帮助" aria-label="帮助">?</button></div>
                 <div class="setting-row setting-row-quick-mode" id="quickModeRow">
                     <span class="setting-label" style="cursor:pointer;display:flex;align-items:center;gap:4px;"
                         onclick="toggleQuickModeExpand()" title="点击展开/收起"><span data-i18n="quick_mode">快速模式</span>
-                        <button type="button" class="btn-help" onclick="showHelp('quick_mode');event.stopPropagation()"
-                            title="帮助" aria-label="帮助">?</button> <i data-lucide="chevron-down" id="quickModeExpandIcon"
+                        <i data-lucide="chevron-down" id="quickModeExpandIcon"
                             style="width:16px;height:16px;transition:transform 0.2s;"></i></span>
                     <button id="quickModeBtn" class="toggle-btn" onclick="toggleQuickMode();event.stopPropagation()"><i
                             data-lucide="zap" style="width:20px;height:20px;"></i><span
@@ -418,33 +444,12 @@
                                 onchange="saveQuickModeOptions()"><span class="slider"></span></label>
                     </div>
                 </div>
+            </div>
+            <div class="setting-group">
+                <div class="setting-desc" data-i18n="formula_group_title">计算公式 <button type="button" class="btn-help"
+                        onclick="showHelp('formula_enable')" title="帮助" aria-label="帮助">?</button></div>
                 <div class="setting-row">
-                    <span class="setting-label"><span data-i18n="show_grade">显示等级</span> <button type="button"
-                            class="btn-help" onclick="showHelp('show_grade')" title="帮助"
-                            aria-label="帮助">?</button></span>
-                    <label class="switch"><input type="checkbox" id="checkShowGrade" checked
-                            onchange="toggleGradeDisplay()"><span class="slider"></span></label>
-                </div>
-                <div class="setting-row">
-                    <span class="setting-label"><span data-i18n="calc_dia">双径模式 (计算平均值)</span> <button type="button"
-                            class="btn-help" onclick="showHelp('calc_dia')" title="帮助" aria-label="帮助">?</button></span>
-                    <label class="switch"><input type="checkbox" id="checkCalcDia" onchange="toggleCalcDia()"><span
-                            class="slider"></span></label>
-                </div>
-                <div class="setting-row" id="roundModeRow" style="display:none;">
-                    <span class="setting-label"><span data-i18n="round_mode">进位模式 (.5的处理)</span> <button type="button"
-                            class="btn-help" onclick="showHelp('round_mode')" title="帮助"
-                            aria-label="帮助">?</button></span>
-                    <select id="roundSelect" class="setting-select" onchange="saveSettings()">
-                        <option value="up" data-i18n="round_up">上进位 (40.5→41)</option>
-                        <option value="down" data-i18n="round_down">下舍去 (40.5→40)</option>
-                        <option value="mix" data-i18n="round_mix">混合 (轮流)</option>
-                    </select>
-                </div>
-                <div class="setting-row">
-                    <span class="setting-label" data-i18n="formula_enable">启用自定义体积计算公式 <button type="button"
-                            class="btn-help" onclick="showHelp('formula_enable')" title="帮助"
-                            aria-label="帮助">?</button></span>
+                    <span class="setting-label" data-i18n="formula_enable">启用自定义体积计算公式</span>
                     <label class="switch"><input type="checkbox" id="formulaEnabled"
                             onchange="toggleFormulaEnabled()"><span class="slider"></span></label>
                 </div>
@@ -466,6 +471,7 @@
                         <option value="3" data-i18n="volume_decimals_3">3位 (如 1.277)</option>
                     </select>
                 </div>
+
             </div>
             <div class="setting-group">
                 <div class="setting-desc" data-i18n="pro_kb_title">专业虚拟键盘 <button type="button" class="btn-help"
