@@ -1244,7 +1244,8 @@ body.mark-mode .mark-cell .mark-overlay { pointer-events: auto; }
 .settings-close-x {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--text-secondary);
+    color: var(--text-secondary) !important;
+    -webkit-text-fill-color: var(--text-secondary) !important;
     border-radius: 50%;
     width: 32px;
     height: 32px;
@@ -1261,7 +1262,8 @@ body.mark-mode .mark-cell .mark-overlay { pointer-events: auto; }
 [data-theme="light"] .settings-close-x {
     background: rgba(0, 0, 0, 0.05);
     border-color: rgba(0, 0, 0, 0.05);
-    color: var(--text-tertiary);
+    color: var(--text-tertiary) !important;
+    -webkit-text-fill-color: var(--text-tertiary) !important;
 }
 
 .settings-close-x:hover {
