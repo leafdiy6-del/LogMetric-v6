@@ -2089,8 +2089,8 @@ function handleQuickLength(input) {
 
         if (newVal) {
             input.value = newVal;
-            if (logs.length > 0) logs[0].length = newVal;
-            updateItem(logs[0].id, 'length', newVal);
+            const logId = parseInt(input.getAttribute('data-id'));
+            if (!isNaN(logId)) updateItem(logId, 'length', newVal);
             if (appSettings.quickModeAutoJump) jumpLengthToDia();
         }
         return;
