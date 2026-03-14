@@ -207,7 +207,6 @@ body.pro-kb-collapsed .footer {
 }
 
 .btn-header:hover {
-    transform: translateY(-2px);
     background: linear-gradient(135deg, rgba(212, 163, 115, 0.25) 0%, rgba(212, 163, 115, 0.1) 100%);
     box-shadow: 0 6px 12px rgba(212, 163, 115, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
@@ -1095,7 +1094,6 @@ body.mark-mode .mark-cell .mark-overlay { pointer-events: auto; }
 .stat-tag:hover {
     background: rgba(212, 163, 115, 0.12);
     border-color: rgba(212, 163, 115, 0.25);
-    transform: translateY(-1px);
 }
 
 .stat-tag.active-filter { 

@@ -701,14 +701,15 @@ function openSnapshotHistory() {
     // 创建历史记录列表
     const historyContent = snapshots.map(snap => {
         const isCurrent = snap.id === currentSessionId;
-        const bgColor = isCurrent ? 'rgba(212,163,115,0.2)' : '#1a1a1a';
-        const border = isCurrent ? '2px solid var(--accent-color)' : '1px solid #333';
+        const bgColor = isCurrent ? 'rgba(212,163,115,0.2)' : 'var(--surface-secondary)';
+        const hoverBg = isCurrent ? 'rgba(212,163,115,0.3)' : 'var(--surface-primary)';
+        const border = isCurrent ? '2px solid var(--accent-color)' : '1px solid var(--border-color)';
         const badge = isCurrent ? '<span style="color:var(--accent-color);font-weight:600;margin-left:10px;"><i data-lucide="circle-dot" style="width:14px;height:14px;display:inline-block;vertical-align:middle;"></i> 当前</span>' : '';
 
         return `
                 <div style="background:${bgColor};padding:15px;margin:10px 0;border-radius:8px;border:${border};cursor:pointer;" 
                      onclick="openHistoryViewer('${snap.id}')" 
-                     onmouseover="this.style.background='rgba(212,163,115,0.1)'" 
+                     onmouseover="this.style.background='${hoverBg}'" 
                      onmouseout="this.style.background='${bgColor}'">
                     <div style="display:flex;justify-content:space-between;align-items:center;">
                         <div>
@@ -1097,7 +1098,7 @@ function openExportProjectModal() {
         const isCurrent = snap.id === currentSessionId;
         const badge = isCurrent ? '<span style="color:var(--accent-color);font-weight:600;margin-left:8px;"><i data-lucide="circle-dot" style="width:14px;height:14px;display:inline-block;vertical-align:middle;"></i> 当前</span>' : '';
         return `
-                <div class="export-record-item" style="display:flex;align-items:center;gap:12px;padding:12px 15px;margin:8px 0;background:#1a1a1a;border-radius:8px;border:1px solid #333;">
+                <div class="export-record-item" style="display:flex;align-items:center;gap:12px;padding:12px 15px;margin:8px 0;background:var(--surface-secondary);border-radius:8px;border:1px solid var(--border-color);">
                     <label style="display:flex;align-items:center;cursor:pointer;flex-shrink:0;">
                         <input type="checkbox" class="export-record-cb export-select-cb" data-id="${snap.id}">
                     </label>
