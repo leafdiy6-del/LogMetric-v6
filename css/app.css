@@ -1194,6 +1194,75 @@ body.mark-mode .mark-cell .mark-overlay { pointer-events: auto; }
     align-items: center; 
 }
 
+/* 设置弹窗：适配吸顶标题栏 */
+#settingsModal .modal-card {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* 卡片本身不滚动，让内部 wrapper 滚动 */
+}
+
+#settingsModal .modal-title {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    margin-bottom: 0;
+    padding: 20px 24px;
+    border-radius: 24px 24px 0 0;
+    background: linear-gradient(145deg, #252a28, #1f2422);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+/* 白天模式标题栏背景 */
+[data-theme="light"] #settingsModal .modal-title {
+    background: #FFFFFF;
+}
+
+.title-text-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.settings-content-wrapper {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+    -webkit-overflow-scrolling: touch;
+}
+
+.settings-close-x {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+[data-theme="light"] .settings-close-x {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.05);
+    color: var(--text-tertiary);
+}
+
+.settings-close-x:hover {
+    background: rgba(212, 163, 115, 0.2);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
 .info-row { 
     margin-bottom: 15px; 
 }

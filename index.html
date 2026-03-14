@@ -362,8 +362,8 @@
 
     <div id="settingsModal" class="modal-overlay">
         <div class="modal-card">
-            <div class="modal-title"><i data-lucide="settings" class="modal-title-icon"></i><span
-                    data-i18n="settings_title">设置</span></div>
+            <div class="modal-title"><span class="title-text-group"><i data-lucide="settings" class="modal-title-icon"></i><span data-i18n="settings_title">设置</span></span><button type="button" class="settings-close-x" onclick="document.getElementById('settingsModal').style.display='none'" aria-label="关闭">×</button></div>
+            <div class="settings-content-wrapper">
             <div class="setting-group">
                 <div class="setting-row">
                     <span class="setting-label"><span data-i18n="theme_label">夜间/白天模式</span> <button type="button"
@@ -642,9 +642,7 @@
                     </div>
                 </div>
             </div>
-            <button class="btn-block settings-modal-close"
-                onclick="document.getElementById('settingsModal').style.display='none'"
-                data-i18n="btn_close">关闭</button>
+            </div>
         </div>
     </div>
 
