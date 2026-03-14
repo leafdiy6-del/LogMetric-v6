@@ -2453,12 +2453,12 @@ function createRow(log, idx) {
             </div>
             <div class="mark-cell ${markLen ? 'marked' : ''}" data-id="${log.id}" data-field="length">
                 <span class="mark-symbol">↑</span>
-                <input type="text" data-field="length" id="inp-len-${log.id}" class="${warnClass}" inputmode="decimal" value="${displayLen}" oninput="updateItem(${log.id},'length',this.value)" onblur="autoFixInput(this)">
+                <input type="text" data-id="${log.id}" data-field="length" id="inp-len-${log.id}" class="${warnClass}" inputmode="decimal" value="${displayLen}" oninput="updateItem(${log.id},'length',this.value); handleQuickLength(this)" onblur="autoFixInput(this)">
                 <div class="mark-overlay" onclick="handleMarkCellClick(event, ${log.id}, 'length')"></div>
             </div>
             <div class="mark-cell ${markDia ? 'marked' : ''}" data-id="${log.id}" data-field="diameter">
                 <span class="mark-symbol">↑</span>
-                <input type="text" data-field="diameter" class="${diaDangerClass}" inputmode="decimal" value="${displayDia}" oninput="updateItem(${log.id},'diameter',this.value);toggleDiaDangerClass(this)" onblur="autoFixInput(this)">
+                <input type="text" data-id="${log.id}" data-field="diameter" class="${diaDangerClass}" inputmode="decimal" value="${displayDia}" oninput="updateItem(${log.id},'diameter',this.value);toggleDiaDangerClass(this)" onblur="autoFixInput(this)">
                 <div class="mark-overlay" onclick="handleMarkCellClick(event, ${log.id}, 'diameter')"></div>
             </div>
             <div class="col-vol" id="v-row-${log.id}">${formatVolumeForDisplay(log.volume)}</div>
