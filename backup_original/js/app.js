@@ -2091,13 +2091,13 @@ function handleQuickLength(input) {
             input.value = newVal;
             const logId = parseInt(input.getAttribute('data-id'));
             if (!isNaN(logId)) updateItem(logId, 'length', newVal);
-            if (appSettings.quickModeAutoJump && input.closest('.log-card')) jumpLengthToDia();
+            if (appSettings.quickModeAutoJump) jumpLengthToDia();
         }
         return;
     }
 
     // 情况2：已带小数点（如 3.5、12.5）直接跳转到直径
-    if (appSettings.quickModeAutoJump && input.closest('.log-card') && /^\d+\.\d+$/.test(val)) {
+    if (appSettings.quickModeAutoJump && /^\d+\.\d+$/.test(val)) {
         jumpLengthToDia();
     }
 }
@@ -2120,6 +2120,11 @@ function handleHvQuickLength(input, logId) {
         if (newVal) {
             input.value = newVal;
             finalVal = newVal;
+            const row = input.closest('.log-row');
+            if (row) {
+                const diaInput = row.querySelector('input[data-field="diameter"]');
+                if (diaInput) diaInput.focus();
+            }
         }
     }
 

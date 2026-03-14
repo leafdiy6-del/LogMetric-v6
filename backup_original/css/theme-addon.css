@@ -349,26 +349,6 @@
     border-bottom-color: var(--border-color);
 }
 
-/* 内部记录 - 信息按钮白天模式：白底黑字 */
-[data-theme="light"] .hv-info-btn {
-    background: #FFFFFF !important;
-    color: #000000 !important;
-    border: 1px solid var(--border-color) !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    font-weight: 600;
-}
-
-[data-theme="light"] .hv-info-btn:hover {
-    background: #FAFAFA !important;
-    border-color: var(--accent-color) !important;
-}
-
-[data-theme="light"] .hv-info-btn.active {
-    background: var(--accent-color) !important;
-    color: #FFFFFF !important;
-    border-color: var(--accent-color) !important;
-}
-
 /* Fix pro keyboard in light mode */
 [data-theme="light"] .pro-kb {
     background: var(--surface-primary);
