@@ -573,20 +573,23 @@ body.history-viewer-open {
     padding: 6px 10px;
     font-size: 12px;
     border-radius: 6px;
-    border: 1px solid #555;
-    background: #333;
-    color: #fff;
+    border: 1px solid var(--border-color);
+    background: var(--surface-secondary);
+    color: var(--text-secondary);
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .hv-info-btn:hover {
-    background: #444;
+    background: var(--surface-primary);
+    border-color: var(--accent-color);
+    color: var(--accent-color);
 }
 
 .hv-info-btn.active {
-    background: var(--accent-color);
-    color: #111;
-    border-color: var(--accent-color);
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: #000;
+    border-color: transparent;
 }
 
 /* body 作为主滚动容器，避免 iOS Safari 在深层嵌套 flex 中滚动失效 */
@@ -1219,11 +1222,11 @@ body.mark-mode .mark-cell .mark-overlay { pointer-events: auto; }
     color: var(--accent-color) !important;
 }
 
-/* 白天模式标题栏强制重置 */
+/* 白天模式标题栏 - 使用金黄色主题色 */
 [data-theme="light"] #settingsModal .modal-title {
     background: #FFFFFF;
-    -webkit-text-fill-color: var(--text-main) !important;
-    color: var(--text-main) !important;
+    -webkit-text-fill-color: var(--accent-color) !important;
+    color: var(--accent-color) !important;
 }
 
 .title-text-group {
@@ -1258,10 +1261,10 @@ body.mark-mode .mark-cell .mark-overlay { pointer-events: auto; }
 }
 
 [data-theme="light"] .settings-close-x {
-    background: rgba(0, 0, 0, 0.05);
-    border-color: rgba(0, 0, 0, 0.05);
-    color: var(--text-tertiary) !important;
-    -webkit-text-fill-color: var(--text-tertiary) !important;
+    background: rgba(184, 149, 107, 0.08);
+    border-color: rgba(184, 149, 107, 0.2);
+    color: var(--accent-color) !important;
+    -webkit-text-fill-color: var(--accent-color) !important;
 }
 
 .settings-close-x:hover {
@@ -2027,6 +2030,63 @@ body.volume-warning .kb-field.active {
     text-align: center;
     padding: 2px 20px 10px;
     display: none;
+}
+
+/* ============================================================================================================================================
+   集装箱号/号切换按钮样式 (Container Number Toggle Button)
+   ============================================================================================================================================ */
+.container-controls {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+}
+
+.container-controls input {
+    flex: 1;
+    min-width: 0;
+}
+
+.btn-container-toggle {
+    flex-shrink: 0;
+    padding: 0 12px;
+    height: 44px;
+    font-size: 14px;
+    font-weight: 600;
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--accent-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-container-toggle:hover {
+    background: rgba(212, 163, 115, 0.15);
+    border-color: var(--accent-color);
+}
+
+.btn-container-toggle.active {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: #000;
+    border-color: transparent;
+}
+
+/* 白天模式样式 */
+[data-theme="light"] .btn-container-toggle {
+    background: var(--surface-secondary);
+    border-color: var(--border-color);
+    color: var(--accent-color);
+}
+
+[data-theme="light"] .btn-container-toggle:hover {
+    background: rgba(184, 149, 107, 0.15);
+    border-color: var(--accent-color);
+}
+
+[data-theme="light"] .btn-container-toggle.active {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: #fff;
 }
 
 /* ========================================================================

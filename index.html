@@ -224,6 +224,9 @@
                 <span><span data-i18n="modal_info_title">项目信息</span> <button type="button" class="btn-help"
                         onclick="showHelp('modal_info')" title="帮助" aria-label="帮助">?</button></span>
                 <span class="modal-title-actions">
+                    <button type="button" class="btn-title-action" id="containerToggleBtn" onclick="toggleContainerMode()" title="切换集装箱号/号模式">
+                        <span id="containerToggleLabel">号</span>
+                    </button>
                     <button type="button" class="btn-title-action" onclick="downloadFullBackup(); closeInfoModal();"
                         title="备份资料到文件" aria-label="备份资料到文件"><i data-lucide="archive" class="btn-icon"></i><span
                             data-i18n="btn_backup">备份资料</span></button>
@@ -237,7 +240,9 @@
                 <div class="info-field info-field-narrow">
                     <label data-i18n="container">集装箱号 <button type="button" class="btn-help"
                             onclick="showHelp('container')" title="帮助" aria-label="帮助">?</button></label>
-                    <div class="info-controls"><input type="text" id="g_container" oninput="updateGlobal()"></div>
+                    <div class="info-controls">
+                        <input type="text" id="g_container" oninput="updateGlobal()">
+                    </div>
                 </div>
                 <div class="info-field info-field-wide">
                     <label data-i18n="note_global">整单备注 <button type="button" class="btn-help"

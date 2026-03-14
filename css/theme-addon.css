@@ -697,3 +697,22 @@
     border-color: #c62828 !important;
     box-shadow: 0 0 8px rgba(200, 40, 40, 0.25) !important;
 }
+
+/* 内部记录编辑模式 - 信息按钮 白天模式 */
+[data-theme="light"] .hv-info-btn {
+    background: var(--surface-secondary);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .hv-info-btn:hover {
+    background: var(--surface-primary);
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+[data-theme="light"] .hv-info-btn.active {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: #fff;
+    border-color: transparent;
+}

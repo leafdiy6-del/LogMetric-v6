@@ -142,6 +142,7 @@ let activeFilter = null;
 let currentLang = 'zh';
 let isQuickMode = false;
 let nextRoundUp = true;
+let isContainerNumberMode = false; // 集装箱号模式(false) / 号模式(true)
 
 /* ----------------------------------------------------------------------------
    [2.4] 会话与快照管理 (Session & Snapshot Management)
@@ -325,6 +326,34 @@ function saveSellerDetailModal() {
     sellerModalContext = 'main';
     sellerModalIsNew = false;
     sellerModalOriginal = null;
+}
+
+function toggleContainerMode() {
+    isContainerNumberMode = !isContainerNumberMode;
+    const btn = document.getElementById('containerToggleBtn');
+    const label = document.getElementById('containerToggleLabel');
+    const containerLabel = document.querySelector('label[data-i18n="container"]');
+    
+    if (btn && label) {
+        if (isContainerNumberMode) {
+            btn.classList.add('active');
+            label.textContent = '号';
+            // 修改标签为"号"
+            if (containerLabel) {
+                const helpBtn = containerLabel.querySelector('.btn-help');
+                containerLabel.innerHTML = `号 ${helpBtn ? helpBtn.outerHTML : ''}`;
+            }
+        } else {
+            btn.classList.remove('active');
+            label.textContent = '号';
+            // 恢复标签为"集装箱号"
+            if (containerLabel) {
+                const helpBtn = containerLabel.querySelector('.btn-help');
+                containerLabel.innerHTML = `集装箱号 ${helpBtn ? helpBtn.outerHTML : ''}`;
+            }
+        }
+    }
+    haptic();
 }
 
 function onDomReady(fn) {
@@ -2928,6 +2957,11 @@ function resetLogOnly() {
     if (!confirm(I18N[currentLang].confirm_reset || I18N[currentLang].btn_new + '?')) return;
     // 确认后先保存当前数据到内部记录（如有数据）
     const hasData = logs.length > 1 || (logs.length === 1 && (logs[0]?.length || logs[0]?.diameter));
+    
+    // 保存当前集装箱号/号值用于后续自动递增
+    const currentContainerValue = document.getElementById('g_container')?.value || '';
+    const nextContainerValue = isContainerNumberMode && currentContainerValue ? (parseInt(currentContainerValue) + 1).toString() : '';
+    
     if (hasData) {
         if (!currentSessionId) {
             const today = new Date();
@@ -2953,7 +2987,18 @@ function resetLogOnly() {
     globalInfo.container = '';
     globalInfo.note = '';
     globalInfo.description = '';
-    document.getElementById('g_container').value = '';
+    
+    // 如果是号模式，自动设置下一个号
+    const gContainer = document.getElementById('g_container');
+    if (gContainer) {
+        if (isContainerNumberMode && nextContainerValue) {
+            gContainer.value = nextContainerValue;
+            globalInfo.container = nextContainerValue;
+        } else {
+            gContainer.value = '';
+        }
+    }
+    
     const gNote = document.getElementById('g_note');
     if (gNote) gNote.value = '';
     const gDesc = document.getElementById('g_description');
