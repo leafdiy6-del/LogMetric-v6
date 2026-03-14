@@ -1214,11 +1214,18 @@ body.mark-mode .mark-cell .mark-overlay { pointer-events: auto; }
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--border-subtle);
+    /* 强制重置继承自 .modal-title 的背景裁剪和文字透明 */
+    -webkit-background-clip: border-box !important;
+    background-clip: border-box !important;
+    -webkit-text-fill-color: var(--accent-color) !important;
+    color: var(--accent-color) !important;
 }
 
-/* 白天模式标题栏背景 */
+/* 白天模式标题栏强制重置 */
 [data-theme="light"] #settingsModal .modal-title {
     background: #FFFFFF;
+    -webkit-text-fill-color: var(--text-main) !important;
+    color: var(--text-main) !important;
 }
 
 .title-text-group {
