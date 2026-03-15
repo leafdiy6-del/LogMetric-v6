@@ -485,3 +485,21 @@ body.landscape.pro-kb-enabled .list-header {
     font-size: 15px;
 }
 
+/* 横屏虚拟键盘：最新一行与其它列表行一致（正文用 text-primary，体积用 accent 黄） */
+body.landscape.pro-kb-enabled .log-row.latest:not(.grouped) {
+    color: var(--text-primary);
+}
+body.landscape.pro-kb-enabled .log-row.latest:not(.grouped) input,
+body.landscape.pro-kb-enabled .log-row.latest:not(.grouped) select,
+body.landscape.pro-kb-enabled .log-row.latest:not(.grouped) .row-index {
+    color: var(--text-primary) !important;
+}
+body.landscape.pro-kb-enabled .log-row.latest:not(.grouped) .col-vol {
+    color: var(--accent-color) !important;
+}
+/* 最新一行也显示长度/直径警告红字（与其它行一致） */
+body.landscape.pro-kb-enabled .log-row.latest:not(.grouped) input.danger-text,
+body.landscape.pro-kb-enabled .log-row.latest:not(.grouped) input.dia-danger-text {
+    color: var(--danger-color) !important;
+}
+

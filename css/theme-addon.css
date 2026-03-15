@@ -613,6 +613,24 @@
     box-shadow: none !important;
 }
 
+/* 白天模式 + 横屏虚拟键盘：最新一行与其它行一致，体积为 accent 黄 */
+[data-theme="light"] body.landscape.pro-kb-enabled .log-row.latest:not(.grouped) {
+    color: var(--text-primary);
+}
+[data-theme="light"] body.landscape.pro-kb-enabled .log-row.latest:not(.grouped) input,
+[data-theme="light"] body.landscape.pro-kb-enabled .log-row.latest:not(.grouped) select,
+[data-theme="light"] body.landscape.pro-kb-enabled .log-row.latest:not(.grouped) .row-index {
+    color: var(--text-primary) !important;
+}
+[data-theme="light"] body.landscape.pro-kb-enabled .log-row.latest:not(.grouped) .col-vol {
+    color: var(--accent-color) !important;
+}
+/* 白天模式：最新一行的长度/直径警告也显示红色 */
+[data-theme="light"] body.landscape.pro-kb-enabled .log-row.latest:not(.grouped) input.danger-text,
+[data-theme="light"] body.landscape.pro-kb-enabled .log-row.latest:not(.grouped) input.dia-danger-text {
+    color: var(--danger-color) !important;
+}
+
 [data-theme="light"] .row-index {
     color: var(--text-tertiary);
 }
