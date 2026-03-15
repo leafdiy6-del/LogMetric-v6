@@ -1197,9 +1197,18 @@ function addNewLog(forceSave = false) {
         renderAll();
         activeFilter = null;
         applyFilter();
+        // 非专业键盘：在用户点击的同一调用栈内立刻聚焦长度框，便于手机弹出自带键盘
+        if (!appSettings.proKeyboard) {
+            const lenInputSync = document.querySelector(`.log-card .field input[data-field="length"]`);
+            if (lenInputSync) {
+                if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
+                lenInputSync.focus();
+                lenInputSync.click();
+            }
+        }
     }
 
-    const delay = appSettings.proKeyboard ? 100 : 180; // 非专业键盘稍长延迟，确保选等级后键盘不收起、能连续输入
+    const delay = appSettings.proKeyboard ? 100 : 0;
     setTimeout(() => {
         if (appSettings.proKeyboard) {
             proState.values.length = '';
@@ -1211,12 +1220,17 @@ function addNewLog(forceSave = false) {
             setProKeypadMode('num');
             setProActiveField('length');
         } else {
-            if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
             const lenInput = document.querySelector(`.log-card .field input[data-field="length"]`);
-            if (lenInput) {
-                lenInput.focus({ preventScroll: true });
-                lenInput.click();
-            }
+            if (!lenInput) return;
+            lenInput.focus();
+            lenInput.click();
+            // 部分机型需下一帧再触发一次才稳定弹出键盘
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    lenInput.focus();
+                    lenInput.click();
+                });
+            });
         }
     }, delay);
 }
