@@ -56,6 +56,7 @@
     --pro-kb-height: 360px;
     --pro-kb-collapsed-height: 70px;
     --footer-height: 100px;
+    --landscape-kb-width: 44vw;
 
     /* 设置区块间距（子选项块与父开关的间隔） */
     --spacing-setting-nested: 10px;
@@ -168,18 +169,17 @@ body.pro-kb-enabled #logList > .list-header {
     flex-shrink: 0;
 }
 
-.footer { 
-    position: fixed; 
-    bottom: 0; 
-    left: 0; 
-    right: 0; 
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     background: linear-gradient(180deg, rgba(30, 35, 33, 0.95) 0%, rgba(21, 26, 24, 0.98) 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-top: 1px solid rgba(212, 163, 115, 0.1);
-    padding-bottom: env(safe-area-inset-bottom); 
-    z-index: 110; 
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2); 
+    z-index: 110;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
 }
 
 body.pro-kb-collapsed .footer { 
@@ -1750,6 +1750,61 @@ body.pro-kb-collapsed .pro-kb-body {
 
 body.pro-kb-enabled .pro-kb {
     animation: keyboardSlideUp 0.3s ease;
+}
+
+/* ========================================================================
+   横屏虚拟键盘分屏布局
+   左列: Header + 列表 + Footer
+   右列: 虚拟键盘（占满全屏高度）
+   ======================================================================== */
+
+/* Header 仅覆盖左列 */
+body.landscape.pro-kb-enabled .header {
+    left: env(safe-area-inset-left, 0px);
+    right: var(--landscape-kb-width);
+}
+
+/* Footer 仅覆盖左列，始终贴底（不被键盘顶起） */
+body.landscape.pro-kb-enabled .footer {
+    left: env(safe-area-inset-left, 0px);
+    right: var(--landscape-kb-width);
+    bottom: 0;
+}
+
+/* logList 填满左列（header 下方到 footer 上方） */
+body.landscape.pro-kb-enabled #logList {
+    top: 56px;
+    left: env(safe-area-inset-left, 0px);
+    right: var(--landscape-kb-width);
+    bottom: var(--footer-height);
+}
+
+/* 横屏时键盘在右侧，不占底部空间 */
+body.landscape.pro-kb-enabled {
+    padding-bottom: 0;
+}
+
+/* 虚拟键盘：固定在右列，撑满全屏高度 */
+body.landscape.pro-kb-enabled .pro-kb {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: auto;
+    width: var(--landscape-kb-width);
+    height: 100vh;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    animation: none;
+    border-radius: 0;
+    border-top: none;
+    padding-bottom: 0;
+    padding-right: 0;
+}
+
+body.landscape.pro-kb-enabled .pro-kb-body {
+    flex: 1;
+    height: auto;
 }
 
 /* ========================================================================

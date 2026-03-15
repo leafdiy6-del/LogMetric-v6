@@ -418,7 +418,7 @@ window.onload = () => {
     if (!Array.isArray(appSettings.gradeLabels) || appSettings.gradeLabels.length !== 6) {
         appSettings.gradeLabels = [...GRADES];
     }
-    appSettings.useVirtualKeyboard = !!appSettings.proKeyboard;
+    appSettings.useVirtualKeyboard = false; // will be set by updateOrientation()
 
     if (!appSettings.priceByGrade) appSettings.priceByGrade = {};
     GRADES.forEach(g => { if (appSettings.priceByGrade[g] === undefined) appSettings.priceByGrade[g] = 0; });
@@ -500,7 +500,9 @@ window.onload = () => {
     updatePriceModeUI();
     updatePriceEnabledUI();
     updateCurrencySymbols();
-    applyProKeyboardUI();
+    window.addEventListener('orientationchange', updateOrientation);
+    window.addEventListener('resize', updateOrientation);
+    updateOrientation();
     updateKeySoundRowVisibility();
     if (logs.length === 0) addNewLog();
     updateGroupBtnUI();
@@ -1500,6 +1502,16 @@ function toggleGradeDisplay() {
     updateProSideState();
     if (!appSettings.showGrade && proState.keypadMode === 'grade') setProKeypadMode('num');
 }
+function isLandscape() {
+    return window.innerWidth > window.innerHeight;
+}
+function isProKeyboardEffective() {
+    return !!appSettings.proKeyboard && isLandscape();
+}
+function updateOrientation() {
+    document.body.classList.toggle('landscape', isLandscape());
+    applyProKeyboardUI();
+}
 function toggleProKeyboard() {
     appSettings.proKeyboard = !appSettings.proKeyboard;
     updateProKeyboardBtnUI();
@@ -1720,9 +1732,10 @@ function updateProKeyboardBtnUI() {
 
 function getActiveLog() { return logs.length > 0 ? logs[0] : null; }
 function applyProKeyboardUI() {
-    document.body.classList.toggle('pro-kb-enabled', !!appSettings.proKeyboard);
-    appSettings.useVirtualKeyboard = !!appSettings.proKeyboard;
-    if (appSettings.proKeyboard) {
+    const effective = isProKeyboardEffective();
+    document.body.classList.toggle('pro-kb-enabled', effective);
+    appSettings.useVirtualKeyboard = effective;
+    if (effective) {
         document.body.classList.remove('pro-kb-collapsed');
         renderProKeyboardTopBar();
         syncProStateFromLog();
