@@ -41,6 +41,14 @@
     --danger-color: #c75b5b;
     --danger-dark: #b54a4a;
     --active-mode: #5a8f6e;
+
+    /* 分组选中行背景 - 浅色模式 */
+    --group-selected-bg: #dfc49a;
+}
+
+/* 分组选中行 - 浅色模式优先级修正 */
+[data-theme="light"] .log-row.group-selected {
+    background: #dfc49a;
 }
 
 /* ------------------------------------------------------------------------
