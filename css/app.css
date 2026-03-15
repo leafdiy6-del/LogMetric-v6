@@ -1006,9 +1006,9 @@ body.pro-kb-enabled .log-row.latest:not(.grouped) .col-vol {
 /* 分组模式下所有行加左侧占位边，避免选中时内容跳动 */
 body.group-mode .log-row:not(.group-selected) { border-left: 3px solid transparent; }
 
-.log-row input, .log-row select { 
-    height: 34px; 
-    font-size: 13px; 
+.log-row input, .log-row select {
+    height: 34px;
+    font-size: 17px;
     border: none; 
     background: transparent; 
     text-align: center; 
@@ -1040,7 +1040,7 @@ body.group-mode .log-row:not(.group-selected) { border-left: 3px solid transpare
 
 .row-index {
     color: #666;
-    font-size: 12px;
+    font-size: 17px;
     font-family: monospace;
     text-align: center;
     cursor: pointer;
@@ -1054,12 +1054,12 @@ body.mark-mode .row-index { color: var(--accent-color); }
 .mark-cell .mark-overlay { position: absolute; inset: 0; cursor: pointer; pointer-events: none; }
 body.mark-mode .mark-cell .mark-overlay { pointer-events: auto; }
 
-.col-vol { 
-    color: var(--accent-color); 
-    font-weight: bold; 
-    font-family: monospace; 
+.col-vol {
+    color: var(--accent-color);
+    font-weight: bold;
+    font-family: monospace;
     text-align: center !important;
-    font-size: 12px; 
+    font-size: 17px;
 }
 
 .danger-text { 
