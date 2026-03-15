@@ -1466,7 +1466,7 @@ function saveSettings() {
     if (formulaSelect) appSettings.formula = formulaSelect.value;
     const volumeDecimalsSelect = document.getElementById('volumeDecimalsSelect');
     if (volumeDecimalsSelect) appSettings.volumeDecimals = parseInt(volumeDecimalsSelect.value, 10) || 3;
-    appSettings.useVirtualKeyboard = appSettings.proKeyboard;
+    appSettings.useVirtualKeyboard = isProKeyboardEffective();
     const priceEnabled = document.getElementById('priceEnabled').checked;
     appSettings.priceEnabled = priceEnabled;
     if (!priceEnabled) {
@@ -1511,7 +1511,9 @@ function isProKeyboardEffective() {
 }
 function updateOrientation() {
     document.body.classList.toggle('landscape', isLandscape());
+    appSettings.useVirtualKeyboard = isProKeyboardEffective();
     applyProKeyboardUI();
+    renderAll();
 }
 function toggleProKeyboard() {
     appSettings.proKeyboard = !appSettings.proKeyboard;
@@ -4043,11 +4045,11 @@ function scanForRenumber(logId, context) {
     const firstNum = parseInt(firstCode, 10);
     if (!isNaN(firstNum)) {
         consecutiveCount = 1;
-        let expectedNext = firstNum + 1;
+        let expectedNext = firstNum - 1;
         for (let k = 1; k < belowIndices.length; k++) {
             const c = (targetLogs[belowIndices[k]].code || '').trim();
             const n = parseInt(c, 10);
-            if (!isNaN(n) && n === expectedNext) { consecutiveCount++; expectedNext++; }
+            if (!isNaN(n) && n === expectedNext) { consecutiveCount++; expectedNext--; }
             else break;
         }
     }
@@ -4110,7 +4112,7 @@ function doRenumber(mode) {
     const targetLogs = isHV ? (historyViewerState.logs || []) : logs;
     const targets = mode === 'consecutive' ? belowIndices.slice(0, consecutiveCount) : belowIndices;
     targets.forEach((j, offset) => {
-        const newNum = currentNum + offset + 1;
+        const newNum = currentNum - offset - 1;
         targetLogs[j].code = padLen > 0 ? newNum.toString().padStart(padLen, '0') : newNum.toString();
     });
     if (isHV) { renderHistoryViewer(); } else { save(); renderAll(); }
