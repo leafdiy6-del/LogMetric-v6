@@ -56,6 +56,7 @@
     --pro-kb-height: 360px;
     --pro-kb-collapsed-height: 70px;
     --footer-height: 100px;
+    --landscape-kb-width: 44vw;
 
     /* 设置区块间距（子选项块与父开关的间隔） */
     --spacing-setting-nested: 10px;
@@ -1750,6 +1751,55 @@ body.pro-kb-collapsed .pro-kb-body {
 
 body.pro-kb-enabled .pro-kb {
     animation: keyboardSlideUp 0.3s ease;
+}
+
+/* ========================================================================
+   横屏虚拟键盘分屏布局
+   左列: Header + 列表 + Footer
+   右列: 虚拟键盘（占满全屏高度）
+   ======================================================================== */
+
+/* Header 仅覆盖左列 */
+body.landscape.pro-kb-enabled .header {
+    right: var(--landscape-kb-width);
+}
+
+/* Footer 仅覆盖左列，始终贴底（不被键盘顶起） */
+body.landscape.pro-kb-enabled .footer {
+    right: var(--landscape-kb-width);
+    bottom: 0;
+}
+
+/* logList 填满左列（header 下方到 footer 上方） */
+body.landscape.pro-kb-enabled #logList {
+    top: 56px;
+    left: 0;
+    right: var(--landscape-kb-width);
+    bottom: var(--footer-height);
+}
+
+/* 横屏时键盘在右侧，不占底部空间 */
+body.landscape.pro-kb-enabled {
+    padding-bottom: 0;
+}
+
+/* 虚拟键盘：固定在右列，撑满全屏高度 */
+body.landscape.pro-kb-enabled .pro-kb {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: auto;
+    width: var(--landscape-kb-width);
+    height: 100vh;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    animation: none;
+}
+
+body.landscape.pro-kb-enabled .pro-kb-body {
+    flex: 1;
+    height: auto;
 }
 
 /* ========================================================================
