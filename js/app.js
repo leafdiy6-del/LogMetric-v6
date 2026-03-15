@@ -525,7 +525,7 @@ function applyLanguage() {
     const hvExcel = document.querySelector('.hv-excel'); if (hvExcel && texts.btn_excel) { hvExcel.title = texts.btn_excel; hvExcel.setAttribute('aria-label', texts.btn_excel); }
     const hvClose = document.querySelector('.hv-close'); if (hvClose && texts.hv_close) { hvClose.title = texts.hv_close; hvClose.setAttribute('aria-label', texts.hv_close); }
     renderProKeyboardTopBar();
-    renderProGradePanel();
+    renderProSideGradeButtons();
     updateGroupBtnUI();
     if (typeof lucide !== 'undefined') lucide.createIcons();
     const viewer = document.getElementById('historyViewer');
@@ -713,7 +713,6 @@ function toggleGradeDisplay() {
     saveSettings();
     renderAll();
     updateProSideState();
-    if (!appSettings.showGrade && proState.keypadMode === 'grade') setProKeypadMode('num');
 }
 // Pro Keyboard 辅助函数 → js/modules/pro-keyboard.js
 function toggleCalcDia() {
@@ -1436,7 +1435,7 @@ function updateItem(id, field, val) {
 
     // 处理等级变化
     if (field === 'grade') {
-        if (appSettings.proKeyboard) renderProGradePanel();
+        if (appSettings.proKeyboard) renderProSideGradeButtons();
     }
 
     // 双径模式特殊处理

@@ -92,7 +92,7 @@ function syncProStateFromLog() {
     proState.values.note = log.note || '';
     proState.gradeReady = false;
     updateProTopBarValues();
-    renderProGradePanel();
+    renderProSideGradeButtons();
     updateProVolumeDisplay();
 }
 function updateProTopBarValues() {
@@ -114,8 +114,7 @@ function updateProTopBarValues() {
     });
 }
 function updateProSideState() {
-    const grdBtn = document.getElementById('kbSideGrd');
-    if (grdBtn) grdBtn.classList.toggle('disabled', !appSettings.showGrade);
+    renderProSideGradeButtons();
 }
 function normalizeProField(field) {
     const valid = ['code', 'length', 'dia', 'dia1', 'dia2', 'note'];
@@ -143,27 +142,11 @@ function updateProActiveUI() {
 }
 function setProKeypadMode(mode) {
     proState.keypadMode = mode;
-    const core = document.getElementById('kbCore');
-    if (core) core.classList.toggle('grade-mode', mode === 'grade');
-    const grdBtn = document.getElementById('kbSideGrd');
-    if (grdBtn) grdBtn.classList.toggle('active', mode === 'grade');
-    if (mode === 'grade') renderProGradePanel();
-    if (mode === 'grade') setProOkFocused(false);
 }
 function handleProSide(type) {
     if (appSettings.useVirtualKeyboard) flushProKeyPending();
     if (type === 'hide') { collapseProKeyboard(); return; }
     if (type === 'minus') { handleProMinus(); return; }
-    if (type === 'grd') {
-        if (!appSettings.showGrade) return;
-        setProOkFocused(false);
-        if (proState.keypadMode === 'grade') setProKeypadMode('num');
-        else {
-            proState.gradeReady = false;
-            setProKeypadMode('grade');
-        }
-        return;
-    }
 }
 function focusProFieldInput() {
     if (proState.activeField === 'note') {
@@ -269,7 +252,7 @@ function handleProNext() {
                 return addNewLog();
             }
             proState.gradeReady = false;
-            setProKeypadMode('grade');
+            setProOkFocused(true);
             return;
         }
         return addNewLog();
@@ -299,7 +282,7 @@ function handleProQuickFlow(field) {
     const shouldJump = (val[0] !== '1' && val.length === 2) || (val[0] === '1' && val.length === 3);
     if (!shouldJump) return;
     if (field === 'dia1') return setProActiveField('dia2');
-    if (appSettings.showGrade) return setProKeypadMode('grade');
+    if (appSettings.showGrade) { setProOkFocused(true); return; }
     handleProNext();
 }
 function updateProDualVolume() {
@@ -359,16 +342,28 @@ function scrollLogListToBottom() {
         });
     }, 0);
 }
-function renderProGradePanel() {
-    const box = document.getElementById('proKbGrade');
+function renderProSideGradeButtons() {
+    const box = document.getElementById('kbSideGrades');
     if (!box) return;
+    if (!appSettings.showGrade) {
+        box.innerHTML = '';
+        box.style.display = 'none';
+        return;
+    }
+    box.style.display = '';
     const log = getActiveLog();
     const activeGrade = log ? log.grade : '';
     const gradeLabels = getGradeLabels();
     const esc = (s) => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    const titleAttr = currentLang === 'zh' ? '双击可修改按钮文字' : (currentLang === 'en' ? 'Double-click to change button label' : 'Dvojni klik za spremembo');
     box.innerHTML = gradeLabels.map((g, idx) => `
-            <button class="kb-key kb-grade-key ${activeGrade === g ? 'active' : ''}" onclick="selectProGrade('${esc(g)}')" oncontextmenu="handleGradeLabelEdit(${idx}, event); return false" ondblclick="handleGradeLabelEdit(${idx}, event)" title="${currentLang === 'zh' ? '双击可修改按钮文字' : (currentLang === 'en' ? 'Double-click to change button label' : 'Dvojni klik za spremembo')}">${g}</button>
-        `).join('');
+        <button class="kb-side-btn ${activeGrade === g ? 'active' : ''}" onclick="selectProGrade('${esc(g)}')" oncontextmenu="handleGradeLabelEdit(${idx}, event); return false" ondblclick="handleGradeLabelEdit(${idx}, event)" title="${titleAttr}">${g}</button>
+    `).join('');
+}
+function renderProGradePanel() {
+    const box = document.getElementById('proKbGrade');
+    if (!box) return;
+    box.innerHTML = '';
 }
 function selectProGrade(grade) {
     const log = getActiveLog();
@@ -376,15 +371,12 @@ function selectProGrade(grade) {
     if (appSettings.keySound && typeof playKeySound === 'function') playKeySound('grade');
     if (appSettings.useVirtualKeyboard) flushProKeyPending();
     setGrade(log.id, grade);
-    // 在快速模式下且开启选择等级即保存，选择等级后自动提交并开始下一根
     if (isQuickMode && appSettings.quickModeGradeAutoSave) {
         proState.gradeReady = false;
         addNewLog();
         return;
     }
     proState.gradeReady = true;
-    renderProGradePanel();
+    renderProSideGradeButtons();
     setProOkFocused(true);
-    // 快速模式且关闭选择等级即保存时：停留在等级页面，不切换回数字键盘，用户可点 NXT 保存
-    if (!isQuickMode) setProKeypadMode('num');
 }

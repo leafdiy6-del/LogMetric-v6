@@ -152,7 +152,7 @@ function handleGradeLabelEdit(slotIndex, e) {
             localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
             save();
             renderAll();
-            if (appSettings.proKeyboard) renderProGradePanel();
+            if (appSettings.proKeyboard) renderProSideGradeButtons();
         }
     }
 }
@@ -176,7 +176,7 @@ function setGrade(id, grade) {
         }, 0);
     }
     else if (!useVirtual) { renderAll(); }
-    if (appSettings.proKeyboard) renderProGradePanel();
+    if (appSettings.proKeyboard) renderProSideGradeButtons();
 }
 
 /* ----------------------------------------------------------------------------

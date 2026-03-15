@@ -147,7 +147,6 @@ html.license-valid #licenseOverlay {
    ======================================================================== */
 body.volume-warning .stats-vol-cell,
 body.volume-warning .stats-vol-cell strong { color: #e53935 !important; }
-body.volume-warning .kb-side-display.kb-vol-display { color: #e53935 !important; }
 body.volume-warning .live-vol-display { color: #e53935 !important; }
 
 body.volume-warning .btn-add-inline {

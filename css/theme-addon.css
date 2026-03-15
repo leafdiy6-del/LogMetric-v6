@@ -467,18 +467,6 @@
     box-shadow: 0 0 8px var(--accent-glow);
 }
 
-/* 等级显示区 */
-[data-theme="light"] .kb-side-display {
-    background: var(--surface-secondary);
-    border-color: var(--border-color);
-    color: var(--accent-color);
-}
-
-/* 夜间模式等级显示 - 与白天一致，使用橡木金而非亮金 */
-[data-theme="dark"] .kb-side-display {
-    color: var(--accent-color);
-}
-
 /* 体积按钮 */
 [data-theme="light"] .kb-vol {
     background: var(--surface-secondary);
@@ -683,7 +671,6 @@
 /* 总体积警告 - 白天模式 */
 [data-theme="light"] body.volume-warning .stats-vol-cell,
 [data-theme="light"] body.volume-warning .stats-vol-cell strong { color: #c62828 !important; }
-[data-theme="light"] body.volume-warning .kb-side-display.kb-vol-display { color: #c62828 !important; }
 [data-theme="light"] body.volume-warning .live-vol-display { color: #c62828 !important; }
 [data-theme="light"] body.volume-warning .btn-add-inline {
     background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%) !important;
