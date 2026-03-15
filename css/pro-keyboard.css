@@ -103,7 +103,7 @@ body.pro-kb-collapsed .pro-kb-body {
 
 .pro-kb-top { 
     display: grid; 
-    gap: 8px; 
+    gap: 0; 
     padding: 8px 10px; 
     background: #1b1b1b; 
     border-bottom: 1px solid #2a2a2a; 
@@ -111,6 +111,19 @@ body.pro-kb-collapsed .pro-kb-body {
 
 .pro-kb-top.four { 
     grid-template-columns: 1fr 1fr 1fr minmax(90px, 0.8fr); 
+}
+
+body.landscape .pro-kb-top.four {
+    grid-template-columns: 1.3fr 0.7fr 1fr minmax(90px, 0.8fr);
+}
+
+body.landscape .pro-kb-top .kb-field[data-field="code"] .kb-field-value,
+body.landscape .pro-kb-top .kb-field[data-field="code"] input,
+body.landscape .pro-kb-top .kb-field[data-field="length"] .kb-field-value,
+body.landscape .pro-kb-top .kb-field[data-field="length"] input,
+body.landscape .pro-kb-top .kb-field[data-field="dia"] .kb-field-value,
+body.landscape .pro-kb-top .kb-field[data-field="dia"] input {
+    font-size: 20px;
 }
 
 .pro-kb-top.five { 
