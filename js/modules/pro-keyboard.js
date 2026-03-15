@@ -354,11 +354,13 @@ function renderProSideGradeButtons() {
     const log = getActiveLog();
     const activeGrade = log ? log.grade : '';
     const gradeLabels = getGradeLabels();
+    const labelsToShow = gradeLabels.filter(g => g !== 'F');
     const esc = (s) => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
     const titleAttr = currentLang === 'zh' ? '双击可修改按钮文字' : (currentLang === 'en' ? 'Double-click to change button label' : 'Dvojni klik za spremembo');
-    box.innerHTML = gradeLabels.map((g, idx) => `
-        <button class="kb-side-btn ${activeGrade === g ? 'active' : ''}" onclick="selectProGrade('${esc(g)}')" oncontextmenu="handleGradeLabelEdit(${idx}, event); return false" ondblclick="handleGradeLabelEdit(${idx}, event)" title="${titleAttr}">${g}</button>
-    `).join('');
+    box.innerHTML = labelsToShow.map((g) => {
+        const realIdx = gradeLabels.indexOf(g);
+        return `<button class="kb-side-btn ${activeGrade === g ? 'active' : ''}" onclick="selectProGrade('${esc(g)}')" oncontextmenu="handleGradeLabelEdit(${realIdx}, event); return false" ondblclick="handleGradeLabelEdit(${realIdx}, event)" title="${titleAttr}">${g}</button>`;
+    }).join('');
 }
 function renderProGradePanel() {
     const box = document.getElementById('proKbGrade');
