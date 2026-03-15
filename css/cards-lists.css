@@ -1,0 +1,354 @@
+/* ========================================================================
+   [6] 组件样式 - 输入框与表单 (Components - Inputs & Forms)
+   ======================================================================== */
+input, select { 
+    background: linear-gradient(145deg, #2a2f2d, #252a28);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-primary); 
+    height: 44px; 
+    border-radius: 12px; 
+    padding: 0 14px; 
+    font-size: 15px; 
+    width: 100%;
+    transition: all 0.2s ease;
+    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2), inset -2px -2px 4px rgba(255, 255, 255, 0.02);
+}
+
+input:focus, select:focus { 
+    border-color: rgba(212, 163, 115, 0.4);
+    box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.1), inset 2px 2px 4px rgba(0, 0, 0, 0.2);
+    outline: none; 
+}
+
+.field { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 4px; 
+}
+
+.field label { 
+    font-size: 11px; 
+    color: #888; 
+    font-weight: bold;
+}
+
+.field input { 
+    height: 44px; 
+    font-size: 18px; 
+    border-color: #555; 
+    font-weight: bold; 
+    transition: border-color 0.2s; 
+}
+
+.field input:focus { 
+    border-color: var(--accent-color); 
+    background: #333; 
+}
+
+.input-note { 
+    font-size: 14px !important; 
+    font-weight: normal !important; 
+    color: #bbb !important; 
+}
+
+.double-input-container { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 5px; 
+}
+
+.double-input-container input { 
+    text-align: center; 
+    font-size: 18px; 
+    font-weight: bold; 
+}
+
+.switch { 
+    position: relative; 
+    display: inline-block; 
+    width: 40px; 
+    height: 24px; 
+}
+
+.switch input { 
+    opacity: 0; 
+    width: 0; 
+    height: 0; 
+}
+
+.slider { 
+    position: absolute; 
+    cursor: pointer; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    bottom: 0; 
+    background-color: #444; 
+    transition: .4s; 
+    border-radius: 24px; 
+}
+
+.slider:before { 
+    position: absolute; 
+    content: ""; 
+    height: 16px; 
+    width: 16px; 
+    left: 4px; 
+    bottom: 4px; 
+    background-color: white; 
+    transition: .4s; 
+    border-radius: 50%; 
+}
+
+input:checked + .slider { 
+    background-color: var(--accent-color); 
+}
+
+input:checked + .slider:before { 
+    transform: translateX(16px); 
+}
+
+/* ========================================================================
+   [7] 组件样式 - 卡片与列表 (Components - Cards & Lists)
+   ======================================================================== */
+.log-card { 
+    background: linear-gradient(145deg, #1e2321, #1a1f1d);
+    margin: 10px; 
+    border-radius: 20px; 
+    padding: 14px; 
+    border: 1px solid rgba(212, 163, 115, 0.12);
+    box-shadow: 
+        8px 8px 16px #0d0d0d,
+        -8px -8px 16px #252525,
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+}
+
+.card-title { 
+    font-size: 10px; 
+    color: var(--accent-color); 
+    text-transform: uppercase; 
+    font-weight: bold; 
+    margin-bottom: 6px; 
+    display: flex; 
+    justify-content: space-between; 
+}
+.card-title .card-title-no { font-size: 14px; }
+
+.card-row-1 { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 8px; 
+    margin-bottom: 8px; 
+}
+
+.card-row-2 { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr 1.2fr; 
+    gap: 8px; 
+    margin-bottom: 10px; 
+    align-items: end; 
+}
+
+.live-vol-display { 
+    height: 44px; 
+    background: linear-gradient(145deg, #252a28, #1e2321);
+    border-radius: 12px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: var(--accent-color); 
+    font-size: 20px; 
+    font-weight: bold; 
+    font-family: monospace; 
+    border: 1px solid rgba(212, 163, 115, 0.15);
+    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.grade-section { 
+    display: block; 
+}
+
+.grade-section.hidden { 
+    display: none; 
+}
+
+.grade-label { 
+    font-size: 11px; 
+    color: #888; 
+    margin-bottom: 4px; 
+}
+
+.grade-container { 
+    display: grid; 
+    grid-template-columns: repeat(6, 1fr); 
+    gap: 8px; 
+    margin-bottom: 12px; 
+    width: 100%;
+}
+
+.list-header { 
+    display: grid; 
+    grid-template-columns: 0.5fr 2fr 0.8fr 1fr 1fr 1.5fr 1.5fr 0.5fr 0.8fr; 
+    gap: 4px;
+    padding: 12px 16px; 
+    background: rgba(212, 163, 115, 0.05);
+    font-size: 11px; 
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-tertiary);
+    position: sticky; 
+    top: 56px; 
+    z-index: 90; 
+    border-bottom: 1px solid var(--border-subtle);
+    margin-top: 0; 
+    align-items: center;
+    backdrop-filter: blur(10px);
+}
+
+.list-header div {
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body.pro-kb-enabled .list-header { 
+    top: 0; 
+    position: sticky; 
+}
+
+body:not(.pro-kb-enabled) .list-header { 
+    top: 0; 
+}
+.btn-group-mode { background: rgba(212,163,115,0.15); color: var(--accent-color); border: 1px solid rgba(212,163,115,0.3); border-radius: 12px; padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+.btn-group-mode:hover, body.group-mode .btn-group-mode { background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%); color: #000; border-color: transparent; }
+.btn-group-mode.active { background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%); color: #000; }
+.log-row.grouped { color: var(--accent-color); border-left: 3px solid var(--accent-color); }
+.log-row.grouped input, .log-row.grouped select, .log-row.grouped .row-index, .log-row.grouped .col-vol { color: var(--accent-color) !important; }
+.log-row { position: relative; border-left: 3px solid transparent; }
+.log-row .group-select-overlay { position: absolute; inset: 0; cursor: pointer; pointer-events: none; z-index: 5; }
+body.group-mode .log-row .group-select-overlay { pointer-events: auto; }
+body.hv-group-mode #historyViewerList .log-row .group-select-overlay { pointer-events: auto; }
+.log-row .btn-del-mini, .log-row .btn-ungroup { position: relative; z-index: 10; }
+.btn-ungroup { background: transparent; border: none; color: #888; font-size: 14px; cursor: pointer; padding: 2px 6px; width: 100%; }
+.btn-ungroup:hover { color: var(--accent-color); }
+
+.log-row { 
+    display: grid; 
+    grid-template-columns: 0.5fr 2fr 0.8fr 1fr 1fr 1.5fr 1.5fr 0.5fr 0.8fr; 
+    gap: 4px; 
+    padding: 10px 16px; 
+    background: var(--surface-primary);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.log-row:nth-child(even) { 
+    background: rgba(212, 163, 115, 0.025);
+}
+
+.log-row.latest { 
+    background: linear-gradient(90deg, rgba(212, 163, 115, 0.1) 0%, transparent 100%);
+    border-left: 3px solid var(--accent-color);
+    position: relative;
+    color: var(--accent-color);
+}
+.log-row.latest input, .log-row.latest select, .log-row.latest .row-index, .log-row.latest .col-vol { color: var(--accent-color) !important; }
+
+/* 虚拟键盘模式下：最后一行用亮框标识，颜色与其他行一致 */
+body.pro-kb-enabled .log-row.latest {
+    box-shadow: inset 0 0 0 2px var(--accent-color);
+}
+body.pro-kb-enabled .log-row.latest:not(.grouped) {
+    color: var(--text-main);
+}
+body.pro-kb-enabled .log-row.latest:not(.grouped) input,
+body.pro-kb-enabled .log-row.latest:not(.grouped) select,
+body.pro-kb-enabled .log-row.latest:not(.grouped) .row-index,
+body.pro-kb-enabled .log-row.latest:not(.grouped) .col-vol {
+    color: inherit !important;
+}
+
+.log-row.dimmed { 
+    opacity: 0.2; 
+}
+
+.log-row.highlighted { 
+    color: var(--accent-color); 
+}
+.log-row.highlighted input, .log-row.highlighted select, .log-row.highlighted .row-index, .log-row.highlighted .col-vol { color: var(--accent-color) !important; }
+
+.log-row.group-selected {
+    outline: none;
+    color: var(--accent-color);
+    background: var(--group-selected-bg);
+    border-left: 3px solid var(--accent-color);
+}
+.log-row.group-selected input, .log-row.group-selected select, .log-row.group-selected .row-index, .log-row.group-selected .col-vol { color: var(--accent-color) !important; }
+/* 分组模式下所有行加左侧占位边，避免选中时内容跳动 */
+body.group-mode .log-row:not(.group-selected) { border-left: 3px solid transparent; }
+
+.log-row input, .log-row select {
+    height: 34px;
+    font-size: 18px;
+    border: none; 
+    background: transparent; 
+    text-align: center; 
+    width: 100%;
+    padding: 0;
+}
+
+/* Safari 下拉框修复 - 等级与列表输入统一 font-weight: 500 */
+.log-row select { 
+    color: #fff; 
+    font-weight: 500; 
+    -webkit-appearance: none;
+    appearance: none;
+    text-align-last: center;
+}
+
+/* 行内输入框微调 - Inter 字体，Medium(500) 舒适阅读，数字用等宽对齐 */
+.log-row input[data-field="code"],
+.log-row input[data-field="note"] { text-align: center; }
+.log-row input[data-field="code"],
+.log-row input[data-field="length"],
+.log-row input[data-field="diameter"],
+.log-row .mark-cell:nth-child(3) select { font-weight: 500; }
+.log-row input[data-field="length"],
+.log-row input[data-field="diameter"] { font-variant-numeric: tabular-nums; }
+.log-row .mark-cell:nth-child(3) select { text-align-last: center !important; } /* 等级选择 */
+.log-row .mark-cell:nth-child(4) input,
+.log-row .mark-cell:nth-child(5) input { text-align: center !important; } /* 长度、直径 */
+
+.row-index {
+    color: #666;
+    font-size: 18px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+}
+body.mark-mode .row-index { color: var(--accent-color); }
+.mark-cell { position: relative; display: flex; align-items: center; justify-content: center; min-height: 34px; }
+.mark-cell .mark-symbol { display: none; font-size: 11px; color: var(--accent-color); font-weight: bold; pointer-events: none; margin-right: 3px; flex-shrink: 0; }
+.mark-cell.marked .mark-symbol { display: inline; }
+.mark-cell input, .mark-cell select { flex: 1; }
+.mark-cell .mark-overlay { position: absolute; inset: 0; cursor: pointer; pointer-events: none; }
+body.mark-mode .mark-cell .mark-overlay { pointer-events: auto; }
+
+.col-vol {
+    color: var(--accent-color);
+    font-weight: bold;
+    font-family: monospace;
+    text-align: center !important;
+    font-size: 17px;
+}
+
+.danger-text { 
+    color: var(--danger-color) !important; 
+    font-weight: bold; 
+}
+.dia-danger-text { color: var(--danger-color) !important; font-weight: bold; }
+

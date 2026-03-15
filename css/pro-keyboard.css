@@ -1,0 +1,479 @@
+/* ========================================================================
+   [10] 设置界面样式 (Settings UI Styles)
+   ======================================================================== */
+.setting-group { 
+    margin-bottom: 20px; 
+    padding-bottom: 20px; 
+    border-bottom: 1px solid #333; 
+}
+
+.setting-row { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 12px; 
+}
+
+.setting-label { 
+    color: #ddd; 
+    font-size: 14px; 
+}
+
+.setting-input { 
+    width: 80px; 
+    text-align: center; 
+    font-weight: bold; 
+    color: var(--accent-color); 
+}
+
+.price-settings-box,
+.formula-settings-box {
+    margin-top: var(--spacing-setting-nested);
+}
+
+.pro-kb-options-box {
+    margin-top: var(--spacing-setting-nested);
+}
+
+.setting-select { width: 100px; height: 30px; font-size: 12px; }
+.setting-select-wide { width: 120px; height: 30px; font-size: 12px; }
+.setting-desc { font-size: 12px; color: #aaa; margin-bottom: 10px; }
+.quick-mode-options { margin-left: 16px; margin-bottom: 12px; padding-left: 12px; border-left: 2px solid rgba(212, 163, 115, 0.3); }
+.setting-row-indent { margin-bottom: 10px; }
+.setting-row-quick-mode .setting-label { flex: 1; }
+.setting-row-flex-start { align-items: flex-start; }
+
+.price-grade-grid { 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 12px; 
+    width: 100%; 
+}
+
+.price-grade-item { 
+    display:flex; 
+    align-items:center; 
+    gap:6px; 
+    background: rgba(0,0,0,0.2); 
+    padding: 10px; 
+    border-radius: 8px; 
+    min-width: 0; 
+}
+
+.price-grade-item input { 
+    min-width: 0; 
+    width: 100%;
+}
+
+.price-grade-label { min-width: 24px; font-weight: bold; color: #aaa; }
+.currencySymbolGrade { color: var(--accent-color); font-weight: bold; font-size: 14px; min-width: 18px; }
+.currency-symbol-fixed { color: var(--accent-color); font-weight: bold; font-size: 16px; min-width: 18px; }
+.price-input-wrap { display: flex; align-items: center; gap: 5px; width: 103px; }
+
+/* ========================================================================
+   [11] 专业虚拟键盘样式 (Professional Virtual Keyboard)
+   ======================================================================== */
+.pro-kb { 
+    position: fixed; 
+    left: 0; 
+    right: 0; 
+    bottom: 0; 
+    height: var(--pro-kb-height); 
+    background: linear-gradient(180deg, rgba(21, 21, 21, 0.98) 0%, rgba(15, 20, 18, 0.99) 100%);
+    border-top: 1px solid rgba(212, 163, 115, 0.2);
+    z-index: 130; 
+    display: none; 
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
+    padding-bottom: env(safe-area-inset-bottom);
+    border-radius: 24px 24px 0 0;
+}
+
+body.pro-kb-enabled .pro-kb { 
+    display: block; 
+}
+
+body.pro-kb-collapsed .pro-kb { 
+    height: var(--pro-kb-collapsed-height); 
+    bottom: 0; 
+}
+
+body.pro-kb-collapsed .pro-kb-body { 
+    display: none; 
+}
+
+.pro-kb-top { 
+    display: grid; 
+    gap: 8px; 
+    padding: 8px 10px; 
+    background: #1b1b1b; 
+    border-bottom: 1px solid #2a2a2a; 
+}
+
+.pro-kb-top.four { 
+    grid-template-columns: 1fr 1fr 1fr minmax(90px, 0.8fr); 
+}
+
+.pro-kb-top.five { 
+    grid-template-columns: 1fr 1fr 1fr 1fr 1.4fr; 
+}
+
+.kb-field { 
+    background: #1f1f1f; 
+    border: 1px solid #333; 
+    border-radius: 6px; 
+    padding: 6px 8px; 
+    cursor: pointer; 
+    display: flex; 
+    flex-direction: column; 
+}
+
+.kb-field.readonly { 
+    cursor: default; 
+}
+
+.kb-field-label { 
+    font-size: 10px; 
+    color: #777; 
+    text-transform: uppercase; 
+    letter-spacing: 0.5px; 
+}
+
+.kb-field-value { 
+    font-size: 18px; 
+    font-weight: bold; 
+    color: #fff; 
+    min-height: 20px; 
+    padding-left: 1ch; 
+}
+
+.kb-field[data-field="note"] { 
+    min-width: 90px; 
+}
+
+.kb-field input { 
+    background: transparent; 
+    border: none; 
+    color: #fff; 
+    font-size: 18px; 
+    font-weight: bold; 
+    padding: 2px 0 0 1ch; 
+    width: 100%; 
+    display: block; 
+}
+
+.kb-field input:focus { 
+    outline: none; 
+}
+
+.kb-field.active { 
+    border-color: var(--gold-highlight); 
+    box-shadow: 0 0 8px var(--accent-glow); 
+}
+
+.pro-kb-body { 
+    display: grid; 
+    grid-template-columns: 1.1fr 3fr 1.1fr; 
+    gap: 8px; 
+    padding: 10px; 
+    height: calc(var(--pro-kb-height) - 80px); 
+}
+
+.kb-side { 
+    display: grid; 
+    grid-template-rows: repeat(4, 1fr); 
+    gap: 8px; 
+}
+
+.kb-side-btn { 
+    background: linear-gradient(145deg, #252a28, #1e2321);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--text-secondary);
+    border-radius: 12px; 
+    font-weight: 700; 
+    font-size: 12px; 
+    letter-spacing: 0.5px;
+    box-shadow: 3px 3px 6px #0a0f0d, -3px -3px 6px #2a302d;
+    transition: all 0.15s ease;
+}
+
+.kb-side-btn:hover {
+    border-color: rgba(212, 163, 115, 0.3);
+}
+
+.kb-side-btn.grd-tall { 
+    grid-row: span 2; 
+}
+
+.kb-side-btn.active { 
+    border-color: var(--gold-highlight); 
+    color: #fff; 
+    box-shadow: 0 0 8px rgba(255,215,0,0.4); 
+}
+
+.kb-side-btn.disabled { 
+    opacity: 0.4; 
+    pointer-events: none; 
+}
+
+.kb-side-display { 
+    background: #141414; 
+    border: 1px solid #3a3a3a; 
+    color: var(--gold-highlight); 
+    border-radius: 8px; 
+    font-weight: bold; 
+    font-size: 16px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+}
+.kb-side-display.kb-vol-display {
+    font-family: monospace;
+    font-size: 14px;
+    color: var(--accent-color);
+}
+
+.kb-core { 
+    display: grid; 
+}
+
+.kb-num-grid { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    grid-template-rows: repeat(4, 1fr); 
+    gap: 8px; 
+    height: 100%; 
+}
+
+.kb-grade-grid { 
+    display: none; 
+    grid-template-columns: repeat(3, 1fr); 
+    grid-template-rows: repeat(2, 1fr); 
+    gap: 8px; 
+    height: 100%; 
+}
+
+.kb-core.grade-mode .kb-num-grid { 
+    display: none; 
+}
+
+.kb-core.grade-mode .kb-grade-grid { 
+    display: grid; 
+}
+
+.kb-key { 
+    background: linear-gradient(145deg, #252a28, #1e2321);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--text-primary);
+    border-radius: 14px; 
+    font-size: 20px; 
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    box-shadow: 4px 4px 8px #0a0f0d, -4px -4px 8px #2a302d;
+    position: relative;
+    overflow: hidden;
+}
+
+.kb-key::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+    border-radius: 14px 14px 0 0;
+    pointer-events: none;
+}
+
+.kb-key:active {
+    transform: scale(0.96);
+    box-shadow: inset 4px 4px 8px #0a0f0d, inset -4px -4px 8px #2a302d;
+}
+
+.kb-key.gold { 
+    background: linear-gradient(145deg, #252a28, #1e2321);
+    color: var(--text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 4px 4px 8px #0a0f0d, -4px -4px 8px #2a302d;
+}
+
+.kb-key.small { 
+    font-size: 14px; 
+}
+
+.kb-grade-key.active { 
+    background: var(--accent-color); 
+    color: #000; 
+    border-color: var(--accent-color); 
+}
+
+.kb-vol { 
+    background: #171717; 
+    color: var(--accent-color); 
+    border-color: #3a2c1f; 
+    font-family: monospace; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+}
+
+.kb-ops { 
+    display: grid; 
+    grid-template-rows: 1fr 3fr; 
+    gap: 8px; 
+}
+
+.kb-del { 
+    background: linear-gradient(145deg, #252a28, #1e2321);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    font-weight: 700;
+    border-radius: 14px;
+    box-shadow: 4px 4px 8px #0a0f0d, -4px -4px 8px #2a302d;
+    transition: all 0.1s ease;
+}
+
+.kb-del:active {
+    transform: scale(0.96);
+}
+
+.kb-ok { 
+    background: linear-gradient(145deg, #252a28, #1e2321);
+    color: var(--text-primary);
+    font-size: 20px;
+    font-weight: 700;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    box-shadow: 4px 4px 8px #0a0f0d, -4px -4px 8px #2a302d;
+    transition: all 0.15s ease;
+}
+
+.kb-ok:active {
+    transform: scale(0.95);
+    box-shadow: inset 4px 4px 8px #0a0f0d, inset -4px -4px 8px #2a302d;
+}
+
+.kb-ok.focused { 
+    box-shadow: 0 0 10px rgba(255,215,0,0.6); 
+}
+
+.kb-ok-inline { 
+    font-size: 16px; 
+}
+
+.pro-kb button:active { 
+    transform: scale(0.96); 
+}
+
+/* ========================================================================
+   [11b] 动画关键帧 (Keyframe Animations)
+   ======================================================================== */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes keyboardSlideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+body.pro-kb-enabled .pro-kb {
+    animation: keyboardSlideUp 0.3s ease;
+}
+
+/* ========================================================================
+   横屏虚拟键盘分屏布局
+   左列: Header + 列表 + Footer
+   右列: 虚拟键盘（占满全屏高度）
+   ======================================================================== */
+
+/* Header 仅覆盖左列 */
+body.landscape.pro-kb-enabled .header {
+    left: env(safe-area-inset-left, 0px);
+    right: var(--landscape-kb-width);
+}
+
+/* Footer 仅覆盖左列，始终贴底（不被键盘顶起） */
+body.landscape.pro-kb-enabled .footer {
+    left: env(safe-area-inset-left, 0px);
+    right: var(--landscape-kb-width);
+    bottom: 0;
+}
+
+/* logList 填满左列（header 下方到 footer 上方） */
+body.landscape.pro-kb-enabled #logList {
+    top: 56px;
+    left: env(safe-area-inset-left, 0px);
+    right: var(--landscape-kb-width);
+    bottom: var(--footer-height);
+}
+
+/* 横屏时键盘在右侧，不占底部空间 */
+body.landscape.pro-kb-enabled {
+    padding-bottom: 0;
+}
+
+/* 虚拟键盘：固定在右列，撑满全屏高度 */
+body.landscape.pro-kb-enabled .pro-kb {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: auto;
+    width: var(--landscape-kb-width);
+    height: 100vh;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    animation: none;
+    border-radius: 0;
+    border-top: none;
+    padding-bottom: 0;
+    padding-right: 0;
+}
+
+body.landscape.pro-kb-enabled .pro-kb-body {
+    flex: 1;
+    height: auto;
+}
+
+/* 横屏列表字体放大，列宽适配 24px 字体 */
+body.landscape.pro-kb-enabled .log-row,
+body.landscape.pro-kb-enabled .list-header {
+    grid-template-columns: 0.7fr 2fr 0.8fr 1.1fr 1.4fr 1.7fr 1.2fr 0.5fr 0.8fr;
+}
+body.landscape.pro-kb-enabled .log-row {
+    font-size: 24px;
+    padding: 12px 16px;
+}
+body.landscape.pro-kb-enabled .log-row .col-vol {
+    font-size: 17px;
+}
+body.landscape.pro-kb-enabled .log-row input[data-field="code"],
+body.landscape.pro-kb-enabled .log-row input[data-field="length"],
+body.landscape.pro-kb-enabled .log-row input[data-field="diameter"],
+body.landscape.pro-kb-enabled .log-row .row-index,
+body.landscape.pro-kb-enabled .log-row .mark-cell:nth-child(3) select {
+    font-size: 17px;
+}
+body.landscape.pro-kb-enabled .list-header {
+    font-size: 15px;
+}
+

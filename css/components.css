@@ -1,0 +1,527 @@
+/* ========================================================================
+   [4] 组件样式 - 按钮 (Components - Buttons)
+   ======================================================================== */
+.btn-header { 
+    padding: 8px 16px; 
+    border-radius: 12px; 
+    border: none; 
+    font-weight: 600; 
+    font-size: 13px; 
+    cursor: pointer; 
+    background: linear-gradient(135deg, rgba(212, 163, 115, 0.15) 0%, rgba(212, 163, 115, 0.05) 100%);
+    color: var(--accent-color);
+    border: 1px solid rgba(212, 163, 115, 0.2);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-header:hover {
+    background: linear-gradient(135deg, rgba(212, 163, 115, 0.25) 0%, rgba(212, 163, 115, 0.1) 100%);
+    box-shadow: 0 6px 12px rgba(212, 163, 115, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.modal-title-with-actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.modal-title-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.btn-title-action { padding: 8px 14px; font-size: 12px; font-weight: 700; background: var(--surface-secondary); color: var(--accent-color); border: 1px solid var(--border-subtle); border-radius: 12px; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; -webkit-text-fill-color: currentColor; }
+.btn-title-action span { flex-shrink: 0; white-space: nowrap; -webkit-text-fill-color: currentColor; }
+.btn-title-action:hover { background: rgba(212, 163, 115, 0.15); }
+.settings-modal-close { background: var(--accent-color) !important; color: #000 !important; }
+.btn-info { 
+    background: linear-gradient(135deg, rgba(212, 163, 115, 0.15) 0%, rgba(212, 163, 115, 0.05) 100%);
+    color: var(--accent-color);
+    display: flex; 
+    align-items: center; 
+    gap: 5px; 
+    border: 1px solid rgba(212, 163, 115, 0.2);
+}
+
+.btn-export { 
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: #000; 
+    margin-left: 5px; 
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(212, 163, 115, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-export:hover {
+    box-shadow: 0 6px 16px rgba(212, 163, 115, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-pdf { 
+    background: var(--surface-secondary); 
+    color: var(--text-primary); 
+    margin-left: 5px; 
+    border: 1px solid var(--border-subtle);
+}
+
+.btn-save-menu {
+    background: linear-gradient(135deg, rgba(212, 163, 115, 0.2) 0%, rgba(212, 163, 115, 0.08) 100%);
+    color: var(--accent-color);
+    margin-left: 5px;
+    font-weight: 700;
+    position: relative;
+    border: 1px solid rgba(212, 163, 115, 0.35);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-save-menu:hover {
+    background: linear-gradient(135deg, rgba(212, 163, 115, 0.28) 0%, rgba(212, 163, 115, 0.12) 100%);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.btn-reset { 
+    background: rgba(199, 91, 91, 0.1);
+    color: var(--danger-color); 
+    border: 1px solid rgba(199, 91, 91, 0.3);
+}
+
+.btn-reset:hover {
+    background: rgba(199, 91, 91, 0.15);
+}
+
+.btn-grade { 
+    width: 100%; 
+    height: 46px; 
+    background: linear-gradient(145deg, #252a28, #1e2321);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-tertiary);
+    border-radius: 12px; 
+    font-weight: 700; 
+    font-size: 15px; 
+    padding: 0; 
+    cursor: pointer; 
+    transition: all 0.15s ease;
+    box-shadow: 3px 3px 6px #0f1412, -3px -3px 6px #2a302d;
+}
+
+.btn-grade:hover {
+    border-color: rgba(212, 163, 115, 0.3);
+    color: var(--text-secondary);
+}
+
+.btn-grade:active { 
+    transform: scale(0.98); 
+}
+
+.btn-grade.active { 
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: #000; 
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(212, 163, 115, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: scale(1.02);
+}
+
+.btn-add-inline { 
+    width: 100%; 
+    height: 50px; 
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: #000; 
+    border: none; 
+    border-radius: 12px; 
+    font-size: 18px; 
+    font-weight: bold; 
+    box-shadow: 0 4px 12px rgba(212, 163, 115, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    margin-top: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-add-inline:hover {
+    box-shadow: 0 6px 16px rgba(212, 163, 115, 0.4);
+}
+
+.btn-add-inline:active { 
+    transform: scale(0.98); 
+}
+
+.btn-del-mini { 
+    color: var(--danger-color); 
+    background: none; 
+    border: none; 
+    font-size: 20px; 
+    width: 100%; 
+    cursor: pointer; 
+}
+
+.btn-del-mini:active { 
+    transform: scale(1.2); 
+}
+
+.btn-tool { 
+    background: #333; 
+    border: 1px solid #444; 
+    color: #ccc; 
+    width: 44px; 
+    height: 38px; 
+    border-radius: 6px; 
+    border: none; 
+    flex-shrink: 0; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 16px; 
+}
+
+.btn-tool:active { 
+    background: #555; 
+}
+
+.btn-block { 
+    width: 100%; 
+    height: 48px; 
+    border-radius: 12px; 
+    border: none; 
+    font-weight: 700; 
+    font-size: 16px; 
+    margin-top: 12px; 
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+
+.toggle-btn { 
+    background: #333; 
+    color: #aaa; 
+    border: 1px solid #555; 
+    padding: 6px 12px; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-size: 12px; 
+    margin-left: 10px; 
+    display: flex; 
+    align-items: center; 
+    gap: 5px; 
+}
+
+.toggle-btn.active { 
+    background: var(--active-mode); 
+    color: white; 
+    border-color: var(--active-mode); 
+}
+
+/* ========================================================================
+   [5] 组件样式 - 下拉菜单 (Components - Dropdown Menu)
+   ======================================================================== */
+.save-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: linear-gradient(145deg, #252a28, #1f2422);
+    border: 1px solid rgba(212, 163, 115, 0.12);
+    border-radius: 16px;
+    min-width: 220px;
+    z-index: 1000;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.save-dropdown-menu.show { 
+    display: block;
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.save-menu-item {
+    display: flex;
+    width: 100%;
+    padding: 12px 16px;
+    background: transparent;
+    color: var(--text-primary);
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.save-menu-item:hover { 
+    background: rgba(212, 163, 115, 0.12); 
+}
+
+.save-menu-divider {
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 8px 0;
+}
+
+.save-menu-item-accent {
+    background: linear-gradient(135deg, rgba(212, 163, 115, 0.18) 0%, rgba(212, 163, 115, 0.06) 100%) !important;
+    color: var(--accent-color) !important;
+    font-weight: 600;
+}
+
+.save-menu-item-accent:hover {
+    background: rgba(212, 163, 115, 0.25) !important;
+}
+
+/* 批量导出弹窗 - 复选框美化 */
+.export-select-cb {
+    width: 15px !important;
+    height: 15px !important;
+    min-width: 15px !important;
+    min-height: 15px !important;
+    cursor: pointer;
+    accent-color: var(--accent-color);
+    flex-shrink: 0;
+}
+
+.export-select-all-label input {
+    margin: 0;
+}
+
+.export-delete-selected-btn:hover {
+    background: rgba(211, 47, 47, 0.35) !important;
+    color: #ff8a80 !important;
+}
+
+/* 内部记录编辑模式打开时，禁止 body/html 滚动，修复 iOS Safari 在 fixed 容器内无法滚动列表的问题 */
+html.history-viewer-open,
+body.history-viewer-open {
+    overflow: hidden;
+}
+
+.history-viewer {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    background: rgba(0, 0, 0, 0.92);
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.history-viewer-topbar {
+    background: linear-gradient(180deg, rgba(30, 35, 33, 0.98) 0%, rgba(26, 31, 29, 0.99) 100%);
+    backdrop-filter: blur(20px);
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    padding: 12px 16px 10px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.history-viewer-title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    flex-shrink: 0;
+}
+
+.history-viewer-toprow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.history-viewer-info-row {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.history-viewer-meta {
+    flex: 1;
+    min-width: 0;
+}
+
+.history-viewer-actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.history-viewer-actions-row button {
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.history-viewer-actions-row .hv-save {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: #000;
+    box-shadow: 0 4px 12px rgba(212, 163, 115, 0.3);
+}
+
+.history-viewer-actions-row .hv-pdf,
+.history-viewer-actions-row .hv-excel,
+.history-viewer-actions-row .hv-close {
+    padding: 8px 10px;
+}
+
+.history-viewer-actions-row .hv-pdf,
+.history-viewer-actions-row .hv-excel {
+    background: var(--surface-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-subtle);
+}
+
+.history-viewer-actions-row .hv-close {
+    margin-left: auto;
+    background: rgba(199, 91, 91, 0.2);
+    color: var(--danger-color);
+    border: 1px solid rgba(199, 91, 91, 0.3);
+}
+
+.hv-info-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: var(--surface-secondary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hv-info-btn:hover {
+    background: var(--surface-primary);
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.hv-info-btn.active {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: #000;
+    border-color: transparent;
+}
+
+/* body 作为主滚动容器，避免 iOS Safari 在深层嵌套 flex 中滚动失效 */
+.history-viewer-body {
+    flex: 1;
+    min-height: 0;
+    padding: 12px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.history-viewer-meta {
+    color: #bbb;
+    font-size: 12px;
+}
+
+.history-viewer-global {
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
+}
+.history-viewer-global .info-row {
+    margin-bottom: 12px;
+}
+.history-viewer-global .info-row:last-of-type {
+    margin-bottom: 0;
+}
+.history-viewer-list-wrap .history-viewer-list {
+    border-radius: 8px 8px 0 0;
+    border-bottom: none;
+}
+.history-viewer-list {
+    overflow-y: visible;
+    background: var(--bg-dark);
+    border-radius: 16px;
+    border: 1px solid var(--border-subtle);
+}
+.history-viewer-list .list-header {
+    top: 0;
+    position: sticky;
+}
+.history-viewer-list .hv-idx-header {
+    cursor: pointer;
+    user-select: none;
+}
+.history-viewer-list .hv-idx-header:hover {
+    color: var(--accent-color);
+}
+.history-viewer-stats {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px calc(20px + env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) calc(20px + env(safe-area-inset-left, 0px));
+    font-weight: 700;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+    gap: 0;
+}
+.history-viewer-stats .stats-group-cell { flex: 1; text-align: left; padding-left: 0.5em; }
+.history-viewer-stats .stats-total-cell { flex: 1; text-align: center; transform: translateX(-26px); }
+.history-viewer-stats .stats-vol-cell { flex: 1; text-align: center; }
+.history-viewer-stats span {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+.history-viewer-stats span strong {
+    font-size: 18px;
+    color: var(--accent-color);
+    margin-left: 6px;
+}
+.history-viewer-body .hv-grade-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.history-viewer-body .hv-grade-cell select {
+    width: 100%;
+}
+.history-viewer-body .log-row button.btn-del-mini {
+    cursor: pointer;
+}
+.history-viewer-list-wrap {
+    display: flex;
+    flex-direction: column;
+    min-height: 120px;
+    position: relative;
+}
+.history-viewer-add-row {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 12px;
+    background: var(--bg-dark);
+    border-radius: 0 0 8px 8px;
+    border: 1px solid var(--border-color);
+}
+.history-viewer-add-row .btn-add-row {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-color);
+    background: rgba(212,163,115,0.2);
+    color: var(--accent-color);
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+.history-viewer-add-row .btn-add-row:hover {
+    background: var(--accent-color);
+    color: #111;
+}
+
