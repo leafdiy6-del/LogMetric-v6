@@ -46,9 +46,10 @@
     --group-selected-bg: #dfc49a;
 }
 
-/* 分组选中行 - 浅色模式优先级修正 */
-[data-theme="light"] .log-row.group-selected {
-    background: #dfc49a;
+/* 分组选中行 - 浅色模式优先级修正（含 !important 覆盖 nth-child(even) 交替色） */
+[data-theme="light"] .log-row.group-selected,
+[data-theme="light"] .history-viewer-list .log-row.group-selected {
+    background: #dfc49a !important;
 }
 
 /* ------------------------------------------------------------------------
