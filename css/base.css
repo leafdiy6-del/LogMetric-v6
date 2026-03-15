@@ -1,0 +1,124 @@
+/* ========================================================================
+   [2] 基础样式 (Base Styles)
+   ======================================================================== */
+* { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; 
+}
+
+body { 
+    margin: 0; 
+    padding: 0; 
+    padding-bottom: 120px; 
+    background-color: var(--bg-primary); 
+    color: var(--text-primary); 
+    font-family: var(--font-sans); 
+    font-size: 14px; 
+    transition: background-color 0.3s;
+    overscroll-behavior: none;
+}
+
+body.pro-kb-enabled { 
+    padding-bottom: calc(var(--pro-kb-height) + env(safe-area-inset-bottom)); 
+    display: flex; 
+    flex-direction: column; 
+    height: 100vh; 
+    overflow: hidden; 
+}
+
+body.pro-kb-collapsed { 
+    padding-bottom: calc(var(--pro-kb-collapsed-height) + env(safe-area-inset-bottom)); 
+}
+
+body.pro-kb-enabled .log-card { 
+    display: none; 
+}
+
+.btn-help {
+    width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--accent-color);
+    background: rgba(212,163,115,0.2); color: var(--accent-color); font-size: 12px; font-weight: bold;
+    cursor: pointer; display: none; align-items: center; justify-content: center; padding: 0; line-height: 1;
+    margin-left: 4px; flex-shrink: 0;
+}
+body.beginner-mode .btn-help { display: inline-flex; }
+.btn-help:hover { background: var(--accent-color); color: #111; }
+
+/* ========================================================================
+   [3] 布局与容器 (Layout & Containers)
+   ======================================================================== */
+.header { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    height: 56px; 
+    background: linear-gradient(180deg, rgba(30, 35, 33, 0.95) 0%, rgba(26, 31, 29, 0.98) 100%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 0 16px; 
+    z-index: 100; 
+    border-bottom: 1px solid var(--border-subtle); 
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3); 
+}
+
+#logList { 
+    margin-top: 56px; 
+    padding-top: 0; 
+    margin-bottom: 0; 
+}
+
+body:not(.pro-kb-enabled) #logList { 
+    overflow-y: auto; 
+    max-height: calc(100vh - 56px - var(--footer-height));
+    -webkit-overflow-scrolling: touch;
+}
+
+body.pro-kb-enabled #logList {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    bottom: var(--pro-kb-height);
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow-y: scroll;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+body.pro-kb-enabled #logList:first-child {
+    margin-top: 0;
+}
+
+body.pro-kb-collapsed #logList {
+    bottom: calc(var(--pro-kb-collapsed-height) + var(--footer-height));
+}
+
+body.pro-kb-enabled #logList > .list-header {
+    flex-shrink: 0;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, rgba(30, 35, 33, 0.95) 0%, rgba(21, 26, 24, 0.98) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(212, 163, 115, 0.1);
+    z-index: 110;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+}
+
+body.pro-kb-collapsed .footer { 
+    bottom: var(--pro-kb-collapsed-height); 
+}
+

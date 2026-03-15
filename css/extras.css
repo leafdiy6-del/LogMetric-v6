@@ -1,0 +1,351 @@
+/* ========================================================================
+   [12] 激活码拦截层 (License Activation Overlay)
+   ======================================================================== */
+html.license-valid #licenseOverlay {
+    display: none !important;
+}
+
+.license-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #0d0d0d 0%, #1a1510 50%, #0f0f0f 100%);
+    backdrop-filter: blur(12px);
+}
+
+.license-overlay.hidden {
+    display: none !important;
+}
+
+.license-overlay-inner {
+    width: min(380px, calc(100vw - 40px));
+    padding: 36px 32px;
+    background: var(--card-bg);
+    border: 2px solid var(--accent-color);
+    border-radius: 16px;
+    box-shadow: 0 0 40px rgba(212, 163, 115, 0.15), 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.license-overlay-brand {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.license-overlay-logo {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent-color);
+    letter-spacing: 1px;
+}
+
+.license-overlay-sub {
+    display: block;
+    font-size: 13px;
+    color: var(--text-gray);
+    margin-top: 6px;
+}
+
+.license-overlay-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.license-input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-align: center;
+    background: var(--input-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-main);
+    transition: border-color 0.2s;
+}
+
+.license-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.license-input::placeholder {
+    color: var(--text-dark-gray);
+}
+
+.license-activate-btn {
+    width: 100%;
+    height: 48px;
+    font-size: 16px;
+    font-weight: 700;
+    background: var(--accent-color);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.license-activate-btn:hover {
+    background: var(--accent-hover);
+}
+
+.license-activate-btn:active {
+    transform: scale(0.98);
+}
+
+.license-activate-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.license-error-msg {
+    min-height: 20px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--danger-color);
+    text-align: center;
+}
+
+.license-loading-msg {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--accent-color);
+    text-align: center;
+}
+
+/* ========================================================================
+   [13] 自定义滚动条 (Custom Scrollbar)
+   ======================================================================== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bg-tertiary);
+    border-radius: 9999px;
+    border: 2px solid var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(212, 163, 115, 0.4);
+}
+
+/* ========================================================================
+   总体积警告 (Volume Warning - 超限时红色警示)
+   ======================================================================== */
+body.volume-warning .stats-vol-cell,
+body.volume-warning .stats-vol-cell strong { color: #e53935 !important; }
+body.volume-warning .kb-side-display.kb-vol-display { color: #e53935 !important; }
+body.volume-warning .live-vol-display { color: #e53935 !important; }
+
+body.volume-warning .btn-add-inline {
+    background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%) !important;
+    color: #fff !important;
+}
+body.volume-warning .kb-ok,
+body.volume-warning .kb-ok-inline {
+    background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%) !important;
+    color: #fff !important;
+}
+
+body.volume-warning .btn-grade.active {
+    background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%) !important;
+    color: #fff !important;
+}
+body.volume-warning .kb-grade-key.active {
+    background: #c62828 !important;
+    color: #fff !important;
+}
+
+/* 虚拟键盘模式：当前选中框变红 */
+body.volume-warning .kb-field.active {
+    border-color: #c62828 !important;
+    box-shadow: 0 0 8px rgba(200, 40, 40, 0.4) !important;
+}
+
+/* 主页面顶部按钮：仅显示图标 */
+.header .btn-header > span { display: none; }
+.header .btn-header { padding: 8px 12px; }
+
+/* ========================================================================
+   行操作底部菜单 (Row Action Bottom Sheet)
+   ======================================================================== */
+.row-action-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 6000;
+    align-items: flex-end;
+}
+.row-action-overlay.show {
+    display: flex;
+    animation: fadeIn 0.2s ease;
+}
+.row-action-sheet {
+    width: 100%;
+    background: linear-gradient(145deg, var(--bg-tertiary), var(--surface-primary));
+    border: 1px solid var(--border-accent);
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    border-bottom: none;
+    padding: 12px 0 calc(16px + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+    animation: slideFromBottom 0.25s ease;
+}
+@keyframes slideFromBottom {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+.row-action-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--border-light);
+    border-radius: 2px;
+    margin: 0 auto 14px;
+}
+.row-action-title {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 0 20px 12px;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 4px;
+}
+.row-action-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 15px 24px;
+    background: transparent;
+    color: var(--text-primary);
+    border: none;
+    font-size: 15px;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: background 0.15s;
+    text-align: left;
+}
+.row-action-item:active {
+    background: var(--bg-secondary);
+}
+.row-action-item svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    stroke: var(--accent-color);
+}
+.row-action-item.row-action-cancel {
+    color: var(--text-secondary);
+    font-weight: 600;
+    justify-content: center;
+    margin-top: 4px;
+}
+.row-action-item.row-action-cancel svg {
+    display: none;
+}
+.row-action-item.row-action-danger {
+    color: var(--danger-color);
+}
+.row-action-item.row-action-danger svg {
+    stroke: var(--danger-color);
+}
+.row-action-divider {
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 4px 0;
+}
+.renumber-notice {
+    font-size: 12px;
+    color: var(--accent-color);
+    text-align: center;
+    padding: 2px 20px 10px;
+    display: none;
+}
+
+/* ============================================================================================================================================
+   集装箱号/号切换按钮样式 (Container Number Toggle Button)
+   ============================================================================================================================================ */
+.container-controls {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+}
+
+.container-controls input {
+    flex: 1;
+    min-width: 0;
+}
+
+.btn-container-toggle {
+    flex-shrink: 0;
+    padding: 0 12px;
+    height: 44px;
+    font-size: 14px;
+    font-weight: 600;
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--accent-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-container-toggle:hover {
+    background: rgba(212, 163, 115, 0.15);
+    border-color: var(--accent-color);
+}
+
+.btn-container-toggle.active {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: #000;
+    border-color: transparent;
+}
+
+/* 白天模式样式 */
+[data-theme="light"] .btn-container-toggle {
+    background: var(--surface-secondary);
+    border-color: var(--border-color);
+    color: var(--accent-color);
+}
+
+[data-theme="light"] .btn-container-toggle:hover {
+    background: rgba(184, 149, 107, 0.15);
+    border-color: var(--accent-color);
+}
+
+[data-theme="light"] .btn-container-toggle.active {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: #fff;
+}
+
+/* ========================================================================
+   小屏幕适配 (Small Screen)
+   ======================================================================== */
+@media (max-width: 400px) {
+    /* 顶部只显示图标，隐藏帮助按钮（仅限 header 内，不影响弹窗） */
+    .header { padding: 0 8px; }
+    .header > div { gap: 6px; }
+    .header .btn-help { display: none !important; }
+    /* 信息弹窗小屏适配：集装箱号/整单备注改为上下排列，确保内容可见 */
+    .info-row-inline { flex-direction: column; align-items: stretch; }
+    .info-row-inline .info-field-narrow { max-width: none; flex: 1 1 auto; }
+    .modal-card { padding: 16px; min-width: 280px; }
+    .modal-overlay { padding: 12px; }
+}
