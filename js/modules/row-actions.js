@@ -184,6 +184,9 @@ function doSplitNewPage(logId) {
         .replace('{prev}', displayNum - 1)
         .replace('{n}', prevRows)
         .replace('{from}', displayNum);
+
+    // 先关闭菜单再弹确认，避免 confirm 关闭时触发遮罩 onclick
+    closeRowActionSheet();
     if (!confirm(msg)) return;
 
     // 生成 sessionId（与 resetLogOnly 相同逻辑）
@@ -196,12 +199,16 @@ function doSplitNewPage(logId) {
         snapId = `${dateStr}_${maxNum + 1}`;
     }
 
+    // 快照 logs 需带空输入卡（historyViewer 将 [0] 作为输入卡处理）
+    const emptyCard = { id: 'card_' + Date.now(), code: '', grade: '', length: '', diameter: '', volume: 0, note: '', groupId: '', markGrade: false, markLen: false, markDia: false };
+    const snapLogs = [emptyCard].concat(savedLogs);
+
     // 保存旧行为快照
     const snap = {
         id: snapId,
         timestamp: Date.now(),
         date: new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : currentLang === 'en' ? 'en-US' : 'sl-SI'),
-        logs: JSON.parse(JSON.stringify(savedLogs)),
+        logs: JSON.parse(JSON.stringify(snapLogs)),
         global: JSON.parse(JSON.stringify(globalInfo)),
         container: globalInfo.container || '未命名'
     };
@@ -215,7 +222,6 @@ function doSplitNewPage(logId) {
     currentSessionId = null;
     localStorage.removeItem(SESSION_KEY);
 
-    closeRowActionSheet();
     save();
     renderAll();
 }
