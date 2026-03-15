@@ -175,8 +175,7 @@ function doSplitNewPage(logId) {
     const idx = logs.findIndex(l => l.id === logId);
     if (idx <= 0 || idx >= logs.length - 1) return;
 
-    const savedLogs = logs.slice(idx + 1);    // 较旧的行（将保存为快照）
-    const newLogs   = logs.slice(0, idx + 1); // 输入卡 + 较新的行（保留在主界面）
+    const savedLogs  = logs.slice(idx + 1);    // 较旧的行（将保存为快照）
     const displayNum = logs.length - idx;      // 被点击行的当前显示序号
     const prevRows   = savedLogs.length;       // 将被保存的行数
 
@@ -217,8 +216,8 @@ function doSplitNewPage(logId) {
     else snapshots.unshift(snap);
     lsSet(SNAPSHOTS_KEY, JSON.stringify(snapshots));
 
-    // 更新主界面
-    logs = newLogs;
+    // 更新主界面（原地修改数组，避免重新赋值导致闭包引用旧数组）
+    logs.splice(idx + 1, logs.length - (idx + 1));
     currentSessionId = null;
     localStorage.removeItem(SESSION_KEY);
 
