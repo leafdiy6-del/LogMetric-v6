@@ -388,7 +388,7 @@
                     </button>
                 </div>
                 <div class="setting-row">
-                    <span class="setting-label" data-i18n="language">语言 / Language <button type="button"
+                    <span class="setting-label"><span data-i18n="language">语言 / Language</span> <button type="button"
                             class="btn-help" onclick="showHelp('language')" title="帮助" aria-label="帮助">?</button></span>
                     <select id="langSelect" class="setting-select" onchange="changeLanguage(this.value)">
                         <option value="zh">中文</option>
@@ -421,7 +421,7 @@
                 </div>
             </div>
             <div class="setting-group">
-                <div class="setting-desc" data-i18n="quick_mode">快速模式 <button type="button" class="btn-help"
+                <div class="setting-desc"><span data-i18n="quick_mode">快速模式</span> <button type="button" class="btn-help"
                         onclick="showHelp('quick_mode')" title="帮助" aria-label="帮助">?</button></div>
                 <div class="setting-row setting-row-quick-mode" id="quickModeRow">
                     <span class="setting-label" style="cursor:pointer;display:flex;align-items:center;gap:4px;"
@@ -456,7 +456,7 @@
                 </div>
             </div>
             <div class="setting-group">
-                <div class="setting-desc" data-i18n="formula_group_title">计算公式 <button type="button" class="btn-help"
+                <div class="setting-desc"><span data-i18n="formula_group_title">计算公式</span> <button type="button" class="btn-help"
                         onclick="showHelp('formula_enable')" title="帮助" aria-label="帮助">?</button></div>
                 <div class="setting-row">
                     <span class="setting-label" data-i18n="formula_enable">启用自定义体积计算公式</span>
@@ -484,7 +484,7 @@
 
             </div>
             <div class="setting-group">
-                <div class="setting-desc" data-i18n="pro_kb_title">专业虚拟键盘 <button type="button" class="btn-help"
+                <div class="setting-desc"><span data-i18n="pro_kb_title">专业虚拟键盘</span> <button type="button" class="btn-help"
                         onclick="showHelp('pro_keyboard')" title="帮助" aria-label="帮助">?</button></div>
                 <div class="setting-row">
                     <span class="setting-label" data-i18n="enable_pro_kb">启用专业虚拟键盘</span>
@@ -499,7 +499,7 @@
                 </div>
             </div>
             <div class="setting-group">
-                <div class="setting-desc" data-i18n="volume_warning_desc">总体积警告 (超过设定值提示) <button type="button"
+                <div class="setting-desc"><span data-i18n="volume_warning_desc">总体积警告 (超过设定值提示)</span> <button type="button"
                         class="btn-help" onclick="showHelp('volume_warning')" title="帮助" aria-label="帮助">?</button>
                 </div>
                 <div class="setting-row">
@@ -514,7 +514,7 @@
                 </div>
             </div>
             <div class="setting-group">
-                <div class="setting-desc" data-i18n="deduction_desc">自动扣尺 (保存时自动扣除) <button type="button"
+                <div class="setting-desc"><span data-i18n="deduction_desc">自动扣尺 (保存时自动扣除)</span> <button type="button"
                         class="btn-help" onclick="showHelp('deduction')" title="帮助" aria-label="帮助">?</button></div>
                 <div class="setting-row">
                     <span class="setting-label"><span data-i18n="len_deduct">长度扣尺</span> (cm) <button type="button"
@@ -530,10 +530,10 @@
                 </div>
             </div>
             <div class="setting-group">
-                <div class="setting-desc" data-i18n="price_title">价格设置 (每立方米) <button type="button" class="btn-help"
+                <div class="setting-desc"><span data-i18n="price_title">价格设置 (每立方米)</span> <button type="button" class="btn-help"
                         onclick="showHelp('price')" title="帮助" aria-label="帮助">?</button></div>
                 <div class="setting-row">
-                    <span class="setting-label" data-i18n="price_enable">启用价格计算 <button type="button" class="btn-help"
+                    <span class="setting-label"><span data-i18n="price_enable">启用价格计算</span> <button type="button" class="btn-help"
                             onclick="showHelp('price_enable')" title="帮助" aria-label="帮助">?</button></span>
                     <label class="switch"><input type="checkbox" id="priceEnabled" onchange="togglePriceEnabled()"><span
                             class="slider"></span></label>
@@ -628,11 +628,6 @@
                 </div>
             </div>
             <div class="setting-group">
-                <div class="setting-row">
-                    <span class="setting-label" data-i18n="export_show_marks">PDF/Excel显示方向标记</span>
-                    <label class="switch"><input type="checkbox" id="exportShowMarks" onchange="saveSettings()"><span
-                            class="slider"></span></label>
-                </div>
                 <div class="setting-row">
                     <span class="setting-label" data-i18n="export_show_group">PDF/Excel显示分组</span>
                     <label class="switch"><input type="checkbox" id="exportShowGroup" onchange="saveSettings()"><span

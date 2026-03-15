@@ -120,16 +120,15 @@ async function generatePDF(options = {}) {
         const dia = parseFloat(cleanInput(log.diameter.toString())) || '';
         const vol = log.volume ? formatVolumeForDisplay(log.volume) : '0';
         const bgColor = index % 2 === 0 ? '#f7f7f7' : '#ffffff';
-        const showMarks = appSettings.showMarksInExport !== false;
         const showGroup = appSettings.showGroupInExport !== false;
         const groupBorder = (showGroup && log.groupId) ? 'border-left:4px solid #1976D2; font-weight:600;' : '';
         const amount = calcLogAmountBeforeTax(log);
         const amountCellHtml = showPricePdf
             ? `<td style="border:0.6px solid #999; padding:6px; text-align:center;">${amount ? formatMoney(amount) : ''}</td>`
             : '';
-        const gradeDisp = (log.grade || '-') + (showMarks && log.markGrade ? '↑' : '');
-        const lenDisp = len + (showMarks && log.markLen ? '↑' : '');
-        const diaDisp = dia + (showMarks && log.markDia ? '↑' : '');
+        const gradeDisp = log.grade || '-';
+        const lenDisp = len;
+        const diaDisp = dia;
         dataRowHtmls.push(`
                 <tr style="background:${bgColor};${groupBorder}">
                     <td style="border:0.6px solid #999; padding:6px; text-align:center;">${index + 1}</td>

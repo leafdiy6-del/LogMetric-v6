@@ -50,10 +50,9 @@ async function exportData(options = {}) {
         const len = parseFloat(cleanInput(l.length.toString())) || '';
         const dia = parseFloat(cleanInput(l.diameter.toString())) || '';
         const vol = l.volume ? parseFloat(formatVolumeForDisplay(l.volume)) : 0;
-        const showMarks = appSettings.showMarksInExport !== false;
-        const gradeDisp = (l.grade || '-') + (showMarks && l.markGrade ? '↑' : '');
-        const lenDisp = len + (showMarks && l.markLen ? '↑' : '');
-        const diaDisp = dia + (showMarks && l.markDia ? '↑' : '');
+        const gradeDisp = l.grade || '-';
+        const lenDisp = len;
+        const diaDisp = dia;
 
         const dataRow = [idx + 1, l.code || '', gradeDisp, lenDisp, diaDisp, vol];
 

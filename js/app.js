@@ -126,7 +126,6 @@ let appSettings = {
     taxPercent: 0,
     showPricePdf: false,
     showPriceCsv: false,
-    showMarksInExport: true,
     showGroupInExport: true,
     showCompanyInPdf: true,
     keySound: true,
@@ -462,9 +461,7 @@ window.onload = () => {
     document.getElementById('priceTax').value = appSettings.taxPercent || 0;
     document.getElementById('priceShowPdf').checked = !!appSettings.showPricePdf;
     document.getElementById('priceShowCsv').checked = !!appSettings.showPriceCsv;
-    const cbMarks = document.getElementById('exportShowMarks');
     const cbGroup = document.getElementById('exportShowGroup');
-    if (cbMarks) cbMarks.checked = appSettings.showMarksInExport !== false;
     if (cbGroup) cbGroup.checked = appSettings.showGroupInExport !== false;
     const cbKeySound = document.getElementById('checkKeySound');
     if (cbKeySound) cbKeySound.checked = appSettings.keySound !== false;
@@ -691,9 +688,7 @@ function saveSettings() {
     appSettings.taxPercent = parseFloat(document.getElementById('priceTax').value) || 0;
     appSettings.showPricePdf = priceEnabled ? document.getElementById('priceShowPdf').checked : false;
     appSettings.showPriceCsv = priceEnabled ? document.getElementById('priceShowCsv').checked : false;
-    const cbMarks = document.getElementById('exportShowMarks');
     const cbGroup = document.getElementById('exportShowGroup');
-    if (cbMarks) appSettings.showMarksInExport = cbMarks.checked;
     if (cbGroup) appSettings.showGroupInExport = cbGroup.checked;
     const cbKeySound = document.getElementById('checkKeySound');
     if (cbKeySound) appSettings.keySound = cbKeySound.checked;
