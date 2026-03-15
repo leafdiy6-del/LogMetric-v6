@@ -1199,6 +1199,7 @@ function addNewLog(forceSave = false) {
         applyFilter();
     }
 
+    const delay = appSettings.proKeyboard ? 100 : 180; // 非专业键盘稍长延迟，确保选等级后键盘不收起、能连续输入
     setTimeout(() => {
         if (appSettings.proKeyboard) {
             proState.values.length = '';
@@ -1210,10 +1211,14 @@ function addNewLog(forceSave = false) {
             setProKeypadMode('num');
             setProActiveField('length');
         } else {
+            if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
             const lenInput = document.querySelector(`.log-card .field input[data-field="length"]`);
-            if (lenInput) { lenInput.focus(); lenInput.click(); }
+            if (lenInput) {
+                lenInput.focus({ preventScroll: true });
+                lenInput.click();
+            }
         }
-    }, 100);
+    }, delay);
 }
 
 function renderAll() {
