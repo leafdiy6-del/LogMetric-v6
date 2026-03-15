@@ -503,6 +503,7 @@ window.onload = () => {
     window.addEventListener('orientationchange', updateOrientation);
     window.addEventListener('resize', updateOrientation);
     updateOrientation();
+    setTimeout(updateOrientation, 300);
     updateKeySoundRowVisibility();
     if (logs.length === 0) addNewLog();
     updateGroupBtnUI();
@@ -1503,7 +1504,7 @@ function toggleGradeDisplay() {
     if (!appSettings.showGrade && proState.keypadMode === 'grade') setProKeypadMode('num');
 }
 function isLandscape() {
-    return window.innerWidth > window.innerHeight;
+    return window.matchMedia('(orientation: landscape)').matches;
 }
 function isProKeyboardEffective() {
     return !!appSettings.proKeyboard && isLandscape();
@@ -2039,7 +2040,7 @@ function updateRowFieldDom(id, field, value) {
 function highlightNewestRow() {
     const rows = document.querySelectorAll('.log-row');
     rows.forEach(r => r.classList.remove('latest'));
-    if (rows.length > 0) rows[rows.length - 1].classList.add('latest');
+    if (rows.length > 0) rows[0].classList.add('latest');
 }
 function scrollLogListToBottom() {
     const list = document.getElementById('logList');
@@ -2339,14 +2340,14 @@ function addNewLog(forceSave = false) {
         const realIndex = totalSaved;
         const newRow = createRow(savedLog, realIndex);
         newRow.classList.add('latest');
-        container.appendChild(newRow);
-        const prevLatest = container.querySelector('.log-row.latest:not(:last-child)');
-        if (prevLatest) prevLatest.classList.remove('latest');
+        const firstRow = container.querySelector('.log-row');
+        if (firstRow) container.insertBefore(newRow, firstRow);
+        else container.appendChild(newRow);
         updateStats();
         activeFilter = null;
         applyFilter();
         highlightNewestRow();
-        scrollLogListToBottom();
+        container.scrollTop = 0;
     } else {
         renderAll();
         activeFilter = null;
@@ -2383,7 +2384,7 @@ function renderAll() {
     const useVirtual = !!appSettings.useVirtualKeyboard;
     if (useVirtual) {
         const totalSaved = Math.max(logs.length - 1, 0);
-        for (let i = logs.length - 1; i >= 1; i--) {
+        for (let i = 1; i <= logs.length - 1; i++) {
             const log = logs[i];
             const realIndex = totalSaved - i + 1;
             container.appendChild(createRow(log, realIndex));
@@ -2400,7 +2401,8 @@ function renderAll() {
     applyFilter();
     if (useVirtual) {
         highlightNewestRow();
-        scrollLogListToBottom();
+        const list = document.getElementById('logList');
+        if (list) list.scrollTop = 0;
     }
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
