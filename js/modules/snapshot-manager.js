@@ -1,3 +1,11 @@
+function isValidLog(log) {
+    return log && typeof log === 'object'
+        && typeof log.id === 'string'
+        && typeof log.code === 'string'
+        && typeof log.length === 'string'
+        && typeof log.diameter === 'string';
+}
+
 function toggleSaveMenu() {
     const menu = document.getElementById('saveMenu');
     menu.classList.toggle('show');
@@ -63,8 +71,8 @@ function saveToSnapshot() {
     }
 
     // 保存到 localStorage
-    localStorage.setItem(SNAPSHOTS_KEY, JSON.stringify(snapshots));
-    localStorage.setItem(SESSION_KEY, currentSessionId);
+    lsSet(SNAPSHOTS_KEY, JSON.stringify(snapshots));
+    lsSet(SESSION_KEY, currentSessionId);
 
     // 提示用户
     const msg = currentLang === 'zh'
@@ -224,7 +232,7 @@ function doDeleteSelectedRecords() {
         const idx = snapshots.findIndex(s => s.id === id);
         if (idx >= 0) snapshots.splice(idx, 1);
     });
-    localStorage.setItem(SNAPSHOTS_KEY, JSON.stringify(snapshots));
+    lsSet(SNAPSHOTS_KEY, JSON.stringify(snapshots));
     document.getElementById('exportProjectModal')?.remove();
     openSnapshotHistory();
 }
@@ -338,7 +346,7 @@ async function handleImportProjectFile(event) {
                 snapshots.unshift(snapshot);
                 imported++;
             }
-            localStorage.setItem(SNAPSHOTS_KEY, JSON.stringify(snapshots));
+            lsSet(SNAPSHOTS_KEY, JSON.stringify(snapshots));
             alert(currentLang === 'zh' ? `已从 ZIP 导入 ${imported} 条记录到内部记录` : (currentLang === 'en' ? `Imported ${imported} record(s) from ZIP to internal records` : `Uvoženo ${imported} zapisov iz ZIP v notranje zapise`));
             openSnapshotHistory();
         } catch (e) {
@@ -366,7 +374,15 @@ async function handleImportProjectFile(event) {
     if (data.schema === 'logmetric_backup_v1') {
         const msg = currentLang === 'zh' ? '检测到完整备份文件，将恢复所有数据（原木、项目信息、历史记录、设置等）。是否继续？' : (currentLang === 'en' ? 'Full backup detected. This will restore all data (logs, project info, history, settings). Continue?' : 'Varnostna kopija. Obnovim vse podatke. Nadaljuj?');
         if (!confirm(msg)) return;
-        logs = data.logs || [];
+        const rawLogs = Array.isArray(data.logs) ? data.logs : [];
+        const invalidCount = rawLogs.filter(l => !isValidLog(l)).length;
+        if (invalidCount > 0) {
+            const warnMsg = currentLang === 'zh'
+                ? `备份文件中有 ${invalidCount} 条无效记录（缺少必要字段），将被跳过。`
+                : (currentLang === 'en' ? `${invalidCount} invalid log(s) with missing fields will be skipped.` : `${invalidCount} neveljavnih zapisov bo preskočenih.`);
+            alert(warnMsg);
+        }
+        logs = rawLogs.filter(isValidLog);
         globalInfo = data.global || globalInfo;
         normalizeGlobalInfo(globalInfo);
         snapshots = (data.snapshots || []).map(s => {
@@ -380,13 +396,13 @@ async function handleImportProjectFile(event) {
         migrateHistoriesCompany(histories);
         if (data.appSettings && typeof data.appSettings === 'object') {
             appSettings = Object.assign({}, appSettings, data.appSettings);
-            localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+            lsSet(SETTINGS_KEY, JSON.stringify(appSettings));
         }
         currentSessionId = data.currentSessionId || null;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ logs, global: globalInfo }));
-        localStorage.setItem(SNAPSHOTS_KEY, JSON.stringify(snapshots));
-        localStorage.setItem(HIST_KEY, JSON.stringify(histories));
-        if (currentSessionId) localStorage.setItem(SESSION_KEY, currentSessionId);
+        lsSet(STORAGE_KEY, JSON.stringify({ logs, global: globalInfo }));
+        lsSet(SNAPSHOTS_KEY, JSON.stringify(snapshots));
+        lsSet(HIST_KEY, JSON.stringify(histories));
+        if (currentSessionId) lsSet(SESSION_KEY, currentSessionId);
         else localStorage.removeItem(SESSION_KEY);
         save();
         location.reload();
@@ -459,7 +475,7 @@ function doImportReplaceMain(loadData) {
     if (!Array.isArray(logs) || logs.length === 0) { logs = []; addNewLog(); }
     save();
     renderAll();
-    if (currentSessionId) localStorage.setItem(SESSION_KEY, currentSessionId);
+    if (currentSessionId) lsSet(SESSION_KEY, currentSessionId);
     else localStorage.removeItem(SESSION_KEY);
 }
 function doImportViewEditMode(loadData) {
@@ -474,7 +490,7 @@ function doImportViewEditMode(loadData) {
         container: containerName
     };
     snapshots.unshift(snapshot);
-    localStorage.setItem(SNAPSHOTS_KEY, JSON.stringify(snapshots));
+    lsSet(SNAPSHOTS_KEY, JSON.stringify(snapshots));
     openHistoryViewer(tempId);
 }
 // ========== 快照系统结束 ==========
