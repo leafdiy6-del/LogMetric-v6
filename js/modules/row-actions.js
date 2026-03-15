@@ -216,8 +216,13 @@ function doSplitNewPage(logId) {
     else snapshots.unshift(snap);
     lsSet(SNAPSHOTS_KEY, JSON.stringify(snapshots));
 
-    // 更新主界面（原地修改数组，避免重新赋值导致闭包引用旧数组）
+    // 更新主界面：移除已保存的行，保留从第 9 行开始的内容（相当于新建但保留后续行）
     logs.splice(idx + 1, logs.length - (idx + 1));
+
+    // 将输入卡置空，相当于新建：清空已保存到内部记录的数据，只保留第 9 行及之后的列表内容
+    const nextCode = (typeof isQuickMode !== 'undefined' && isQuickMode && typeof appSettings !== 'undefined' && !appSettings.quickModeAutoCode) ? '' : (typeof getNextCode === 'function' ? getNextCode() : '');
+    logs[0] = { id: Date.now(), code: nextCode, grade: '', length: '', diameter: '', volume: 0, note: '', groupId: '', markGrade: false, markLen: false, markDia: false };
+
     currentSessionId = null;
     localStorage.removeItem(SESSION_KEY);
 
