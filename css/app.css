@@ -924,6 +924,9 @@ input:checked + .slider:before {
 
 .list-header div {
     text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 body.pro-kb-enabled .list-header { 
@@ -1805,6 +1808,19 @@ body.landscape.pro-kb-enabled .pro-kb {
 body.landscape.pro-kb-enabled .pro-kb-body {
     flex: 1;
     height: auto;
+}
+
+/* 横屏列表字体放大，径(CM)列加宽 */
+body.landscape.pro-kb-enabled .log-row,
+body.landscape.pro-kb-enabled .list-header {
+    grid-template-columns: 0.5fr 2fr 0.8fr 1fr 1.4fr 1.5fr 1.5fr 0.5fr 0.8fr;
+}
+body.landscape.pro-kb-enabled .log-row {
+    font-size: 20px;
+    padding: 12px 16px;
+}
+body.landscape.pro-kb-enabled .list-header {
+    font-size: 14px;
 }
 
 /* ========================================================================
