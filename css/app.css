@@ -1008,7 +1008,7 @@ body.group-mode .log-row:not(.group-selected) { border-left: 3px solid transpare
 
 .log-row input, .log-row select {
     height: 34px;
-    font-size: 17px;
+    font-size: 18px;
     border: none; 
     background: transparent; 
     text-align: center; 
@@ -1031,17 +1031,16 @@ body.group-mode .log-row:not(.group-selected) { border-left: 3px solid transpare
 .log-row input[data-field="code"],
 .log-row input[data-field="length"],
 .log-row input[data-field="diameter"],
-.log-row .mark-cell:nth-child(3) select { font-weight: 500; font-family: monospace; }
+.log-row .mark-cell:nth-child(3) select { font-weight: 500; }
 .log-row input[data-field="length"],
 .log-row input[data-field="diameter"] { font-variant-numeric: tabular-nums; }
-.log-row .mark-cell:nth-child(3) select { text-align-last: center !important; font-family: monospace; } /* 等级选择 */
+.log-row .mark-cell:nth-child(3) select { text-align-last: center !important; } /* 等级选择 */
 .log-row .mark-cell:nth-child(4) input,
 .log-row .mark-cell:nth-child(5) input { text-align: center !important; } /* 长度、直径 */
 
 .row-index {
     color: #666;
-    font-size: 17px;
-    font-family: monospace;
+    font-size: 18px;
     text-align: center;
     cursor: pointer;
     user-select: none;
