@@ -63,8 +63,8 @@ function saveToSnapshot() {
     }
 
     // 保存到 localStorage
-    localStorage.setItem(SNAPSHOTS_KEY, JSON.stringify(snapshots));
-    localStorage.setItem(SESSION_KEY, currentSessionId);
+    lsSet(SNAPSHOTS_KEY, JSON.stringify(snapshots));
+    lsSet(SESSION_KEY, currentSessionId);
 
     // 提示用户
     const msg = currentLang === 'zh'
@@ -224,7 +224,7 @@ function doDeleteSelectedRecords() {
         const idx = snapshots.findIndex(s => s.id === id);
         if (idx >= 0) snapshots.splice(idx, 1);
     });
-    localStorage.setItem(SNAPSHOTS_KEY, JSON.stringify(snapshots));
+    lsSet(SNAPSHOTS_KEY, JSON.stringify(snapshots));
     document.getElementById('exportProjectModal')?.remove();
     openSnapshotHistory();
 }
@@ -338,7 +338,7 @@ async function handleImportProjectFile(event) {
                 snapshots.unshift(snapshot);
                 imported++;
             }
-            localStorage.setItem(SNAPSHOTS_KEY, JSON.stringify(snapshots));
+            lsSet(SNAPSHOTS_KEY, JSON.stringify(snapshots));
             alert(currentLang === 'zh' ? `已从 ZIP 导入 ${imported} 条记录到内部记录` : (currentLang === 'en' ? `Imported ${imported} record(s) from ZIP to internal records` : `Uvoženo ${imported} zapisov iz ZIP v notranje zapise`));
             openSnapshotHistory();
         } catch (e) {
@@ -380,13 +380,13 @@ async function handleImportProjectFile(event) {
         migrateHistoriesCompany(histories);
         if (data.appSettings && typeof data.appSettings === 'object') {
             appSettings = Object.assign({}, appSettings, data.appSettings);
-            localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+            lsSet(SETTINGS_KEY, JSON.stringify(appSettings));
         }
         currentSessionId = data.currentSessionId || null;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ logs, global: globalInfo }));
-        localStorage.setItem(SNAPSHOTS_KEY, JSON.stringify(snapshots));
-        localStorage.setItem(HIST_KEY, JSON.stringify(histories));
-        if (currentSessionId) localStorage.setItem(SESSION_KEY, currentSessionId);
+        lsSet(STORAGE_KEY, JSON.stringify({ logs, global: globalInfo }));
+        lsSet(SNAPSHOTS_KEY, JSON.stringify(snapshots));
+        lsSet(HIST_KEY, JSON.stringify(histories));
+        if (currentSessionId) lsSet(SESSION_KEY, currentSessionId);
         else localStorage.removeItem(SESSION_KEY);
         save();
         location.reload();
@@ -459,7 +459,7 @@ function doImportReplaceMain(loadData) {
     if (!Array.isArray(logs) || logs.length === 0) { logs = []; addNewLog(); }
     save();
     renderAll();
-    if (currentSessionId) localStorage.setItem(SESSION_KEY, currentSessionId);
+    if (currentSessionId) lsSet(SESSION_KEY, currentSessionId);
     else localStorage.removeItem(SESSION_KEY);
 }
 function doImportViewEditMode(loadData) {
@@ -474,7 +474,7 @@ function doImportViewEditMode(loadData) {
         container: containerName
     };
     snapshots.unshift(snapshot);
-    localStorage.setItem(SNAPSHOTS_KEY, JSON.stringify(snapshots));
+    lsSet(SNAPSHOTS_KEY, JSON.stringify(snapshots));
     openHistoryViewer(tempId);
 }
 // ========== 快照系统结束 ==========

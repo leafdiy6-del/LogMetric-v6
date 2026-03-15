@@ -26,14 +26,14 @@ function addToHistoryCompany(c) {
     if (!name) return;
     const idx = (histories.company || []).findIndex(x => getCompanyName(x) === name);
     if (idx >= 0) histories.company[idx] = normalizeCompany(c); else histories.company.push(normalizeCompany(c));
-    localStorage.setItem(HIST_KEY, JSON.stringify(histories));
+    lsSet(HIST_KEY, JSON.stringify(histories));
 }
 function addToHistorySeller(s) {
     const name = getCompanyName(s).trim();
     if (!name) return;
     const idx = (histories.seller || []).findIndex(x => getCompanyName(x) === name);
     if (idx >= 0) histories.seller[idx] = normalizeSeller(s); else histories.seller.push(normalizeSeller(s));
-    localStorage.setItem(HIST_KEY, JSON.stringify(histories));
+    lsSet(HIST_KEY, JSON.stringify(histories));
 }
 function updateSellerInHistory(originalSeller, newSeller) {
     const origName = getCompanyName(originalSeller).trim();
@@ -43,7 +43,7 @@ function updateSellerInHistory(originalSeller, newSeller) {
     if (idx >= 0) arr[idx] = normalizeSeller(newSeller);
     else arr.push(normalizeSeller(newSeller));
     histories.seller = arr;
-    localStorage.setItem(HIST_KEY, JSON.stringify(histories));
+    lsSet(HIST_KEY, JSON.stringify(histories));
 }
 
 /* ============================================================================
@@ -61,7 +61,7 @@ function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('lmp_theme', newTheme);
+    lsSet('lmp_theme', newTheme);
     updateThemeIcon(newTheme);
     updateThemeToggleLabel();
 }
@@ -515,7 +515,7 @@ window.onload = () => {
     }
 };
 
-function changeLanguage(lang) { currentLang = lang; localStorage.setItem(LANG_KEY, lang); applyLanguage(); renderAll(); updateQuickBtnUI(); updateProKeyboardBtnUI(); updateThemeToggleLabel(); }
+function changeLanguage(lang) { currentLang = lang; lsSet(LANG_KEY, lang); applyLanguage(); renderAll(); updateQuickBtnUI(); updateProKeyboardBtnUI(); updateThemeToggleLabel(); }
 function applyLanguage() {
     const texts = I18N[currentLang];
     document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (texts[key]) el.innerText = texts[key]; });
@@ -547,7 +547,19 @@ function updateGlobal() {
     globalInfo.location = (document.getElementById('g_location')?.value || '').trim();
     save();
 }
-function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify({ logs, global: globalInfo })); updateStats(); }
+// localStorage 安全写入：存储配额满时弹提示，不崩溃
+function lsSet(key, value) {
+    try {
+        localStorage.setItem(key, value);
+    } catch (e) {
+        const msg = currentLang === 'zh'
+            ? '存储空间不足，请先导出备份再清理数据'
+            : (currentLang === 'en' ? 'Storage full. Export a backup first.' : 'Pomnilnik je poln. Najprej izvozite varnostno kopijo.');
+        alert(msg);
+    }
+}
+
+function save() { lsSet(STORAGE_KEY, JSON.stringify({ logs, global: globalInfo })); updateStats(); }
 
 function downloadFullBackup() {
     updateGlobal();
@@ -641,7 +653,7 @@ async function exportPackageAll() {
 
 function toggleShowCompanyInPdf() {
     const cb = document.getElementById('showCompanyInPdf');
-    if (cb) { appSettings.showCompanyInPdf = cb.checked; localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings)); }
+    if (cb) { appSettings.showCompanyInPdf = cb.checked; lsSet(SETTINGS_KEY, JSON.stringify(appSettings)); }
 }
 
 // ========== 保存菜单和快照系统 ==========
@@ -693,7 +705,7 @@ function saveSettings() {
         'C': parseFloat(document.getElementById('price_grade_C').value) || 0,
         'D': parseFloat(document.getElementById('price_grade_D').value) || 0
     };
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+    lsSet(SETTINGS_KEY, JSON.stringify(appSettings));
     if (typeof updateStats === 'function') updateStats();
 }
 function toggleGradeDisplay() {
@@ -866,7 +878,7 @@ function formatVolumeForDisplay(volume) {
     return parseFloat(v.toFixed(decimals)).toString();
 }
 
-function toggleQuickMode() { isQuickMode = !isQuickMode; localStorage.setItem(QUICK_KEY, isQuickMode); updateQuickBtnUI(); }
+function toggleQuickMode() { isQuickMode = !isQuickMode; lsSet(QUICK_KEY, isQuickMode); updateQuickBtnUI(); }
 function updateQuickBtnUI() {
     const btn = document.getElementById('quickModeBtn');
     const t = I18N[currentLang];
@@ -895,7 +907,7 @@ function saveQuickModeOptions() {
     if (b) appSettings.quickModeAutoJump = b.checked;
     if (c) appSettings.quickModeGradeAutoSave = c.checked;
     if (d) appSettings.quickModeAutoCode = d.checked;
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+    lsSet(SETTINGS_KEY, JSON.stringify(appSettings));
 }
 // Pro Keyboard 主模块 → js/modules/pro-keyboard.js
 
@@ -1036,7 +1048,7 @@ function calculateDualDia(d1, d2) {
         if (appSettings.roundMode === 'mix') {
             const res = nextRoundUp ? Math.ceil(avg) : Math.floor(avg);
             nextRoundUp = !nextRoundUp;
-            localStorage.setItem(MIX_STATE_KEY, nextRoundUp);
+            lsSet(MIX_STATE_KEY, nextRoundUp);
             return res;
         }
     }
@@ -1465,7 +1477,7 @@ function resetLogOnly() {
         const existingIndex = snapshots.findIndex(s => s.id === currentSessionId);
         if (existingIndex >= 0) snapshots[existingIndex] = snapshotData;
         else snapshots.unshift(snapshotData);
-        localStorage.setItem(SNAPSHOTS_KEY, JSON.stringify(snapshots));
+        lsSet(SNAPSHOTS_KEY, JSON.stringify(snapshots));
     }
     logs = [];
     globalInfo.container = '';

@@ -5,7 +5,7 @@ function saveToHistory(t) {
         if (!name) return;
         const idx = (histories.company || []).findIndex(x => getCompanyName(x) === name);
         if (idx >= 0) histories.company[idx] = c; else histories.company.push(c);
-        localStorage.setItem(HIST_KEY, JSON.stringify(histories));
+        lsSet(HIST_KEY, JSON.stringify(histories));
         alert(currentLang === 'zh' ? '已保存' : (currentLang === 'en' ? 'Saved' : 'Shranjeno'));
         return;
     }
@@ -15,12 +15,12 @@ function saveToHistory(t) {
         if (!name) return;
         const idx = (histories.seller || []).findIndex(x => getCompanyName(x) === name);
         if (idx >= 0) histories.seller[idx] = s; else histories.seller.push(s);
-        localStorage.setItem(HIST_KEY, JSON.stringify(histories));
+        lsSet(HIST_KEY, JSON.stringify(histories));
         alert(currentLang === 'zh' ? '已保存' : (currentLang === 'en' ? 'Saved' : 'Shranjeno'));
         return;
     }
     const v = (document.getElementById('g_' + t)?.value || '').trim();
-    if (v && !histories[t].includes(v)) { histories[t].push(v); localStorage.setItem(HIST_KEY, JSON.stringify(histories)); alert(currentLang === 'zh' ? '已保存' : (currentLang === 'en' ? 'Saved' : 'Shranjeno')); }
+    if (v && !histories[t].includes(v)) { histories[t].push(v); lsSet(HIST_KEY, JSON.stringify(histories)); alert(currentLang === 'zh' ? '已保存' : (currentLang === 'en' ? 'Saved' : 'Shranjeno')); }
 }
 function saveToHistoryForHistoryViewer(t) {
     if (t === 'seller') {
@@ -29,7 +29,7 @@ function saveToHistoryForHistoryViewer(t) {
         if (!name) return;
         const idx = (histories.seller || []).findIndex(x => getCompanyName(x) === name);
         if (idx >= 0) histories.seller[idx] = s; else histories.seller.push(s);
-        localStorage.setItem(HIST_KEY, JSON.stringify(histories));
+        lsSet(HIST_KEY, JSON.stringify(histories));
         alert(currentLang === 'zh' ? '已保存' : (currentLang === 'en' ? 'Saved' : 'Shranjeno'));
     }
 }
@@ -108,6 +108,6 @@ function selectHistory(t, v) {
 function delHistory(t, i) {
     const msg = currentLang === 'zh' ? '确定删除此条历史记录？' : (currentLang === 'en' ? 'Delete this history item?' : 'Izbriši ta zapis?');
     if (!confirm(msg)) return;
-    histories[t].splice(i, 1); localStorage.setItem(HIST_KEY, JSON.stringify(histories)); if (historyPopContext === 'historyViewer') showHistoryForHistoryViewer(t); else showHistory(t);
+    histories[t].splice(i, 1); lsSet(HIST_KEY, JSON.stringify(histories)); if (historyPopContext === 'historyViewer') showHistoryForHistoryViewer(t); else showHistory(t);
 }
 
