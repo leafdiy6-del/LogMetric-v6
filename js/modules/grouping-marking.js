@@ -168,15 +168,6 @@ function setGrade(id, grade) {
     const useVirtual = !!appSettings.useVirtualKeyboard;
     if (isQuickMode && appSettings.quickModeGradeAutoSave && !useVirtual) {
         addNewLog();
-        setTimeout(() => {
-            if (!appSettings.proKeyboard) {
-                const lenInput = document.querySelector(`.log-card .field input[data-field="length"]`);
-                if (lenInput) {
-                    lenInput.focus();
-                    lenInput.click();
-                }
-            }
-        }, 100);
     }
     else if (!useVirtual) { renderAll(); }
     if (appSettings.proKeyboard) renderProSideGradeButtons();

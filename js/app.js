@@ -1196,7 +1196,7 @@ function addNewLog(forceSave = false) {
             const lenInput = document.querySelector(`.log-card .field input[data-field="length"]`);
             if (lenInput) { lenInput.focus(); lenInput.click(); }
         }
-    }, 10);
+    }, 100);
 }
 
 function renderAll() {
