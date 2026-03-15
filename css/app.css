@@ -60,6 +60,9 @@
 
     /* 设置区块间距（子选项块与父开关的间隔） */
     --spacing-setting-nested: 10px;
+
+    /* 分组选中行背景 */
+    --group-selected-bg: rgba(212, 163, 115, 0.28);
 }
 
 /* ========================================================================
@@ -999,7 +1002,7 @@ body.pro-kb-enabled .log-row.latest:not(.grouped) .col-vol {
 .log-row.group-selected {
     outline: none;
     color: var(--accent-color);
-    background: rgba(212, 163, 115, 0.13);
+    background: var(--group-selected-bg);
     border-left: 3px solid var(--accent-color);
 }
 .log-row.group-selected input, .log-row.group-selected select, .log-row.group-selected .row-index, .log-row.group-selected .col-vol { color: var(--accent-color) !important; }
