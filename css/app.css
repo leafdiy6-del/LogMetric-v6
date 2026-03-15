@@ -1761,11 +1761,13 @@ body.pro-kb-enabled .pro-kb {
 
 /* Header 仅覆盖左列 */
 body.landscape.pro-kb-enabled .header {
+    left: env(safe-area-inset-left, 0px);
     right: var(--landscape-kb-width);
 }
 
 /* Footer 仅覆盖左列，始终贴底（不被键盘顶起） */
 body.landscape.pro-kb-enabled .footer {
+    left: env(safe-area-inset-left, 0px);
     right: var(--landscape-kb-width);
     bottom: 0;
 }
@@ -1773,7 +1775,7 @@ body.landscape.pro-kb-enabled .footer {
 /* logList 填满左列（header 下方到 footer 上方） */
 body.landscape.pro-kb-enabled #logList {
     top: 56px;
-    left: 0;
+    left: env(safe-area-inset-left, 0px);
     right: var(--landscape-kb-width);
     bottom: var(--footer-height);
 }
@@ -1795,6 +1797,10 @@ body.landscape.pro-kb-enabled .pro-kb {
     display: flex;
     flex-direction: column;
     animation: none;
+    border-radius: 0;
+    border-top: none;
+    padding-bottom: 0;
+    padding-right: 0;
 }
 
 body.landscape.pro-kb-enabled .pro-kb-body {
