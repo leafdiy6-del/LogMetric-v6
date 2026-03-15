@@ -223,6 +223,16 @@ function doSplitNewPage(logId) {
     const nextCode = (typeof isQuickMode !== 'undefined' && isQuickMode && typeof appSettings !== 'undefined' && !appSettings.quickModeAutoCode) ? '' : (typeof getNextCode === 'function' ? getNextCode() : '');
     logs[0] = { id: Date.now(), code: nextCode, grade: '', length: '', diameter: '', volume: 0, note: '', groupId: '', markGrade: false, markLen: false, markDia: false };
 
+    // 与主页面「新柜」一致：号模式时项目信息里的号自动 +1（如输入框为 1 则变为 2，以此类推）
+    const currentContainerValue = (document.getElementById('g_container')?.value || '').trim() || (globalInfo.container || '').trim();
+    const num = parseInt(currentContainerValue, 10);
+    const nextContainerValue = (typeof isContainerNumberMode !== 'undefined' && isContainerNumberMode && currentContainerValue && !isNaN(num)) ? (num + 1).toString() : currentContainerValue;
+    if (nextContainerValue !== currentContainerValue) {
+        globalInfo.container = nextContainerValue;
+        const gContainer = document.getElementById('g_container');
+        if (gContainer) gContainer.value = nextContainerValue;
+    }
+
     currentSessionId = null;
     localStorage.removeItem(SESSION_KEY);
 

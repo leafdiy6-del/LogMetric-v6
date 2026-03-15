@@ -762,6 +762,7 @@ function openSettingsModal() {
     updateBeginnerModeUI();
     updateThemeToggleLabel();
     updateKeySoundRowVisibility();
+    syncQuickModeOptionsVisibility();
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 function showHiddenFeatures() {
@@ -877,7 +878,7 @@ function formatVolumeForDisplay(volume) {
     return parseFloat(v.toFixed(decimals)).toString();
 }
 
-function toggleQuickMode() { isQuickMode = !isQuickMode; lsSet(QUICK_KEY, isQuickMode); updateQuickBtnUI(); }
+function toggleQuickMode() { isQuickMode = !isQuickMode; lsSet(QUICK_KEY, isQuickMode); updateQuickBtnUI(); syncQuickModeOptionsVisibility(); }
 function updateQuickBtnUI() {
     const btn = document.getElementById('quickModeBtn');
     const t = I18N[currentLang];
@@ -887,7 +888,23 @@ function updateQuickBtnUI() {
         if (label) label.innerText = isQuickMode ? ' ' + t.quick_on : ' ' + t.quick_off;
     }
 }
+// 快速模式开启时子选项固定显示；关闭时隐藏
+function syncQuickModeOptionsVisibility() {
+    const opts = document.getElementById('quickModeOptions');
+    const icon = document.getElementById('quickModeExpandIcon');
+    if (opts && icon) {
+        if (isQuickMode) {
+            opts.style.display = 'block';
+            icon.style.transform = 'rotate(180deg)';
+        } else {
+            opts.style.display = 'none';
+            icon.style.transform = '';
+        }
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+}
 function toggleQuickModeExpand() {
+    if (isQuickMode) return; // 快速模式开启时子选项固定显示，不响应收起
     const opts = document.getElementById('quickModeOptions');
     const icon = document.getElementById('quickModeExpandIcon');
     if (opts && icon) {
