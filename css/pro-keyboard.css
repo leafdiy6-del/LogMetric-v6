@@ -227,9 +227,10 @@ body.landscape .pro-kb-top .kb-field[data-field="dia"] input {
 }
 
 .kb-side-btn.active { 
-    border-color: var(--gold-highlight); 
-    color: #fff; 
-    box-shadow: 0 0 8px rgba(255,215,0,0.4); 
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: #000;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(212, 163, 115, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .kb-side-btn.disabled { 

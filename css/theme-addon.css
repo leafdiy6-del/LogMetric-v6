@@ -505,9 +505,10 @@
 }
 
 [data-theme="light"] .kb-side-btn.active {
-    border-color: var(--gold-highlight);
-    color: var(--text-primary);
-    box-shadow: 0 0 8px var(--accent-glow);
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%) !important;
+    color: #fff !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 12px rgba(184, 149, 107, 0.35), inset 0 1px 0 rgba(255,255,255,0.25);
 }
 
 /* Header / Footer 白天模式 */
@@ -705,6 +706,10 @@
 }
 [data-theme="light"] body.volume-warning .kb-grade-key.active {
     background: #d32f2f !important;
+    color: #fff !important;
+}
+[data-theme="light"] body.volume-warning .kb-side-btn.active {
+    background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%) !important;
     color: #fff !important;
 }
 [data-theme="light"] body.volume-warning .kb-field.active {

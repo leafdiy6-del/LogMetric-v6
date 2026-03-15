@@ -167,6 +167,10 @@ body.volume-warning .kb-grade-key.active {
     background: #c62828 !important;
     color: #fff !important;
 }
+body.volume-warning .kb-side-btn.active {
+    background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%) !important;
+    color: #fff !important;
+}
 
 /* 虚拟键盘模式：当前选中框变红 */
 body.volume-warning .kb-field.active {

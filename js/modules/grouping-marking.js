@@ -171,9 +171,12 @@ function setGrade(id, grade) {
         setTimeout(() => {
             if (!appSettings.proKeyboard) {
                 const lenInput = document.querySelector(`.log-card .field input[data-field="length"]`);
-                if (lenInput) lenInput.focus();
+                if (lenInput) {
+                    lenInput.focus();
+                    lenInput.click();
+                }
             }
-        }, 0);
+        }, 100);
     }
     else if (!useVirtual) { renderAll(); }
     if (appSettings.proKeyboard) renderProSideGradeButtons();
