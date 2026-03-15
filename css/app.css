@@ -169,18 +169,17 @@ body.pro-kb-enabled #logList > .list-header {
     flex-shrink: 0;
 }
 
-.footer { 
-    position: fixed; 
-    bottom: 0; 
-    left: 0; 
-    right: 0; 
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     background: linear-gradient(180deg, rgba(30, 35, 33, 0.95) 0%, rgba(21, 26, 24, 0.98) 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-top: 1px solid rgba(212, 163, 115, 0.1);
-    padding-bottom: env(safe-area-inset-bottom); 
-    z-index: 110; 
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2); 
+    z-index: 110;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
 }
 
 body.pro-kb-collapsed .footer { 
