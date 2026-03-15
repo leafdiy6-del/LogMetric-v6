@@ -23,6 +23,10 @@ function openRowActionSheet(logId, context) {
     if (labelBelow) labelBelow.textContent = t.row_action_insert_below || '在下方插入新行';
     if (labelRenumber) labelRenumber.textContent = t.row_action_renumber || '自动修改码号';
     if (labelCancel) labelCancel.textContent = t.row_action_cancel || '取消';
+    const labelSplit = document.getElementById('rowActionLabelSplit');
+    if (labelSplit) labelSplit.textContent = t.rowActionSplit || '从此行开始新页面';
+    const splitBtn = document.getElementById('rowActionSplitBtn');
+    if (splitBtn) splitBtn.style.display = (currentActionContext === 'main' && idx > 0 && idx < logs.length - 1) ? '' : 'none';
     const overlay = document.getElementById('rowActionSheet');
     if (overlay) overlay.classList.add('show');
     if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -160,4 +164,58 @@ function doRenumber(mode) {
         targetLogs[j].code = padLen > 0 ? newNum.toString().padStart(padLen, '0') : newNum.toString();
     });
     if (isHV) { renderHistoryViewer(); } else { save(); renderAll(); }
+}
+
+function rowActionSplitNewPage() {
+    if (!currentActionLogId) return;
+    doSplitNewPage(currentActionLogId);
+}
+
+function doSplitNewPage(logId) {
+    const idx = logs.findIndex(l => l.id === logId);
+    if (idx <= 0 || idx >= logs.length - 1) return;
+
+    const savedLogs = logs.slice(idx + 1);    // 较旧的行（将保存为快照）
+    const newLogs   = logs.slice(0, idx + 1); // 输入卡 + 较新的行（保留在主界面）
+    const displayNum = logs.length - idx;      // 被点击行的当前显示序号
+    const prevRows   = savedLogs.length;       // 将被保存的行数
+
+    const msg = (I18N[currentLang].confirm_split || '')
+        .replace('{prev}', displayNum - 1)
+        .replace('{n}', prevRows)
+        .replace('{from}', displayNum);
+    if (!confirm(msg)) return;
+
+    // 生成 sessionId（与 resetLogOnly 相同逻辑）
+    let snapId = currentSessionId;
+    if (!snapId) {
+        const today = new Date();
+        const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+        const todaySnaps = snapshots.filter(s => s.id.startsWith(dateStr));
+        const maxNum = todaySnaps.length > 0 ? Math.max(...todaySnaps.map(s => parseInt(s.id.split('_')[1])||0)) : 0;
+        snapId = `${dateStr}_${maxNum + 1}`;
+    }
+
+    // 保存旧行为快照
+    const snap = {
+        id: snapId,
+        timestamp: Date.now(),
+        date: new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : currentLang === 'en' ? 'en-US' : 'sl-SI'),
+        logs: JSON.parse(JSON.stringify(savedLogs)),
+        global: JSON.parse(JSON.stringify(globalInfo)),
+        container: globalInfo.container || '未命名'
+    };
+    const existingIdx = snapshots.findIndex(s => s.id === snapId);
+    if (existingIdx >= 0) snapshots[existingIdx] = snap;
+    else snapshots.unshift(snap);
+    lsSet(SNAPSHOTS_KEY, JSON.stringify(snapshots));
+
+    // 更新主界面
+    logs = newLogs;
+    currentSessionId = null;
+    localStorage.removeItem(SESSION_KEY);
+
+    closeRowActionSheet();
+    save();
+    renderAll();
 }
